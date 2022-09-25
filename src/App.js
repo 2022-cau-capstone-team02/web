@@ -10,17 +10,17 @@ import Sidebar from './components/Sidebar'
 
 
 const CustomContainer = styled(Container)`
-    position: relative;
-    width: 100%;
-    min-height:${window.innerHeight};
-    padding:0;
-    margin:0;
+  position: relative;
+  width: 100%;
+  min-height:${window.innerHeight};
+  padding:0;
+  margin:0;
 `
 
 const CustomRow = styled(Row)`
-    padding:0;
-    margin:0;
-    width: 100%;
+  padding:0;
+  margin:0;
+  width: 100%;
 `
 
 
@@ -30,14 +30,14 @@ const App = () => {
     <CustomContainer fluid>
       <Sidebar menu={menu} setMenu={setMenu}/>
       <CustomRow>
-          <NavBar menu={menu} setMenu={setMenu}/>
+        <NavBar menu={menu} setMenu={setMenu}/>
       </CustomRow>
       <CustomRow>
-          <Routes>
-            <Route path='/' element={<Info/>}/>
-            <Route path='/exchange' element={<Exchange/>}/>
-            <Route path='/dashboard' element={<Dashboard/>}/>
-          </Routes>
+        <Routes>
+          <Route path='/' element={<Info/>}/>
+          <Route path='/exchange' element={<Exchange/>}/>
+          <Route path='/dashboard' element={<Dashboard/>}/>
+        </Routes>
       </CustomRow>
     </CustomContainer>
   )
