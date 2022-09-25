@@ -6,6 +6,7 @@ import NavBar from './components/Navbar'
 import Info from './Info'
 import Exchange from './Exchange'
 import Dashboard from './Dashboard'
+import Sidebar from './components/Sidebar'
 
 
 const CustomContainer = styled(Container)`
@@ -27,16 +28,17 @@ const App = () => {
   const [menu, setMenu] = useState(false);
   return (
     <CustomContainer fluid>
-        <CustomRow>
-            <NavBar/>
-        </CustomRow>
-        <CustomRow>
-            <Routes>
-              <Route path='/' element={<Info/>}/>
-              <Route path='/exchange' element={<Exchange/>}/>
-              <Route path='/dashboard' element={<Dashboard/>}/>
-            </Routes>
-        </CustomRow>
+      <Sidebar menu={menu} setMenu={setMenu}/>
+      <CustomRow>
+          <NavBar menu={menu} setMenu={setMenu}/>
+      </CustomRow>
+      <CustomRow>
+          <Routes>
+            <Route path='/' element={<Info/>}/>
+            <Route path='/exchange' element={<Exchange/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
+          </Routes>
+      </CustomRow>
     </CustomContainer>
   )
 }
