@@ -6,13 +6,13 @@ const ProgressBar = styled.div`
     width:100vw;
     height: 10px;
     z-index: 10;
-    background-color: rgba(15, 173, 121, 0.3);
+    background-color: rgba(154, 246, 207, 1);
 `
 
 const Progress = styled.div`
     width:${({scroll})=>(`${scroll}vw`)};
     height:100%;
-    background-color: rgba(15, 173, 121, 1);
+    background-color: rgba(18, 211, 154, 1);
     transition: all 0.5s;
 `
 
