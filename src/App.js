@@ -13,9 +13,10 @@ import Progressbar from './components/ProgressBar'
 const CustomContainer = styled(Container)`
   position: relative;
   width: 100%;
-  min-height:2000px;
+  min-height:${window.innerHeight};
   padding:0;
   margin:0;
+
 `
 
 const CustomRow = styled(Row)`
