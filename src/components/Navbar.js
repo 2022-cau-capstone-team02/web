@@ -8,8 +8,8 @@ import styled from 'styled-components';
 const Container = styled.div`
   height : 80px;
   width: 100%;
+  margin-top: 0.7vh;
   background : linear-gradient(to right, #A1FFCE, #f9fcfd);
-  border-bottom: 10px solid rgb(116, 236, 206);
   display: flex;
   align-items: center;
   padding:1px;
