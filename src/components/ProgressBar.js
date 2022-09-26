@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const ProgressBar = styled.div`
     position: fixed;
     width:100vw;
-    height: 0.7vh;
+    height: 10px;
     z-index: 10;
     background-color: rgba(15, 173, 121, 0.3);
 `
