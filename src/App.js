@@ -7,12 +7,13 @@ import Info from './Info'
 import Exchange from './Exchange'
 import Dashboard from './Dashboard'
 import Sidebar from './components/Sidebar'
+import Progressbar from './components/ProgressBar'
 
 
 const CustomContainer = styled(Container)`
   position: relative;
   width: 100%;
-  min-height:${window.innerHeight};
+  min-height:2000px;
   padding:0;
   margin:0;
 `
@@ -28,6 +29,7 @@ const App = () => {
   const [menu, setMenu] = useState(false);
   return (
     <CustomContainer fluid>
+      <Progressbar/>
       <Sidebar menu={menu} setMenu={setMenu}/>
       <CustomRow>
         <NavBar menu={menu} setMenu={setMenu}/>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 import Detail from './Detail'
+import { useDrag, useDrop } from 'react-dnd'
 
 const AssetsContainer = styled.div`
   width: 100%;
@@ -99,11 +100,11 @@ const Assets = ({apiData}) => {
         document.body.style.overflow='hidden';
         setShow(!show);
     }
-    console.log(show);
+    
 
     return (
       <AssetsContainer>
-        <Detail show={show} setShow={setShow}/>
+        <Detail show={show} setShow={setShow} apiData={apiData}/>
         {apiData[0] ? apiData[0].map((apiData, index)=>{
             return (
               <Asset key={index} onClick={open}>

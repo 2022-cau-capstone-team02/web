@@ -6,6 +6,8 @@ import Assets from './components/Assets';
 import _Navbar from './components/Navbar';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { DndProvider} from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 // import Sidebar from './components/Sidebar';
 
 const apiData = [];
@@ -25,7 +27,6 @@ const AssetWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  
 `
 
 
@@ -53,7 +54,6 @@ function Dashboard() {
       localStorage.setItem('count', JSON.stringify(cnt));
     })
     .catch(err=>console.log(err));
-  
   }
 
   const changeParameter = () => {
@@ -85,7 +85,9 @@ function Dashboard() {
       {show ? 
         <AssetWrapper>
           <AssetInfo apiData={apiData}/>
-          <Assets apiData={apiData}/>
+          {/* <DndProvider backend={HTML5Backend}> */}
+            <Assets apiData={apiData}/>
+          {/* </DndProvider> */}
         </AssetWrapper>
       :null}
      
