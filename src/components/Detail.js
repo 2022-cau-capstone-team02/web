@@ -1,4 +1,5 @@
 import React from "react";
+import { RiCloseFill } from "react-icons/ri";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -21,12 +22,12 @@ const Overlay = styled.div`
 `
 
 const FormContainer = styled.div`
-    width: 50%;
-    height: 90%;
+    height: 600px;
     position: absolute;
+
+    background-color: #fffff7;
+    border-radius: 20px;
     padding: 30px;
-    background-color: aliceblue;
-    border-radius: 10px;
     box-shadow: 5px 10px 10px grey;
     overflow: scroll;
     -ms-overflow-style: none; /* IE and Edge */
@@ -34,11 +35,35 @@ const FormContainer = styled.div`
     &::-webkit-scrollbar {
       display: none;
     } /* Chrome, Safari, Opera*/
+    @media screen and (max-width:768px){
+        width: 350px;
+    }
+    @media screen and (min-width:768px){
+        width: 450px;  
+    }
+    @media screen and (min-width:992px){
+        width: 550px;
+    }
 `
 
 const Form = styled.div`
+    width: 100%;
+    height: 100%;
 
 `
+
+const CloseIcon = styled(RiCloseFill)`
+    position: absolute;
+    top:2%;
+    right:2%;
+    font-size: 4rem;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+    &:hover{
+        cursor: pointer;
+    }
+`
+
 
 const Detail = ({show, setShow, apiData}) => {
     const close = () => {
@@ -49,7 +74,10 @@ const Detail = ({show, setShow, apiData}) => {
         <Container show={show}>
             <Overlay onClick={close}/>
             <FormContainer>
-                {/* <Form></Form> */}
+                <CloseIcon onClick={close}/>
+                <Form>
+
+                </Form>
             </FormContainer>
         </Container>
     )

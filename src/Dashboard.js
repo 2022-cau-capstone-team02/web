@@ -14,7 +14,7 @@ const apiData = [];
 let cnt = 0;
 
 const StyledContainer = styled(Container)`
-  margin-top: 80px;
+  margin-top: 90px;
   background-color: #F5F7FB;
   padding : 0 auto;
   height: 100%;
@@ -45,13 +45,14 @@ function Dashboard() {
   axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
 
   async function fetchData(){
-    cnt = cnt+1;
+
     await axios.get('/channels', {params})
     .then((res)=>{
       apiData.push(res.data.items);
-      setShow(true);
+      cnt = cnt+1;
       localStorage.setItem(`keywordData${cnt}`, JSON.stringify(res.data.items)); 
       localStorage.setItem('count', JSON.stringify(cnt));
+      setShow(true);
     })
     .catch(err=>console.log(err));
   }

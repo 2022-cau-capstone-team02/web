@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 
 const Container = styled.div`
-  margin-top: 0.7vh;
+  margin-top: 10px;
   height : 80px;
   width: 100%;
   background : linear-gradient(to right, #A1FFCE, #f9fcfd);
