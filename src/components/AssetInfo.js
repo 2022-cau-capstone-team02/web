@@ -24,8 +24,9 @@ const data = {
 
 const options = {
     layout: {
-        padding: 20
-    }  
+        padding: 20,
+    } 
+    
 }
 
 const ChartContainer = styled.div`
@@ -33,8 +34,8 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1px;
-  width:50vh;
-  height:50vh;
+  width:400px;
+  height:400px;
   @media screen and (max-width:576px){
     width:100%;
   }

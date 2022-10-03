@@ -4,12 +4,18 @@ import styled from 'styled-components'
 import Detail from './Detail'
 import { useDrag, useDrop } from 'react-dnd'
 
+var colors = require('nice-color-palettes');
+
 const AssetsContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
 
+`
+
+const AssetWrapper = styled.div`
+  width: 100%;
 `
 
 const Asset = styled.div`
@@ -19,6 +25,7 @@ const Asset = styled.div`
   border-radius: 10px;
   box-shadow: 3px 3px 10px grey;
   display: flex;
+  padding:20px;
   &:hover{
     cursor: pointer;
   }
@@ -44,6 +51,7 @@ const Image = styled.img`
   height: 100%;
   object-fit: fill;
   border-radius: 10px;
+  box-shadow: 0px 0px 8px grey;
 `
 
 const Info = styled.div`
@@ -99,14 +107,15 @@ const ItemTypes = {
 
 const Assets = ({apiData}) => {
 
+  const [dataIndex, setDataIndex] = useState(-1);
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [getData, setGetData] = useState(false);
-  const open = ()=>{
+  const open = (e, index)=>{
       document.body.style.overflow='hidden';
+      setDataIndex(index);
       setShow(!show);
   }
-
   const dragItem = useRef();
   const dragOverItem = useRef();
  
@@ -129,30 +138,33 @@ const Assets = ({apiData}) => {
     setDataList(apiData[0]);
   },[])
 
+
   return (
     <AssetsContainer>
-      <Detail show={show} setShow={setShow} data={dataList}/>
       {dataList ? dataList.map((data, index)=>{
           return (
-            <Asset key={index} onClick={open} draggable onDragStart={(e) => dragStart(e, index)} onDragEnter={(e) => dragEnter(e, index)}>
-              <ThumbNail>
-                <ThumbNailWrapper>
-                  <Image src={data.snippet.thumbnails.default.url}/>
-                </ThumbNailWrapper>
-              </ThumbNail>
-              <ChannelInfo>
-                <Info>
-                  <Title>채널명 : {data.snippet.title}</Title>
-                  <Subscribers>구독자수 : {data.statistics.subscriberCount}</Subscribers>
-                  <Views>총 조회수 : {data.statistics.viewCount}</Views>
-                  <Videos>총 비디오수 : {data.statistics.videoCount}</Videos>
-                  <ChannelIncome>예상 채널 수익 : ${(data.statistics.viewCount / 1000) * 4}</ChannelIncome> 
-                  {/* <AffiliateIncome>동영상 1개당 예상 제휴 수익 : {}</AffiliateIncome> */}
-                  <HoldingShare>보유지분 : ??</HoldingShare>
-                  <DividEnd>예상 배당금 : {}</DividEnd>  
-                </Info>
-              </ChannelInfo>          
-            </Asset>
+            <AssetWrapper key={index} onDragStart={(e) => dragStart(e, index)} onDragEnter={(e) => dragEnter(e, index)}>
+              {show ? <Detail show={show} setShow={setShow} data={dataList[dataIndex]}/> : null}
+              <Asset  onClick={(e)=>open(e,index)}>
+                <ThumbNail>
+                  <ThumbNailWrapper>
+                    <Image src={data.snippet.thumbnails.default.url}/>
+                  </ThumbNailWrapper>
+                </ThumbNail>
+                <ChannelInfo>
+                  <Info>
+                    <Title>채널명 : {data.snippet.title}</Title>
+                    <Subscribers>구독자수 : {data.statistics.subscriberCount}</Subscribers>
+                    <Views>총 조회수 : {data.statistics.viewCount}</Views>
+                    <Videos>총 비디오수 : {data.statistics.videoCount}</Videos>
+                    <ChannelIncome>예상 채널 수익 : ${(data.statistics.viewCount / 1000) * 4}</ChannelIncome> 
+                    {/* <AffiliateIncome>동영상 1개당 예상 제휴 수익 : {}</AffiliateIncome> */}
+                    <HoldingShare>보유지분 : ??</HoldingShare>
+                    <DividEnd>예상 배당금 : {}</DividEnd>  
+                  </Info>
+                </ChannelInfo>          
+              </Asset>
+            </AssetWrapper>
           );
         }     
       ):null}
