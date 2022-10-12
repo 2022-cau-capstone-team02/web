@@ -1,6 +1,29 @@
 import React from "react";
 import { RiCloseFill } from "react-icons/ri";
 import styled from "styled-components";
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title as Title,
+    Tooltip,
+    Legend,
+  } from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import faker from 'faker';
+  
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
+  
 
 const Container = styled.div`
     width:100vw;
@@ -35,10 +58,10 @@ const FormContainer = styled.div`
       display: none;
     } /* Chrome, Safari, Opera*/
     @media screen and (max-width:768px){
-        width: 350px;
+        width: 450px;
     }
     @media screen and (min-width:768px){
-        width: 450px;  
+        width: 550px;  
     }
     @media screen and (min-width:992px){
         width: 850px;
@@ -48,7 +71,7 @@ const FormContainer = styled.div`
 const Form = styled.div`
     width: 100%;
     height: 100%;
-
+    margin-top: 60px;
 `
 
 const CloseIcon = styled(RiCloseFill)`
@@ -64,22 +87,37 @@ const CloseIcon = styled(RiCloseFill)`
 `
 
 const ProfileContainer = styled.div`
-    margin-top: 50px;
     display: flex;
+    @media screen and (max-width:992px){
+      flex-direction: column;
+    };
 `
 
 const ProfileImageContainer = styled.div`
-    flex-grow: 1;
+
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 20px;
+    box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+    @media screen and (max-width:992px){
+        width: 100%;
+        justify-content: center;
+        border-bottom-left-radius : 0;
+        border-bottom-right-radius : 0;
+    };
+`
+
+const ProfileImageWrapper = styled.div`
+    width: 150px;
+    height: 150px;
 `
 
 const ProfileImage = styled.img`
+    width: 100%;
+    height: 100%;
     border-radius: 20px;
-    box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
-    width: 150px;
-    height: 150px;
+    object-fit: fill;
 `
 
 const ProfileInfo = styled.div`
@@ -88,13 +126,19 @@ const ProfileInfo = styled.div`
     font-weight: 600;
     display: flex;
     flex-direction: column;
+    margin-left: 30px;
     box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
     padding:20px;
     border-radius: 20px;
+    @media screen and (max-width:992px){
+        margin: 0;
+        border-top-left-radius : 0;
+        border-top-right-radius : 0;
+    };
 `
 
-const Title = styled.h4`
-    grid-area: Channel;
+const ChannelName = styled.h4`
+
 `
 
 const DetailInfo = styled.div`
@@ -109,6 +153,7 @@ const Subscribers = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 `
 
 const Views = styled.div`
@@ -117,6 +162,7 @@ const Views = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 `
 
 const Videos = styled.div`
@@ -125,6 +171,7 @@ const Videos = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 `
 
 const ChannelIncome = styled.div`
@@ -133,11 +180,57 @@ const ChannelIncome = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 `
+
+const ViewChartContainer = styled.div`
+    margin-top: 50px;
+    box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+    padding:20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+`
+
+const SubscriberChartContainer = styled.div`
+    margin-top: 50px;
+    box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+    padding:20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+`
+
+const SizedBox = styled.div`
+    height: 50px;
+` 
 
 
 
 const Detail = ({show, setShow, data}) => {
+    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const view = {
+        labels,
+        datasets: [
+          {
+            label: '채널 조회수',
+            data: labels.map(() => faker.datatype.number({ min: 0, max: 1000000 })),
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          },
+        ],
+    };
+    const subscriber = {
+        labels,
+        datasets: [
+          {
+            label: '채널 구독자수',
+            data: labels.map(() => faker.datatype.number({ min: 200000, max: 250000 })),
+            borderColor: 'rgb(255, 209, 132)',
+            backgroundColor: 'rgba(255, 209, 132, 0.5)',
+          },
+        ],
+    };
     const close = () => {
         document.body.style.overflow = "unset";
         setShow(!show);
@@ -151,10 +244,12 @@ const Detail = ({show, setShow, data}) => {
                 <Form>
                     <ProfileContainer>
                         <ProfileImageContainer>
-                            <ProfileImage src={data.snippet.thumbnails.default.url}/>
+                            <ProfileImageWrapper>
+                                <ProfileImage src={data.snippet.thumbnails.default.url}/>
+                            </ProfileImageWrapper>
                         </ProfileImageContainer>
                         <ProfileInfo>
-                            <Title>{data.snippet.title}</Title>
+                            <ChannelName>{data.snippet.title}</ChannelName>
                             <DetailInfo>
                                 <Subscribers>
                                     <span style={{opacity:'0.5'}}>구독자 수</span>
@@ -175,7 +270,17 @@ const Detail = ({show, setShow, data}) => {
                             </DetailInfo> 
                         </ProfileInfo>
                     </ProfileContainer>
-                    
+                    <ViewChartContainer>
+                        <div>
+                            <h2 style={{opacity:'0.5'}}>채널 조회수</h2>
+                        </div>
+                        <Line data={view} style={{width:'100%', height:'100%'}}/>
+                    </ViewChartContainer>
+                    <SubscriberChartContainer>
+                        <h2 style={{opacity:'0.5'}}>채널 구독자수</h2>
+                        <Line  data={subscriber} style={{width:'100%', height:'100%'}}/>
+                    </SubscriberChartContainer>
+                    <SizedBox/>
                 </Form>
             </FormContainer>
         </Container>

@@ -6,8 +6,6 @@ import Assets from './components/Assets';
 import _Navbar from './components/Navbar';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { DndProvider} from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
 // import Sidebar from './components/Sidebar';
 
 const apiData = [];
@@ -79,22 +77,12 @@ function Dashboard() {
   return (
       
     <StyledContainer fluid>
-      {/* <Column lg={2}>
-        <Sidebar/>
-      </Column>
-      <Column lg={10}> */}
       {show ? 
         <AssetWrapper>
           <AssetInfo apiData={apiData}/>
-          {/* <DndProvider backend={HTML5Backend}> */}
-            <Assets apiData={apiData}/>
-          {/* </DndProvider> */}
+          <Assets apiData={apiData}/>
         </AssetWrapper>
       :null}
-     
-        
-      {/* </Column> */}
-        
     </StyledContainer>      
   );
 }

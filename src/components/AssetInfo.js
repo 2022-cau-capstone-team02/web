@@ -33,42 +33,53 @@ const ChartContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1px;
-  width:400px;
-  height:400px;
-  @media screen and (max-width:576px){
-    width:100%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px grey;
+  @media screen and (max-width:998px){
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
+  @media screen and (max-width:768px){
+    display: none;
+  }
+`
+
+const ChartWrapper = styled.div`
+    width:350px;
 `
 
 const InfoContainer = styled.div`
   display: flex;
-  padding: 1px;
-  width:70%;
-  height: 100%;
-  @media screen and (max-width:576px){
+  padding: 30px;
+  width:100%;
+  height: 350px;
+  margin-right: 50px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 3px 3px 10px grey;
+  @media screen and (max-width:998px){
     width:100%;
+    margin:0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  @media screen and (max-width:768px){
+    border-radius: 10px;
+    height: 300px;
   }
 `
 
 
 const Container = styled.div`
   width: 100%;
-  height: 400px;
-  padding: 30px;
   display: flex;
-  background-color: white;
-  justify-content: center;
   align-items: center;
-  border-radius: 10px;
-  box-shadow: 3px 3px 10px grey;
-  @media screen and (max-width:576px){
-    flex-direction: column;
-  }
 `
 
 const Profile = styled.h1`
- 
+    font-size: 1.7rem;
+    font-weight: 700;
 `
 
 const AssetInfo = ({apiData}) => {
@@ -79,23 +90,22 @@ const AssetInfo = ({apiData}) => {
         }
         setShow(true);
     }
-
     useEffect(()=>{
         labels();
     },[]) 
-    
     return (
-        
         <Container>
             {show ? 
             <>
                 <InfoContainer>
                     <Profile>
-                    방성원님의 현재 자산
+                        방성원님의 현재 자산
                     </Profile>
                 </InfoContainer>
                 <ChartContainer>
-                    <Doughnut data={data} options={options} style={{width:'100%', height:'100%'}}/>
+                    <ChartWrapper>
+                        <Doughnut data={data} options={options} style={{width:'100%', height:'100%'}}/>
+                    </ChartWrapper>       
                 </ChartContainer>
             </>:null}
             
