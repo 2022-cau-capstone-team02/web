@@ -25,7 +25,7 @@ const CustomRow = styled(Row)`
 `
 
 
-const App = () => {
+const App = ({history}) => {
   const [menu, setMenu] = useState(false);
   return (
     <CustomContainer fluid>

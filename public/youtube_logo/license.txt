@@ -1,0 +1,11 @@
+Model Information:
+* title:	Youtube Logo
+* source:	https://sketchfab.com/3d-models/youtube-logo-20121f88bbb34609a38ac54b314896eb
+* author:	juancarlos305770811 (https://sketchfab.com/juancarlos305770811)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Youtube Logo" (https://sketchfab.com/3d-models/youtube-logo-20121f88bbb34609a38ac54b314896eb) by juancarlos305770811 (https://sketchfab.com/juancarlos305770811) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
