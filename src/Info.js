@@ -1,19 +1,19 @@
-import { Environment, MapControls, OrbitControls, Plane } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
-import React, { Suspense, useEffect } from 'react'
+import { Environment, MapControls, OrbitControls, PerspectiveCamera, Plane } from '@react-three/drei'
+import { Canvas, useFrame } from '@react-three/fiber'
+import React, { Suspense, useEffect, useRef } from 'react'
 import { Container } from 'react-bootstrap'
 import styled from 'styled-components'
-import Coin from './components/Coin'
-import Light from './components/Light'
 import { Physics } from '@react-three/cannon'
-import Floor from './components/Floor'
 import { useNavigate } from 'react-router'
+import Camera from './components/Camera'
+import Control from './components/Control'
+import Objects from './components/Objects'
 
 const StyledContainer = styled(Container)`
   padding-top: 1px;
   margin: 0 auto;
   width: 100%;
-  height: ${window.innerHeight}px;
+  height: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,6 +85,7 @@ const ObjectContainer = styled.div`
 
 const Info = () => {
   const navigate = useNavigate();
+  
   return (
     <StyledContainer>
       <Banner>
@@ -93,17 +94,18 @@ const Info = () => {
         </TextContainer>
         <ObjectContainer>
    
-          <Canvas  shadows={true} dpr={2}  camera={{ fov: 70, position: [0, 0, 0] }}>
-            
+          <Canvas  shadows={true}  gl={{antialias: true, powerPreference: 'high-performance'}} >
+          <Environment preset='forest'/>
             <color attach="background" args={["#141414"]}/>
-            <fog attach="fog" args={["white", 0, 3]}/>
-            <Environment preset="city" />
-            <orthographicCamera args={[75, window.innerWidth/window.innerHeight, 1 ,30]}/>
-            <OrbitControls enableZoom={false} enableRotate={false}/>       
-            <Physics>
-              <Coin/>
-              <Floor/>
-            </Physics> 
+            
+            <Control/>
+            <Camera/>
+            <Suspense fallback={null}>
+              <Physics>
+                <Objects/>
+              </Physics>
+            </Suspense>
+            
           </Canvas>
         </ObjectContainer>
       </Banner>
