@@ -16,7 +16,6 @@ const CustomContainer = styled(Container)`
   min-height:${window.innerHeight};
   padding:0;
   margin:0;
-
 `
 
 const CustomRow = styled(Row)`
@@ -26,7 +25,7 @@ const CustomRow = styled(Row)`
 `
 
 
-const App = () => {
+const App = ({history}) => {
   const [menu, setMenu] = useState(false);
   return (
     <CustomContainer fluid>

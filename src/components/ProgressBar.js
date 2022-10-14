@@ -21,7 +21,6 @@ export default function Progressbar(){
 
     useEffect(() => {
       window.addEventListener("scroll", progres)
-    
       return () => {
         window.removeEventListener("scroll", progres)
       }
@@ -31,8 +30,9 @@ export default function Progressbar(){
     const progres = () => {
         const scrollTotal = document.documentElement.scrollTop;
         const heightWin = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        setScroll(scrollTotal / heightWin * 100)}
-    
+        setScroll(scrollTotal / heightWin * 100)
+    }
+
     return(
         <ProgressBar>
             <Progress scroll={scroll}/>
