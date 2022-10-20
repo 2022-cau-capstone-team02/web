@@ -58,6 +58,7 @@ const Sidebar = ({menu, setMenu}) => {
     /**
      * body 부분의 scroll을 다시 롤백시키며, menu를 닫는 함수입니다. 
      */
+
     const close = () => {
         document.body.style.overflow = "unset";
         setMenu(!menu);

@@ -6,10 +6,10 @@ import styled from 'styled-components';
 
 
 const Container = styled.div`
-  z-index: 2;
   height : 80px;
   width: 100%;
   margin-top: 10px;
+  z-index: 2;
   background : linear-gradient(to right, #A1FFCE, #f9fcfd);
   display: flex;
   align-items: center;

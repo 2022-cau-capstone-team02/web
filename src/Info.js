@@ -10,6 +10,7 @@ import Control from './components/Control'
 import Objects from './components/Objects'
 
 const StyledContainer = styled(Container)`
+  padding: 0;
   padding-top: 1px;
   margin: 0 auto;
   width: 100%;
@@ -28,7 +29,7 @@ const Banner = styled.div`
 
 const TextContainer = styled.div`
   position: absolute;
-  top: 20%;
+  top: 30%;
   z-index: 1;
   @media screen and (min-width:992px){
   left: 8%;
@@ -93,25 +94,21 @@ const Info = () => {
           <Text>Youtube Stake<br/>Investment Platform</Text>
         </TextContainer>
         <ObjectContainer>
-   
           <Canvas  shadows={true}  gl={{antialias: true, powerPreference: 'high-performance'}} >
           <Environment preset='forest'/>
-            <color attach="background" args={["#141414"]}/>
-            
+            <color attach="background" args={["#141414"]}/>        
             <Control/>
             <Camera/>
             <Suspense fallback={null}>
               <Physics>
                 <Objects/>
               </Physics>
-            </Suspense>
-            
+            </Suspense>         
           </Canvas>
         </ObjectContainer>
       </Banner>
       <MoveButton onClick={()=>{navigate('/exchange')}}>거래소 둘러보기</MoveButton>
       <InfoContainer>
-
       </InfoContainer>
     </StyledContainer>
   )

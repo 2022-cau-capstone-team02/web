@@ -32,6 +32,7 @@ export default function Progressbar(){
         const heightWin = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         setScroll(scrollTotal / heightWin * 100)
     }
+
     return(
         <ProgressBar>
             <Progress scroll={scroll}/>
