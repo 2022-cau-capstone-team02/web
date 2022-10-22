@@ -1,31 +1,30 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
-import { useNavigate } from 'react-router';
-import styled from 'styled-components';
-
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+import { useNavigate } from "react-router";
+import styled from "styled-components";
 
 const Container = styled.div`
-  height : 80px;
+  height: 80px;
   width: 100%;
   margin-top: 10px;
   z-index: 2;
-  background : linear-gradient(to right, #A1FFCE, #f9fcfd);
+  background: linear-gradient(to right, #a1ffce, #f9fcfd);
   display: flex;
   align-items: center;
-  padding:1px;
+  padding: 1px;
   position: fixed;
-`
+`;
 
 const HomepageTitle = styled.h1`
   font-size: 2.5rem;
   padding-left: 80px;
   font-weight: 600;
   color: #343434;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
-`
+`;
 
 const Navigators = styled.ul`
   height: 100%;
@@ -33,23 +32,23 @@ const Navigators = styled.ul`
   list-style: none;
   display: flex;
   align-items: center;
-  @media screen and (max-width:992px){
+  @media screen and (max-width: 992px) {
     display: none;
   }
-`
+`;
 
 const MenuIcon = styled(FontAwesomeIcon)`
   position: absolute;
-  right:50px;
-  color:#343434;
+  right: 50px;
+  color: #343434;
   font-size: 2.5rem;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
-  @media screen and (min-width:992px){
+  @media screen and (min-width: 992px) {
     display: none;
   }
-`
+`;
 
 const Navigator = styled.li`
   list-style: none;
@@ -58,14 +57,13 @@ const Navigator = styled.li`
   font-weight: 600;
   padding: 30px;
   color: rgba(0, 0, 0, 0.7);
-  &:hover{
+  &:hover {
     cursor: pointer;
     color: rgba(0, 0, 0, 1);
   }
-`
+`;
 
-
-function NavBar({menu, setMenu}) {
+function NavBar({ menu, setMenu }) {
   const open = () => {
     document.body.style.overflow = "hidden";
     setMenu(!menu);
@@ -74,22 +72,32 @@ function NavBar({menu, setMenu}) {
 
   return (
     <Container>
-      <HomepageTitle onClick={()=>{navigate('/')}}>
+      <HomepageTitle
+        onClick={() => {
+          navigate("/");
+        }}
+      >
         SLP
       </HomepageTitle>
       <Navigators>
-        <Navigator onClick={()=>{navigate('/exchange')}}>
+        <Navigator
+          onClick={() => {
+            navigate("/exchange");
+          }}
+        >
           거래소
         </Navigator>
-        <Navigator onClick={()=>{navigate('/dashboard')}}>
+        <Navigator
+          onClick={() => {
+            navigate("/dashboard");
+          }}
+        >
           대시보드
         </Navigator>
       </Navigators>
-      <MenuIcon icon={faBars} onClick={open}/>
+      <MenuIcon icon={faBars} onClick={open} />
     </Container>
   );
 }
 
-
-
-  export default NavBar
+export default NavBar;
