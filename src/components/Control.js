@@ -1,11 +1,12 @@
-import { OrbitControls } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
-import React, { useRef } from 'react'
+import { OrbitControls } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import React, { useRef } from "react";
 
 const Control = () => {
-  return (<></>
+  return (
+    <></>
     // <OrbitControls/>
-  )
-}
+  );
+};
 
-export default Control
+export default Control;
