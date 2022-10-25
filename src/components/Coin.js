@@ -1,15 +1,12 @@
-import { useGLTF } from "@react-three/drei";
-import React, { useLayoutEffect, useRef, memo, useMemo } from "react";
+import { useGLTF } from '@react-three/drei';
+import React, { useLayoutEffect, useRef } from 'react';
 
 const Coin = () => {
-  const coin = useGLTF("./interesting_coin/interesting_coin.glb");
+  const coin = useGLTF('./interesting_coin/interesting_coin.glb');
   const coinRef = useRef();
   useLayoutEffect(
-    () =>
-      coin.scene.traverse(
-        (o) => o.isMesh && (o.castShadow = o.receiveShadow = true)
-      ),
-    []
+    () => coin.scene.traverse((o) => o.isMesh && (o.castShadow = o.receiveShadow = true)),
+    [],
   );
   return (
     <>

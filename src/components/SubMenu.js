@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
+import styled from 'styled-components';
 
 let size;
 
 const MenuContainer = styled.div`
   width: 100%;
-  height: ${({ sub }) => (sub ? `${size}px` : "100px")};
+  height: ${({ sub }) => (sub ? `${size}px` : '100px')};
   overflow: hidden;
   transition: 0.5s ease-in-out;
 `;
@@ -83,11 +83,7 @@ const SubMenu = ({ close, item }) => {
              * subMenu가 존재하며, 내용을 보여주지 않는 상태라면 closed 상태의 Icon을,
              * subMenu가 존재하지 않는다면, null이 됩니다.
              */
-            item.sub && sub
-              ? item.iconOpened
-              : item.sub
-              ? item.iconClosed
-              : null
+            item.sub && sub ? item.iconOpened : item.sub ? item.iconClosed : null
           }
         </MainMenuContainer>
         {

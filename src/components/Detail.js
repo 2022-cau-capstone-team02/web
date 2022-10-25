@@ -1,6 +1,6 @@
-import React from "react";
-import { RiCloseFill } from "react-icons/ri";
-import styled from "styled-components";
+import React from 'react';
+import { RiCloseFill } from 'react-icons/ri';
+import styled from 'styled-components';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,19 +10,11 @@ import {
   Title as Title,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-import faker from "faker";
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import faker from 'faker';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Container = styled.div`
   width: 100vw;
@@ -31,7 +23,7 @@ const Container = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  display: ${({ show }) => (show ? "flex" : "none")};
+  display: ${({ show }) => (show ? 'flex' : 'none')};
   justify-content: center;
   align-items: center;
 `;
@@ -120,7 +112,7 @@ const ProfileImage = styled.img`
 
 const ProfileInfo = styled.div`
   flex-grow: 4;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: 'Noto Sans KR', sans-serif;
   font-weight: 600;
   display: flex;
   flex-direction: column;
@@ -201,23 +193,15 @@ const SizedBox = styled.div`
 `;
 
 const Detail = ({ show, setShow, data }) => {
-  const labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   const view = {
     labels,
     datasets: [
       {
-        label: "채널 조회수",
+        label: '채널 조회수',
         data: labels.map(() => faker.datatype.number({ min: 0, max: 1000000 })),
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
     ],
   };
@@ -225,17 +209,15 @@ const Detail = ({ show, setShow, data }) => {
     labels,
     datasets: [
       {
-        label: "채널 구독자수",
-        data: labels.map(() =>
-          faker.datatype.number({ min: 200000, max: 250000 })
-        ),
-        borderColor: "rgb(255, 209, 132)",
-        backgroundColor: "rgba(255, 209, 132, 0.5)",
+        label: '채널 구독자수',
+        data: labels.map(() => faker.datatype.number({ min: 200000, max: 250000 })),
+        borderColor: 'rgb(255, 209, 132)',
+        backgroundColor: 'rgba(255, 209, 132, 0.5)',
       },
     ],
   };
   const close = () => {
-    document.body.style.overflow = "unset";
+    document.body.style.overflow = 'unset';
     setShow(!show);
   };
   return (
@@ -254,19 +236,19 @@ const Detail = ({ show, setShow, data }) => {
               <ChannelName>{data.snippet.title}</ChannelName>
               <DetailInfo>
                 <Subscribers>
-                  <span style={{ opacity: "0.5" }}>구독자 수</span>
+                  <span style={{ opacity: '0.5' }}>구독자 수</span>
                   <span>{data.statistics.subscriberCount}</span>
                 </Subscribers>
                 <Views>
-                  <span style={{ opacity: "0.5" }}>총 조회수</span>
+                  <span style={{ opacity: '0.5' }}>총 조회수</span>
                   <span>{data.statistics.viewCount}</span>
                 </Views>
                 <Videos>
-                  <span style={{ opacity: "0.5" }}>총 비디오수</span>
+                  <span style={{ opacity: '0.5' }}>총 비디오수</span>
                   <span>{data.statistics.videoCount}</span>
                 </Videos>
                 <ChannelIncome>
-                  <span style={{ opacity: "0.5" }}>예상 채널 수익</span>
+                  <span style={{ opacity: '0.5' }}>예상 채널 수익</span>
                   <span>{(data.statistics.viewCount / 1000) * 4}$</span>
                 </ChannelIncome>
               </DetailInfo>
@@ -274,13 +256,13 @@ const Detail = ({ show, setShow, data }) => {
           </ProfileContainer>
           <ViewChartContainer>
             <div>
-              <h2 style={{ opacity: "0.5" }}>채널 조회수</h2>
+              <h2 style={{ opacity: '0.5' }}>채널 조회수</h2>
             </div>
-            <Line data={view} style={{ width: "100%", height: "100%" }} />
+            <Line data={view} style={{ width: '100%', height: '100%' }} />
           </ViewChartContainer>
           <SubscriberChartContainer>
-            <h2 style={{ opacity: "0.5" }}>채널 구독자수</h2>
-            <Line data={subscriber} style={{ width: "100%", height: "100%" }} />
+            <h2 style={{ opacity: '0.5' }}>채널 구독자수</h2>
+            <Line data={subscriber} style={{ width: '100%', height: '100%' }} />
           </SubscriberChartContainer>
           <SizedBox />
         </Form>

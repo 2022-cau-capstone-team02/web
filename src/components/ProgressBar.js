@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import styled from "styled-components";
+import React from 'react';
+import { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
 const ProgressBar = styled.div`
   position: fixed;
@@ -20,17 +21,15 @@ export default function Progressbar() {
   const [scroll, setScroll] = useState(0);
 
   useEffect(() => {
-    window.addEventListener("scroll", progres);
+    window.addEventListener('scroll', progres);
     return () => {
-      window.removeEventListener("scroll", progres);
+      window.removeEventListener('scroll', progres);
     };
   }, [scroll]);
 
   const progres = () => {
     const scrollTotal = document.documentElement.scrollTop;
-    const heightWin =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
+    const heightWin = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     setScroll((scrollTotal / heightWin) * 100);
   };
 

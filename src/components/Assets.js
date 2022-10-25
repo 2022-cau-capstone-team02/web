@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import styled from "styled-components";
-import Detail from "./Detail";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import Detail from './Detail';
 
-var colors = require("nice-color-palettes");
+var colors = require('nice-color-palettes');
 
 const AssetsContainer = styled.div`
   width: 100%;
@@ -62,22 +62,22 @@ const Info = styled.div`
   padding: 20px;
   display: grid;
   grid-template-areas:
-    "title title . ."
-    "holdingShare dividEnd channelIncome ."
-    "subscribers views videos .";
+    'title title . .'
+    'holdingShare dividEnd channelIncome .'
+    'subscribers views videos .';
   @media screen and (max-width: 998px) {
     grid-template-areas:
-      "title title"
-      "holdingShare dividEnd"
-      "subscribers views"
-      "videos channelIncome";
+      'title title'
+      'holdingShare dividEnd'
+      'subscribers views'
+      'videos channelIncome';
   }
   @media screen and (max-width: 600px) {
     grid-template-areas:
-      "title"
-      "holdingShare"
-      "dividEnd"
-      "channelIncome";
+      'title'
+      'holdingShare'
+      'dividEnd'
+      'channelIncome';
   }
 `;
 
@@ -139,7 +139,7 @@ const Assets = ({ apiData }) => {
   const [dataList, setDataList] = useState([]);
   const [getData, setGetData] = useState(false);
   const open = (e, index) => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     setDataIndex(index);
     setShow(!show);
   };
@@ -175,13 +175,7 @@ const Assets = ({ apiData }) => {
                 onDragStart={(e) => dragStart(e, index)}
                 onDragEnter={(e) => dragEnter(e, index)}
               >
-                {show ? (
-                  <Detail
-                    show={show}
-                    setShow={setShow}
-                    data={dataList[dataIndex]}
-                  />
-                ) : null}
+                {show ? <Detail show={show} setShow={setShow} data={dataList[dataIndex]} /> : null}
                 <Asset onClick={(e) => open(e, index)}>
                   <ThumbNailContainer>
                     <ThumbNailWrapper>
@@ -191,9 +185,7 @@ const Assets = ({ apiData }) => {
                   <ChannelInfo>
                     <Info>
                       <Title>채널명 {data.snippet.title}</Title>
-                      <Subscribers>
-                        구독자수 {data.statistics.subscriberCount}
-                      </Subscribers>
+                      <Subscribers>구독자수 {data.statistics.subscriberCount}</Subscribers>
                       <Views>총 조회수 {data.statistics.viewCount}</Views>
                       <Videos>총 비디오수 {data.statistics.videoCount}</Videos>
                       <ChannelIncome>

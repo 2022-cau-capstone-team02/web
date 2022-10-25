@@ -4,16 +4,16 @@ import {
   OrbitControls,
   PerspectiveCamera,
   Plane,
-} from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import React, { Suspense, useEffect, useRef } from "react";
-import { Container } from "react-bootstrap";
-import styled from "styled-components";
-import { Physics } from "@react-three/cannon";
-import { useNavigate } from "react-router";
-import Camera from "./components/Camera";
-import Control from "./components/Control";
-import Objects from "./components/Objects";
+} from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import React, { Suspense, useEffect, useRef } from 'react';
+import { Container } from 'react-bootstrap';
+import styled from 'styled-components';
+import { Physics } from '@react-three/cannon';
+import { useNavigate } from 'react-router';
+import Camera from './components/Camera';
+import Control from './components/Control';
+import Objects from './components/Objects';
 
 const StyledContainer = styled(Container)`
   padding: 0;
@@ -103,12 +103,9 @@ const Info = () => {
           </Text>
         </TextContainer>
         <ObjectContainer>
-          <Canvas
-            shadows={true}
-            gl={{ antialias: true, powerPreference: "high-performance" }}
-          >
+          <Canvas shadows={true} gl={{ antialias: true, powerPreference: 'high-performance' }}>
             <Environment preset="forest" />
-            <color attach="background" args={["#141414"]} />
+            <color attach="background" args={['#141414']} />
             <Control />
             <Camera />
             <Suspense fallback={null}>
@@ -121,7 +118,7 @@ const Info = () => {
       </Banner>
       <MoveButton
         onClick={() => {
-          navigate("/exchange");
+          navigate('/exchange');
         }}
       >
         거래소 둘러보기

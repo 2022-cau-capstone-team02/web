@@ -1,9 +1,9 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { RiCloseFill } from "react-icons/ri";
-import SidebarData from "./SidebarData";
-import styled from "styled-components";
-import SubMenu from "./SubMenu";
+import React from 'react';
+import { useEffect, useState } from 'react';
+import { RiCloseFill } from 'react-icons/ri';
+import SidebarData from './SidebarData';
+import styled from 'styled-components';
+import SubMenu from './SubMenu';
 
 const CloseIcon = styled(RiCloseFill)`
   position: absolute;
@@ -23,7 +23,7 @@ const SidebarContainer = styled.div`
   z-index: 20;
   position: fixed;
   display: flex;
-  transform: translateX(${({ activate }) => (activate ? "0" : "100vw")});
+  transform: translateX(${({ activate }) => (activate ? '0' : '100vw')});
   transition: 0.5s ease-in-out;
 
   @media screen and (min-width: 992px) {
@@ -59,7 +59,7 @@ const Sidebar = ({ menu, setMenu }) => {
    */
 
   const close = () => {
-    document.body.style.overflow = "unset";
+    document.body.style.overflow = 'unset';
     setMenu(!menu);
   };
 
