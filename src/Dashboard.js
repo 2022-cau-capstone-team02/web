@@ -5,10 +5,12 @@ import AssetInfo from './components/AssetInfo';
 import Assets from './components/Assets';
 import _Navbar from './components/Navbar';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import {QueryClientProvider, QueryClient, useQuery } from 'react-query';
 // import Sidebar from './components/Sidebar';
 
 const apiData = [];
+const userData = [];
 let cnt = 0;
 
 const StyledContainer = styled(Container)`
@@ -27,64 +29,64 @@ const AssetWrapper = styled.div`
   flex-direction: column;
 `
 
+async function fetchUserData(){
+  return await axios.get('/userInfo', {responseType:'json'});
+}
 
 function Dashboard() {
   const [show, setShow] = useState(false);
+  const { data, isLoading } = useQuery('userInfo', fetchUserData);
   const [params, setParams] = useState({
     key:process.env.REACT_APP_YOUTUBE_API_KEY,
-    id:'UCSLrpBAzr-ROVGHQ5EmxnUg,UCaO6VoaYJv4kS-TQO_M-N_g,UCsKsymTY_4BYR-wytLjex7A,',
+    id:'',
     part: 'id,snippet,contentDetails,statistics',
   });
-  const id = [
-    'UCSLrpBAzr-ROVGHQ5EmxnUg',
-    'UCaO6VoaYJv4kS-TQO_M-N_g',
-    'UCsKsymTY_4BYR-wytLjex7A',
-  ];
-  axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
 
-  async function fetchData(){
 
-    await axios.get('/channels', {params})
+  
+  async function fetchYoutubeData(){
+    await axios.get('https://www.googleapis.com/youtube/v3/channels', {params})
     .then((res)=>{
       apiData.push(res.data.items);
       cnt = cnt+1;
-      localStorage.setItem(`keywordData${cnt}`, JSON.stringify(res.data.items)); 
-      localStorage.setItem('count', JSON.stringify(cnt));
       setShow(true);
     })
     .catch(err=>console.log(err));
   }
-
-  const changeParameter = () => {
-    let copy = {...params};
-    copy.id = id;
-    setParams({...copy});
-  }
+  useEffect(()=>{
+    if(isLoading === false){
+      let channel = '';
+      data.data.data[0].stake.forEach(element => {
+        channel += element;
+      });
+      setParams(()=>{
+        let copy = {...params};
+        return {...copy, id: channel};
+      });
+    }
+  },[isLoading])
 
   useEffect(()=>{
-    let count = JSON.parse(localStorage.getItem('count'));
-    if(count != null){
-      cnt = count;
-      apiData.push(JSON.parse(localStorage.getItem(`keywordData${cnt}`)));
-      setShow(true);
+    if(params.id != ''){
+      fetchYoutubeData();
     }
-    else{
-      fetchData();
-    }
-  },[])
+  },[params])
   
-
+  if(isLoading){
+    return 
+      <div>Loading..</div>
+  }
   return (
-      
-    <StyledContainer fluid>
-      {show ? 
+    <React.Fragment>
+      { show ?  
+      <StyledContainer fluid>
         <AssetWrapper>
           <AssetInfo apiData={apiData}/>
           <Assets apiData={apiData}/>
         </AssetWrapper>
-      :null}
-    </StyledContainer>      
-  );
+      </StyledContainer> : null} 
+    </React.Fragment> 
+  ) 
 }
 
 export default Dashboard;

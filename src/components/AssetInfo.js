@@ -83,10 +83,12 @@ const Profile = styled.h1`
 `
 
 const AssetInfo = ({apiData}) => {
+    
     const [show, setShow] = useState(false);
     const labels = ()=>{
         if(data.labels.length == 0){
-            apiData[0].map((apiData, index)=>{data.labels.push(apiData.snippet.title)});
+            console.log(apiData[0]);
+            apiData[0].map((apiData)=>{data.labels.push(apiData.snippet.title)});
         }
         setShow(true);
     }
