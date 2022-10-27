@@ -1,11 +1,11 @@
-import { useHelper } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import React, { useRef } from "react";
-import { PointLightHelper, SpotLightHelper } from "three";
+import { useHelper } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
+import { PointLightHelper, SpotLightHelper } from 'three';
 
 const Light = () => {
   const spotRef = useRef();
-  useHelper(spotRef, SpotLightHelper, "red");
+  useHelper(spotRef, SpotLightHelper, 'red');
   return (
     <>
       <ambientLight intensity={0.3} />

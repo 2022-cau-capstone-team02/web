@@ -1,7 +1,7 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const dashBoardModal = createSlice({
-  name: "dashBoardModal",
+  name: 'dashBoardModal',
   initialState: false,
   reducers: {
     open(state) {

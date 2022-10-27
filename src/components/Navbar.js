@@ -1,8 +1,8 @@
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { useNavigate } from "react-router";
-import styled from "styled-components";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import { useNavigate } from 'react-router';
+import styled from 'styled-components';
 
 const Container = styled.div`
   height: 80px;
@@ -65,7 +65,7 @@ const Navigator = styled.li`
 
 function NavBar({ menu, setMenu }) {
   const open = () => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     setMenu(!menu);
   };
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ function NavBar({ menu, setMenu }) {
     <Container>
       <HomepageTitle
         onClick={() => {
-          navigate("/");
+          navigate('/');
         }}
       >
         SLP
@@ -82,14 +82,14 @@ function NavBar({ menu, setMenu }) {
       <Navigators>
         <Navigator
           onClick={() => {
-            navigate("/exchange");
+            navigate('/exchange');
           }}
         >
           거래소
         </Navigator>
         <Navigator
           onClick={() => {
-            navigate("/dashboard");
+            navigate('/dashboard');
           }}
         >
           대시보드

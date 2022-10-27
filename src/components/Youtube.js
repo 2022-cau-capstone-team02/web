@@ -1,16 +1,13 @@
-import { useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import React, { useLayoutEffect, useRef, memo } from "react";
+import { useGLTF } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import React, { useLayoutEffect, useRef, memo } from 'react';
 
 const Youtube = () => {
-  const youtube = useGLTF("./youtube_logo/youtube_logo.glb");
+  const youtube = useGLTF('./youtube_logo/youtube_logo.glb');
   const youtubeRef = useRef();
   useLayoutEffect(
-    () =>
-      youtube.scene.traverse(
-        (o) => o.isMesh && (o.castShadow = o.receiveShadow = true)
-      ),
-    []
+    () => youtube.scene.traverse((o) => o.isMesh && (o.castShadow = o.receiveShadow = true)),
+    [],
   );
 
   return (

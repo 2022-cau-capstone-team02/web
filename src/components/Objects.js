@@ -1,7 +1,7 @@
-import { useFrame } from "@react-three/fiber";
-import React, { useRef } from "react";
-import Coin from "./Coin";
-import Youtube from "./Youtube";
+import { useFrame } from '@react-three/fiber';
+import React, { useRef } from 'react';
+import Coin from './Coin';
+import Youtube from './Youtube';
 
 const Objects = () => {
   const groupRef = useRef();
