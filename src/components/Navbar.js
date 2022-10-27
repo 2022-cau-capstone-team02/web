@@ -77,7 +77,7 @@ function NavBar({ menu, setMenu }) {
           navigate('/');
         }}
       >
-        SLP
+        YISP
       </HomepageTitle>
       <Navigators>
         <Navigator
