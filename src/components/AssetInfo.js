@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Line, Doughnut } from "react-chartjs-2";
-import styled from "styled-components";
+import React, { useEffect, useState } from 'react';
+import { Line, Doughnut } from 'react-chartjs-2';
+import styled from 'styled-components';
 
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -10,13 +10,9 @@ const data = {
   labels: [],
   datasets: [
     {
-      label: "My Stake Dataset",
+      label: 'My Stake Dataset',
       data: [70, 20, 10],
-      backgroundColor: [
-        "rgb(255, 99, 132)",
-        "rgb(54, 162, 235)",
-        "rgb(255, 205, 86)",
-      ],
+      backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
       hoverOffset: 4,
     },
   ],
@@ -102,11 +98,7 @@ const AssetInfo = ({ apiData }) => {
           </InfoContainer>
           <ChartContainer>
             <ChartWrapper>
-              <Doughnut
-                data={data}
-                options={options}
-                style={{ width: "100%", height: "100%" }}
-              />
+              <Doughnut data={data} options={options} style={{ width: '100%', height: '100%' }} />
             </ChartWrapper>
           </ChartContainer>
         </>

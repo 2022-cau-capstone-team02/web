@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Container, Navbar, Row } from "react-bootstrap";
-import styled from "styled-components";
-import { Route, Routes } from "react-router";
-import NavBar from "./components/Navbar";
-import Info from "./Info";
-import Exchange from "./Exchange";
-import Dashboard from "./Dashboard";
-import Sidebar from "./components/Sidebar";
-import Progressbar from "./components/ProgressBar";
+import React, { useState } from 'react';
+import { Container, Navbar, Row } from 'react-bootstrap';
+import styled from 'styled-components';
+import { Route, Routes } from 'react-router';
+import NavBar from './components/Navbar';
+import Info from './Info';
+import Exchange from './Exchange';
+import Dashboard from './Dashboard';
+import Sidebar from './components/Sidebar';
+import Progressbar from './components/ProgressBar';
 
 const CustomContainer = styled(Container)`
   position: relative;
