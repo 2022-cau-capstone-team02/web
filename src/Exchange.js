@@ -19,39 +19,33 @@ const customStyles = {
 const tokenList = [
   {
     id: 0,
-    name: 'Wrapped ETH',
-    src: 'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png?1595348880',
-    ticker: 'WETH',
+    name: '곽튜브KWAKTUBE',
+    src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
+    ticker: 'KBAK',
   },
   {
     id: 1,
-    src: 'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png?1595348880',
-    name: 'Ethereum',
-    ticker: 'ETH',
+    src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
+    name: '피지컬갤러리',
+    ticker: 'PG',
   },
   {
     id: 2,
-    src: 'https://assets.coingecko.com/coins/images/13469/thumb/1inch-token.png?1608803028',
-    name: '1inch',
-    ticker: '1INCH',
+    src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
+    name: 'MrBeast',
+    ticker: 'MRB',
   },
   {
     id: 3,
-    src: 'https://assets.coingecko.com/coins/images/12390/thumb/ACH_%281%29.png?1599691266',
-    name: 'My Neighbor Alice',
-    ticker: 'ALICE',
+    src: 'https://yt3.ggpht.com/5oUY3tashyxfqsjO5SGhjT4dus8FkN9CsAHwXWISFrdPYii1FudD4ICtLfuCw6-THJsJbgoY=s176-c-k-c0x00ffffff-no-rj',
+    name: 'PewDiePie',
+    ticker: 'PDD',
   },
 ];
 
 const Exchange = () => {
   const [topInput, setTopInput] = useState(0);
   const [currentTokenPosition, setCurrentTokenPosition] = useState('TOP');
-  const [topToken, setTopToken] = useState({
-    id: 1,
-    src: 'https://assets.coingecko.com/coins/images/279/thumb/ethereum.png?1595348880',
-    name: 'Ethereum',
-    ticker: 'ETH',
-  });
   const [bottomToken, setBottomToken] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -76,13 +70,9 @@ const Exchange = () => {
         </div>
         {tokenList.map((token, index) => {
           return (
-            <button
+            <a
               onClick={() => {
-                if (currentTokenPosition === 'TOP') {
-                  setTopToken(token);
-                } else {
-                  setBottomToken(token);
-                }
+                setBottomToken(token);
                 handleModal();
               }}
               key={token.id}
@@ -91,9 +81,15 @@ const Exchange = () => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginBottom: tokenList.length === index + 1 ? 0 : 8,
+                border: '1px solid red',
+                padding: '8px 24px',
               }}
             >
-              <img alt={`TOKEN_IMG--${token.ticker}`} src={token.src} />
+              <img
+                alt={`TOKEN_IMG--${token.ticker}`}
+                src={token.src}
+                style={{ width: 64, height: 64, borderRadius: 32, marginRight: 16 }}
+              />
               <div
                 style={{
                   display: 'flex',
@@ -104,7 +100,7 @@ const Exchange = () => {
                 <span>{token.name}</span>
                 <span>{token.ticker}</span>
               </div>
-            </button>
+            </a>
           );
         })}
       </Modal>
@@ -131,18 +127,11 @@ const Exchange = () => {
                   spellCheck="false"
                   value={topInput}
                 />
-                <button
-                  onClick={() => {
-                    setCurrentTokenPosition('TOP');
-                    handleModal();
-                  }}
-                >
-                  <img alt={`TOKEN_IMG--${topToken.ticker}`} src={topToken.src} />
-                  {topToken.ticker}
-                  <HiChevronDown />
+                <button>
+                  <span>μKRW</span>
                 </button>
               </FlexRowCenter>
-              <span>$123,456.81</span>
+              <span>₩{topInput * 0.000001}</span>
             </SwapTokenWrapper>
             <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
               <FlexRowCenter>
@@ -161,10 +150,12 @@ const Exchange = () => {
                   spellCheck="false"
                   value={topInput}
                 />
-                <button
+                <a
                   style={{
                     display: 'flex',
                     alignItems: 'center',
+                    border: '1px solid black',
+                    padding: '4px 8px',
                   }}
                   onClick={() => {
                     setCurrentTokenPosition('BOTTOM');
@@ -172,14 +163,18 @@ const Exchange = () => {
                   }}
                 >
                   {bottomToken && (
-                    <img alt={`TOKEN_IMG--${bottomToken.ticker}`} src={bottomToken.src} />
+                    <img
+                      alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                      src={bottomToken.src}
+                      style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
+                    />
                   )}
                   {bottomToken ? bottomToken.ticker : '토큰 선택'}
                   <HiChevronDown />
-                </button>
+                </a>
               </FlexRowCenter>
               <span>
-                $123,456.81 <span style={{ color: 'red' }}>(-3.81%)</span>
+                ₩123,456,789 <span style={{ color: 'red' }}>(-3.81%)</span>
               </span>
             </SwapTokenWrapper>
           </SwapTokenContainer>
