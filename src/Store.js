@@ -1,26 +1,25 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit'
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const dashBoardModal = createSlice({
-  name : 'dashBoardModal',
-  initialState : false,
-  reducers:{
-    open(state){
-      state=true;
+  name: 'dashBoardModal',
+  initialState: false,
+  reducers: {
+    open(state) {
+      state = true;
       return state;
     },
-    close(state){
-      state=false;
+    close(state) {
+      state = false;
       return state;
     },
-  }
-})
+  },
+});
 
-export let { open, close} = dashBoardModal.actions;
+export let { open, close } = dashBoardModal.actions;
 
 export default configureStore({
-  reducer: { 
-      post : post.reducer,
-      dashBoardModal : dashBoardModal.reducer,
-  }
-}) 
-
+  reducer: {
+    post: post.reducer,
+    dashBoardModal: dashBoardModal.reducer,
+  },
+});

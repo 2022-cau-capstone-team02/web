@@ -107,7 +107,7 @@ const AssetInfo = ({apiData}) => {
                 <ChartContainer>
                     <ChartWrapper>
                         <Doughnut data={data} options={options} style={{width:'100%', height:'100%'}}/>
-                    </ChartWrapper>       
+                    </ChartWrapper>
                 </ChartContainer>
             </>:null}
             
