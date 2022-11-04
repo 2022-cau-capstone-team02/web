@@ -133,11 +133,11 @@ const ChannelIncome = styled.p`
   grid-area: channelIncome;
 `;
 
-const Assets = ({ apiData }) => {
+const Assets = ({ apiData, videoData }) => {
   const [dataIndex, setDataIndex] = useState(-1);
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([]);
-  const [getData, setGetData] = useState(false);
+  const [videoList, setVideoList] = useState([]);
   const open = (e, index) => {
     document.body.style.overflow = 'hidden';
     setDataIndex(index);
@@ -163,6 +163,7 @@ const Assets = ({ apiData }) => {
 
   useEffect(() => {
     setDataList(apiData[0]);
+    setVideoList(videoData);
   }, []);
 
   return (
@@ -175,7 +176,14 @@ const Assets = ({ apiData }) => {
                 onDragStart={(e) => dragStart(e, index)}
                 onDragEnter={(e) => dragEnter(e, index)}
               >
-                {show ? <Detail show={show} setShow={setShow} data={dataList[dataIndex]} /> : null}
+                {show ? (
+                  <Detail
+                    show={show}
+                    setShow={setShow}
+                    data={dataList[dataIndex]}
+                    video={videoList[dataIndex]}
+                  />
+                ) : null}
                 <Asset onClick={(e) => open(e, index)}>
                   <ThumbNailContainer>
                     <ThumbNailWrapper>

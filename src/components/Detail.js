@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RiCloseFill } from 'react-icons/ri';
 import styled from 'styled-components';
+import './Detail.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,6 +14,11 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import faker from 'faker';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper.scss';
+import 'swiper/components/pagination/pagination.scss';
+import SwiperCore, { Pagination } from 'swiper';
+SwiperCore.use([Pagination]);
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -192,7 +198,25 @@ const SizedBox = styled.div`
   height: 50px;
 `;
 
-const Detail = ({ show, setShow, data }) => {
+const RecentYoutubeList = styled.div`
+  height: 350px;
+  margin-top: 50px;
+  box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+  border-radius: 20px;
+  padding: 20px;
+`;
+
+const YoutubePlayer = styled.iframe`
+  width: 100%;
+  height: 100%;
+  display: ${({ hide }) => {
+    hide ? 'none' : 'block';
+  }};
+  z-index: 1;
+`;
+
+const Detail = ({ show, setShow, data, video }) => {
+  const [spinner, setSpinner] = useState(true);
   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   const view = {
     labels,
@@ -219,6 +243,10 @@ const Detail = ({ show, setShow, data }) => {
   const close = () => {
     document.body.style.overflow = 'unset';
     setShow(!show);
+  };
+
+  const hideSpinner = () => {
+    setSpinner(false);
   };
   return (
     <Container show={show}>
@@ -254,6 +282,47 @@ const Detail = ({ show, setShow, data }) => {
               </DetailInfo>
             </ProfileInfo>
           </ProfileContainer>
+          <RecentYoutubeList>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <h2 style={{ opacity: '0.5' }}>최근 동영상</h2>
+              {spinner ? <div className="load"></div> : null}
+            </div>
+            <Swiper
+              pagination={{
+                dynamicBullets: true,
+                clickable: true,
+              }}
+              spaceBetween={30}
+              slidesPerView={'auto'}
+              slidesPerGroup={1}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1,
+                },
+                996: {
+                  slidesPerView: 2,
+                  spaceBetween: 50,
+                },
+              }}
+            >
+              {video
+                ? video.map((video, index) => {
+                    return (
+                      <SwiperSlide key={index}>
+                        <YoutubePlayer
+                          src={`https://www.youtube.com/embed/${video.snippet.resourceId.videoId}`}
+                          frameborder="0"
+                          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                          allowfullscreen
+                          onLoad={hideSpinner}
+                          hide={spinner}
+                        ></YoutubePlayer>
+                      </SwiperSlide>
+                    );
+                  })
+                : null}
+            </Swiper>
+          </RecentYoutubeList>
           <ViewChartContainer>
             <div>
               <h2 style={{ opacity: '0.5' }}>채널 조회수</h2>
@@ -264,6 +333,7 @@ const Detail = ({ show, setShow, data }) => {
             <h2 style={{ opacity: '0.5' }}>채널 구독자수</h2>
             <Line data={subscriber} style={{ width: '100%', height: '100%' }} />
           </SubscriberChartContainer>
+
           <SizedBox />
         </Form>
       </FormContainer>

@@ -10,6 +10,7 @@ import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 // import Sidebar from './components/Sidebar';
 
 const apiData = [];
+const apiData2 = [];
 const userData = [];
 let cnt = 0;
 
@@ -35,19 +36,41 @@ async function fetchUserData() {
 
 function Dashboard() {
   const [show, setShow] = useState(false);
+  const [next, setNext] = useState(false);
   const { data, isLoading } = useQuery('userInfo', fetchUserData);
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
     id: '',
     part: 'id,snippet,contentDetails,statistics',
   });
+  const [params2, setParams2] = useState({
+    key: process.env.REACT_APP_YOUTUBE_API_KEY,
+    id: '',
+    part: 'snippet',
+  });
 
   async function fetchYoutubeData() {
     await axios
       .get('https://www.googleapis.com/youtube/v3/channels', { params })
-      .then((res) => {
+      .then(async (res) => {
         apiData.push(res.data.items);
-        cnt = cnt + 1;
+        for (const data of res.data.items) {
+          let video = data.contentDetails.relatedPlaylists.uploads;
+          await fetchYoutubeVideoData(video);
+        }
+        setNext(true);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  async function fetchYoutubeVideoData(video) {
+    await axios
+      .get(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=5&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+      )
+      .then((res) => {
+        apiData2.push(res.data.items);
+        cnt += 1;
         setShow(true);
       })
       .catch((err) => console.log(err));
@@ -74,14 +97,13 @@ function Dashboard() {
   if (isLoading) {
     return <div>Loading..</div>;
   }
-
   return (
     <React.Fragment>
       {show ? (
         <StyledContainer fluid>
           <AssetWrapper>
             <AssetInfo apiData={apiData} />
-            <Assets apiData={apiData} />
+            <Assets apiData={apiData} videoData={apiData2} />
           </AssetWrapper>
         </StyledContainer>
       ) : null}
