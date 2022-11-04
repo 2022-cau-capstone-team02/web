@@ -63,7 +63,7 @@ function Dashboard() {
   async function fetchYoutubeVideoData(video) {
     await axios
       .get(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=10&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=5&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
       )
       .then((res) => {
         apiData2.push(res.data.items);
@@ -99,7 +99,7 @@ function Dashboard() {
         console.log(element);
         video = element.contentDetails.relatedPlaylists.uploads;
         fetchYoutubeVideoData(video);
-        setTimeout(() => {}, 200);
+        setTimeout(() => {}, 100);
       });
     }
   }, [next]);
