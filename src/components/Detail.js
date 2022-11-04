@@ -199,6 +199,7 @@ const SizedBox = styled.div`
 `;
 
 const RecentYoutubeList = styled.div`
+  height: 350px;
   margin-top: 50px;
   box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
   border-radius: 20px;
@@ -298,7 +299,7 @@ const Detail = ({ show, setShow, data, video }) => {
                 0: {
                   slidesPerView: 1,
                 },
-                1280: {
+                996: {
                   slidesPerView: 2,
                   spaceBetween: 50,
                 },

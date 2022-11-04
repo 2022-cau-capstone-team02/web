@@ -52,9 +52,12 @@ function Dashboard() {
   async function fetchYoutubeData() {
     await axios
       .get('https://www.googleapis.com/youtube/v3/channels', { params })
-      .then((res) => {
+      .then(async (res) => {
         apiData.push(res.data.items);
-        console.log(apiData[0]);
+        for (const data of res.data.items) {
+          let video = data.contentDetails.relatedPlaylists.uploads;
+          await fetchYoutubeVideoData(video);
+        }
         setNext(true);
       })
       .catch((err) => console.log(err));
@@ -67,8 +70,7 @@ function Dashboard() {
       )
       .then((res) => {
         apiData2.push(res.data.items);
-        console.log(apiData2);
-        cnt = cnt + 1;
+        cnt += 1;
         setShow(true);
       })
       .catch((err) => console.log(err));
@@ -91,18 +93,6 @@ function Dashboard() {
       fetchYoutubeData();
     }
   }, [params]);
-
-  useEffect(() => {
-    if (next === true) {
-      let video = '';
-      apiData[0].forEach((element) => {
-        console.log(element);
-        video = element.contentDetails.relatedPlaylists.uploads;
-        fetchYoutubeVideoData(video);
-        setTimeout(() => {}, 100);
-      });
-    }
-  }, [next]);
 
   if (isLoading) {
     return <div>Loading..</div>;
