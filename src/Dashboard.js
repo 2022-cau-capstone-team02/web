@@ -11,7 +11,6 @@ import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 
 const apiData = [];
 const apiData2 = [];
-const userData = [];
 let cnt = 0;
 
 const StyledContainer = styled(Container)`
@@ -51,32 +50,33 @@ function Dashboard() {
   async function fetchYoutubeData() {
     await axios
       .get('https://www.googleapis.com/youtube/v3/channels', { params })
-      .then(async (res) => {
+      .then((res) => {
         apiData.push(res.data.items);
+        console.log(apiData[0]);
         for (const data of res.data.items) {
           let video = data.contentDetails.relatedPlaylists.uploads;
-          await fetchYoutubeVideoData(video);
+          fetchYoutubeVideoData(video, cnt);
+          cnt += 1;
         }
-        console.log(data);
         setShow(true);
       })
       .catch((err) => console.log(err));
   }
 
-  async function fetchYoutubeVideoData(video) {
+  async function fetchYoutubeVideoData(video, cnt) {
     await axios
       .get(
         `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=5&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
       )
       .then((res) => {
-        apiData2.push(res.data.items);
-        cnt += 1;
+        apiData2[cnt] = res.data.items;
       })
       .catch((err) => console.log(err));
   }
   useEffect(() => {
     if (isLoading === false) {
       let channel = '';
+      apiData2.length = data.data.data[0].stake.length;
       data.data.data[0].stake.forEach((element) => {
         channel += element;
       });
