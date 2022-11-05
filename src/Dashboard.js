@@ -36,7 +36,6 @@ async function fetchUserData() {
 
 function Dashboard() {
   const [show, setShow] = useState(false);
-  const [next, setNext] = useState(false);
   const { data, isLoading } = useQuery('userInfo', fetchUserData);
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
@@ -58,7 +57,8 @@ function Dashboard() {
           let video = data.contentDetails.relatedPlaylists.uploads;
           await fetchYoutubeVideoData(video);
         }
-        setNext(true);
+        console.log(data);
+        setShow(true);
       })
       .catch((err) => console.log(err));
   }
@@ -71,7 +71,6 @@ function Dashboard() {
       .then((res) => {
         apiData2.push(res.data.items);
         cnt += 1;
-        setShow(true);
       })
       .catch((err) => console.log(err));
   }
@@ -102,7 +101,7 @@ function Dashboard() {
       {show ? (
         <StyledContainer fluid>
           <AssetWrapper>
-            <AssetInfo apiData={apiData} />
+            <AssetInfo apiData={apiData} userData={data} />
             <Assets apiData={apiData} videoData={apiData2} />
           </AssetWrapper>
         </StyledContainer>

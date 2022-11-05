@@ -176,7 +176,7 @@ const Assets = ({ apiData, videoData }) => {
                 onDragStart={(e) => dragStart(e, index)}
                 onDragEnter={(e) => dragEnter(e, index)}
               >
-                {show ? (
+                {show && dataIndex == index ? (
                   <Detail
                     show={show}
                     setShow={setShow}
@@ -192,7 +192,7 @@ const Assets = ({ apiData, videoData }) => {
                   </ThumbNailContainer>
                   <ChannelInfo>
                     <Info>
-                      <Title>채널명 {data.snippet.title}</Title>
+                      <Title>{data.snippet.title}</Title>
                       <Subscribers>구독자수 {data.statistics.subscriberCount}</Subscribers>
                       <Views>총 조회수 {data.statistics.viewCount}</Views>
                       <Videos>총 비디오수 {data.statistics.videoCount}</Videos>
