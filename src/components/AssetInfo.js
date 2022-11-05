@@ -11,8 +11,14 @@ const data = {
   datasets: [
     {
       label: 'My Stake Dataset',
-      data: [70, 20, 10],
-      backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
+      data: [70, 20, 10, 30, 40],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(61, 245, 89)',
+        'rgb(135, 219, 245)',
+      ],
       hoverOffset: 4,
     },
   ],
@@ -45,7 +51,6 @@ const ChartWrapper = styled.div`
 `;
 
 const InfoContainer = styled.div`
-  display: flex;
   padding: 30px;
   width: 100%;
   height: 350px;
@@ -76,7 +81,7 @@ const Profile = styled.h1`
   font-weight: 700;
 `;
 
-const AssetInfo = ({ apiData }) => {
+const AssetInfo = ({ apiData, userData }) => {
   const [show, setShow] = useState(false);
   const labels = () => {
     if (data.labels.length == 0) {
@@ -95,7 +100,8 @@ const AssetInfo = ({ apiData }) => {
       {show ? (
         <>
           <InfoContainer>
-            <Profile>방성원님의 현재 자산</Profile>
+            <Profile>{userData.data.data[0].name}님의 현재 자산</Profile>
+            <h3>{userData.data.data[0].totalAsset}원</h3>
           </InfoContainer>
           <ChartContainer>
             <ChartWrapper>
