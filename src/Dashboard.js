@@ -11,6 +11,8 @@ import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 
 const apiData = [];
 const apiData2 = [];
+const apiData3 = [];
+const apiData4 = [];
 let cnt = 0;
 
 const StyledContainer = styled(Container)`
@@ -55,7 +57,9 @@ function Dashboard() {
         console.log(apiData[0]);
         for (const data of res.data.items) {
           let video = data.contentDetails.relatedPlaylists.uploads;
+          let id = data.id;
           fetchYoutubeVideoData(video, cnt);
+          fetchYoutubePopularVideoData(id, cnt);
           cnt += 1;
         }
         setShow(true);
@@ -66,17 +70,42 @@ function Dashboard() {
   async function fetchYoutubeVideoData(video, cnt) {
     await axios
       .get(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=5&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=10&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
       )
       .then((res) => {
         apiData2[cnt] = res.data.items;
       })
       .catch((err) => console.log(err));
   }
+
+  // async function fetchYoutubeRelatedVideoData(video, cnt) {
+  //   await axios
+  //     .get(
+  //       `https://www.googleapis.com/youtube/v3/search`, {params}
+  //     )
+  //     .then((res) => {
+  //       apiData3[cnt] = res.data.items;
+  //     })
+  //     .catch((err) => console.log(err));
+  // }
+
+  async function fetchYoutubePopularVideoData(id, cnt) {
+    await axios
+      .get(
+        `https://www.googleapis.com/youtube/v3/search?part=id,snippet&channelId=${id}&order=viewCount&type=video@maxResults=10&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+      )
+      .then((res) => {
+        apiData3[cnt] = res.data.items;
+        console.log(apiData3);
+      })
+      .catch((err) => console.log(err));
+  }
+
   useEffect(() => {
     if (isLoading === false) {
       let channel = '';
       apiData2.length = data.data.data[0].stake.length;
+      apiData3.length = data.data.data[0].stake.length;
       data.data.data[0].stake.forEach((element) => {
         channel += element;
       });
@@ -102,7 +131,7 @@ function Dashboard() {
         <StyledContainer fluid>
           <AssetWrapper>
             <AssetInfo apiData={apiData} userData={data} />
-            <Assets apiData={apiData} videoData={apiData2} />
+            <Assets apiData={apiData} videoData={apiData2} popularVideoData={apiData3} />
           </AssetWrapper>
         </StyledContainer>
       ) : null}

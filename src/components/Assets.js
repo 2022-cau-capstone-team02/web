@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import Detail from './Detail';
-
-var colors = require('nice-color-palettes');
 
 const AssetsContainer = styled.div`
   width: 100%;
@@ -133,11 +130,12 @@ const ChannelIncome = styled.p`
   grid-area: channelIncome;
 `;
 
-const Assets = ({ apiData, videoData }) => {
+const Assets = ({ apiData, videoData, popularVideoData }) => {
   const [dataIndex, setDataIndex] = useState(-1);
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [videoList, setVideoList] = useState([]);
+  const [popularVideoList, setPopularVideoList] = useState([]);
   const open = (e, index) => {
     document.body.style.overflow = 'hidden';
     setDataIndex(index);
@@ -164,6 +162,7 @@ const Assets = ({ apiData, videoData }) => {
   useEffect(() => {
     setDataList(apiData[0]);
     setVideoList(videoData);
+    setPopularVideoList(popularVideoData);
   }, []);
 
   return (
@@ -182,6 +181,7 @@ const Assets = ({ apiData, videoData }) => {
                     setShow={setShow}
                     data={dataList[dataIndex]}
                     video={videoList[dataIndex]}
+                    popularVideo={popularVideoList[dataIndex]}
                   />
                 ) : null}
                 <Asset onClick={(e) => open(e, index)}>
