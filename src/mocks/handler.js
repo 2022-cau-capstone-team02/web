@@ -8,11 +8,9 @@ const userInfo = [
     stake: [
       'UCSLrpBAzr-ROVGHQ5EmxnUg,',
       'UCaO6VoaYJv4kS-TQO_M-N_g,',
-      'UCsKsymTY_4BYR-wytLjex7A,',
       'UC-lHJZR3Gqxm24_Vd_AJ5Yw,',
       'UCOmHUn--16B90oW2L6FRR3A,',
       'UClRNDVO8093rmRTtLe4GEPw,',
-      'UCH5U89kvHrVxxS80xpoOydw,',
     ],
   },
 ];

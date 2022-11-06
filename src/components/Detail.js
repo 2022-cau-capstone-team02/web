@@ -206,6 +206,14 @@ const RecentYoutubeList = styled.div`
   padding: 20px;
 `;
 
+const PopularYoutubeList = styled.div`
+  height: 350px;
+  margin-top: 50px;
+  box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+  border-radius: 20px;
+  padding: 20px;
+`;
+
 const YoutubePlayer = styled.iframe`
   width: 100%;
   height: 100%;
@@ -215,7 +223,7 @@ const YoutubePlayer = styled.iframe`
   z-index: 1;
 `;
 
-const Detail = ({ show, setShow, data, video }) => {
+const Detail = ({ show, setShow, data, video, popularVideo }) => {
   const [spinner, setSpinner] = useState(true);
   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   const view = {
@@ -323,6 +331,47 @@ const Detail = ({ show, setShow, data, video }) => {
                 : null}
             </Swiper>
           </RecentYoutubeList>
+          <PopularYoutubeList>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <h2 style={{ opacity: '0.5' }}>인기 동영상</h2>
+              {spinner ? <div className="load"></div> : null}
+            </div>
+            <Swiper
+              pagination={{
+                dynamicBullets: true,
+                clickable: true,
+              }}
+              spaceBetween={30}
+              slidesPerView={'auto'}
+              slidesPerGroup={1}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1,
+                },
+                996: {
+                  slidesPerView: 2,
+                  spaceBetween: 50,
+                },
+              }}
+            >
+              {popularVideo
+                ? popularVideo.map((popularVideo, index) => {
+                    return (
+                      <SwiperSlide key={index}>
+                        <YoutubePlayer
+                          src={`https://www.youtube.com/embed/${popularVideo.id.videoId}`}
+                          frameborder="0"
+                          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                          allowfullscreen
+                          onLoad={hideSpinner}
+                          hide={spinner}
+                        ></YoutubePlayer>
+                      </SwiperSlide>
+                    );
+                  })
+                : null}
+            </Swiper>
+          </PopularYoutubeList>
           <ViewChartContainer>
             <div>
               <h2 style={{ opacity: '0.5' }}>채널 조회수</h2>
