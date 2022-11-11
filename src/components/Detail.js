@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiCloseFill } from 'react-icons/ri';
 import styled from 'styled-components';
 import './Detail.css';
@@ -18,6 +18,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.scss';
 import 'swiper/components/pagination/pagination.scss';
 import SwiperCore, { Pagination } from 'swiper';
+import { parse } from '@fortawesome/fontawesome-svg-core';
 SwiperCore.use([Pagination]);
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -223,8 +224,64 @@ const YoutubePlayer = styled.iframe`
   z-index: 1;
 `;
 
-const Detail = ({ show, setShow, data, video, popularVideo }) => {
+const ChannelRecentAverageView = styled.div`
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`;
+
+const ChannelAverageView = styled.div`
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`;
+
+const ChannelViewCountvsSubscribers = styled.div`
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`;
+
+const ChannelLikesvsDislikes = styled.div`
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`;
+
+const ChannelCommentsVSviewCount = styled.div`
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+`;
+
+const ProfileAnalysis = styled.div`
+  margin-top: 30px;
+  box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+`;
+
+const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailData2 }) => {
   const [spinner, setSpinner] = useState(true);
+  const [likesVSdislikes, setLikesVSdislikes] = useState(0);
+  const [recentAverageView, setRecentAverageView] = useState(0);
+  const [commentsVSviewCount, setCommentsVSviewCount] = useState(0);
   const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   const view = {
     labels,
@@ -256,6 +313,27 @@ const Detail = ({ show, setShow, data, video, popularVideo }) => {
   const hideSpinner = () => {
     setSpinner(false);
   };
+  useEffect(() => {
+    var sumLikes = 0;
+    var sumDislikes = 0;
+    var sumViewcount = 0;
+    var comments = 0;
+    var cnt = 0;
+
+    detailData.forEach((element) => {
+      sumLikes += element.data.likes;
+      sumDislikes += element.data.dislikes;
+      sumViewcount += element.data.viewCount;
+      cnt += 1;
+    });
+
+    detailData2.forEach((element) => {
+      comments += parseInt(element.statistics.commentCount);
+    });
+    setCommentsVSviewCount(comments / sumViewcount);
+    setLikesVSdislikes(sumDislikes / sumLikes);
+    setRecentAverageView(sumViewcount / cnt);
+  }, []);
   return (
     <Container show={show}>
       <Overlay onClick={close} />
@@ -290,6 +368,38 @@ const Detail = ({ show, setShow, data, video, popularVideo }) => {
               </DetailInfo>
             </ProfileInfo>
           </ProfileContainer>
+          <ProfileAnalysis>
+            <ChannelAverageView>
+              <span style={{ opacity: '0.5' }}>채널 전체의 평균 조회수</span>
+              <span>
+                <b>{Math.round(data.statistics.viewCount / data.statistics.videoCount)}</b>
+              </span>
+            </ChannelAverageView>
+            <ChannelRecentAverageView>
+              <span style={{ opacity: '0.5' }}>채널의 최근 영상 평균 조회수</span>
+              <span>
+                <b>{Math.round(recentAverageView)}</b>
+              </span>
+            </ChannelRecentAverageView>
+            <ChannelViewCountvsSubscribers>
+              <span style={{ opacity: '0.5' }}>채널 구독자 수 대비 조회수</span>
+              <span>
+                <b>{Math.round(data.statistics.viewCount / data.statistics.subscriberCount)}</b>
+              </span>
+            </ChannelViewCountvsSubscribers>
+            <ChannelLikesvsDislikes>
+              <span style={{ opacity: '0.5' }}>채널 좋아요 수 대비 싫어요 수</span>
+              <span>
+                <b>{likesVSdislikes.toFixed(4)}</b>
+              </span>
+            </ChannelLikesvsDislikes>
+            <ChannelCommentsVSviewCount>
+              <span style={{ opacity: '0.5' }}>채널 조회수 수 대비 코멘트 수</span>
+              <span>
+                <b>{commentsVSviewCount.toFixed(4)}</b>
+              </span>
+            </ChannelCommentsVSviewCount>
+          </ProfileAnalysis>
           <RecentYoutubeList>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <h2 style={{ opacity: '0.5' }}>최근 동영상</h2>
@@ -319,9 +429,9 @@ const Detail = ({ show, setShow, data, video, popularVideo }) => {
                       <SwiperSlide key={index}>
                         <YoutubePlayer
                           src={`https://www.youtube.com/embed/${video.snippet.resourceId.videoId}`}
-                          frameborder="0"
-                          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                          allowfullscreen
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen={true}
                           onLoad={hideSpinner}
                           hide={spinner}
                         ></YoutubePlayer>
@@ -360,9 +470,9 @@ const Detail = ({ show, setShow, data, video, popularVideo }) => {
                       <SwiperSlide key={index}>
                         <YoutubePlayer
                           src={`https://www.youtube.com/embed/${popularVideo.id.videoId}`}
-                          frameborder="0"
-                          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                          allowfullscreen
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen={true}
                           onLoad={hideSpinner}
                           hide={spinner}
                         ></YoutubePlayer>
