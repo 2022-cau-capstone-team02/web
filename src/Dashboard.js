@@ -12,8 +12,11 @@ import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 const apiData = [];
 const apiData2 = [];
 const apiData3 = [];
-const apiData4 = [];
+const apiData5 = [];
+var apiData4;
+let searchCnt = 20;
 let cnt = 0;
+let cnt2 = 0;
 
 const StyledContainer = styled(Container)`
   margin-top: 90px;
@@ -58,8 +61,8 @@ function Dashboard() {
         for (const data of res.data.items) {
           let video = data.contentDetails.relatedPlaylists.uploads;
           let id = data.id;
-          fetchYoutubeVideoData(video, cnt);
-          fetchYoutubePopularVideoData(id, cnt);
+          fetchRecentYoutubeVideo(video, cnt); // 채널의 최근 동영상 정보 가져옴
+          fetchYoutubePopularVideoData(id, cnt); // 채널의 인기 동영상 정보 가져옴
           cnt += 1;
         }
         setShow(true);
@@ -67,32 +70,52 @@ function Dashboard() {
       .catch((err) => console.log(err));
   }
 
-  async function fetchYoutubeVideoData(video, cnt) {
+  async function fetchRecentYoutubeVideo(video, cnt) {
     await axios
       .get(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=10&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${video}&maxResults=${searchCnt}&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
       )
       .then((res) => {
+        let ids = '';
         apiData2[cnt] = res.data.items;
+        apiData4[cnt] = new Array(searchCnt);
+        for (video of apiData2[cnt]) {
+          ids += `${video.snippet.resourceId.videoId},`;
+          fetchRecentVideoData(video.snippet.resourceId.videoId, cnt, cnt2); // 동영상의 싫어요 수를 가져오는 함수
+          cnt2 += 1;
+        }
+        console.log(ids);
+        fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수 
+        cnt2 = 0;
       })
       .catch((err) => console.log(err));
   }
 
-  // async function fetchYoutubeRelatedVideoData(video, cnt) {
-  //   await axios
-  //     .get(
-  //       `https://www.googleapis.com/youtube/v3/search`, {params}
-  //     )
-  //     .then((res) => {
-  //       apiData3[cnt] = res.data.items;
-  //     })
-  //     .catch((err) => console.log(err));
-  // }
+  async function fetchRecentVideoData(id, cnt, cnt2) {
+    await axios
+      .get(`/Votes?videoId=${id}`)
+      .then((res) => {
+        apiData4[cnt][cnt2] = res;
+      })
+      .catch((err) => console.log(err));
+  }
+
+  async function fetchRecentVideoData2(cnt, ids) {
+    await axios
+      .get(
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,topicDetails&id=${ids}&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+      )
+      .then((res) => {
+        apiData5[cnt] = res.data.items;
+        console.log(apiData5);
+      })
+      .catch((err) => console.log(err));
+  }
 
   async function fetchYoutubePopularVideoData(id, cnt) {
     await axios
       .get(
-        `https://www.googleapis.com/youtube/v3/search?part=id,snippet&channelId=${id}&order=viewCount&type=video@maxResults=10&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+        `https://www.googleapis.com/youtube/v3/search?part=id,snippet&channelId=${id}&order=viewCount&type=video&maxResults=10&key=${process.env.REACT_APP_YOUTUBE_API_KEY}`,
       )
       .then((res) => {
         apiData3[cnt] = res.data.items;
@@ -106,6 +129,8 @@ function Dashboard() {
       let channel = '';
       apiData2.length = data.data.data[0].stake.length;
       apiData3.length = data.data.data[0].stake.length;
+      apiData5.length = data.data.data[0].stake.length;
+      apiData4 = new Array(data.data.data[0].stake.length);
       data.data.data[0].stake.forEach((element) => {
         channel += element;
       });
@@ -131,7 +156,13 @@ function Dashboard() {
         <StyledContainer fluid>
           <AssetWrapper>
             <AssetInfo apiData={apiData} userData={data} />
-            <Assets apiData={apiData} videoData={apiData2} popularVideoData={apiData3} />
+            <Assets
+              apiData={apiData}
+              videoData={apiData2}
+              popularVideoData={apiData3}
+              detailData={apiData4}
+              detailData2={apiData5}
+            />
           </AssetWrapper>
         </StyledContainer>
       ) : null}

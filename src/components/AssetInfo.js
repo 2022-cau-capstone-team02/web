@@ -11,13 +11,13 @@ const data = {
   datasets: [
     {
       label: 'My Stake Dataset',
-      data: [70, 20, 10, 30, 40],
+      data: [70, 20, 10],
       backgroundColor: [
         'rgb(255, 99, 132)',
         'rgb(54, 162, 235)',
         'rgb(255, 205, 86)',
-        'rgb(61, 245, 89)',
-        'rgb(135, 219, 245)',
+        // 'rgb(61, 245, 89)',
+        // 'rgb(135, 219, 245)',
       ],
       hoverOffset: 4,
     },

@@ -130,12 +130,15 @@ const ChannelIncome = styled.p`
   grid-area: channelIncome;
 `;
 
-const Assets = ({ apiData, videoData, popularVideoData }) => {
+const Assets = ({ apiData, videoData, popularVideoData, detailData, detailData2 }) => {
+  console.log(detailData2);
   const [dataIndex, setDataIndex] = useState(-1);
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [videoList, setVideoList] = useState([]);
   const [popularVideoList, setPopularVideoList] = useState([]);
+  const [detailDataList, setDetailDataList] = useState([]);
+  const [detailDataList2, setDetailDataList2] = useState([]);
   const open = (e, index) => {
     document.body.style.overflow = 'hidden';
     setDataIndex(index);
@@ -163,6 +166,8 @@ const Assets = ({ apiData, videoData, popularVideoData }) => {
     setDataList(apiData[0]);
     setVideoList(videoData);
     setPopularVideoList(popularVideoData);
+    setDetailDataList(detailData);
+    setDetailDataList2(detailData2);
   }, []);
 
   return (
@@ -182,6 +187,8 @@ const Assets = ({ apiData, videoData, popularVideoData }) => {
                     data={dataList[dataIndex]}
                     video={videoList[dataIndex]}
                     popularVideo={popularVideoList[dataIndex]}
+                    detailData={detailDataList[dataIndex]}
+                    detailData2={detailDataList2[dataIndex]}
                   />
                 ) : null}
                 <Asset onClick={(e) => open(e, index)}>
