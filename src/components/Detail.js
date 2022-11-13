@@ -288,7 +288,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     datasets: [
       {
         label: '채널 조회수',
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000000 })),
+        data: labels.map(() => faker.datatype.number({ min: 500000, max: 100000000 })),
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
@@ -299,7 +299,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     datasets: [
       {
         label: '채널 구독자수',
-        data: labels.map(() => faker.datatype.number({ min: 200000, max: 250000 })),
+        data: labels.map(() => faker.datatype.number({ min: 100000000, max: 111000000 })),
         borderColor: 'rgb(255, 209, 132)',
         backgroundColor: 'rgba(255, 209, 132, 0.5)',
       },
@@ -320,14 +320,14 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     var comments = 0;
     var cnt = 0;
 
-    detailData.forEach((element) => {
-      sumLikes += element.data.likes;
+    detailData.forEach((element) => {    
       sumDislikes += element.data.dislikes;
-      sumViewcount += element.data.viewCount;
       cnt += 1;
     });
 
     detailData2.forEach((element) => {
+      sumLikes += parseInt(element.statistics.likeCount);
+      sumViewcount += parseInt(element.statistics.viewCount);
       comments += parseInt(element.statistics.commentCount);
     });
     setCommentsVSviewCount(comments / sumViewcount);
