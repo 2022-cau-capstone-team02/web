@@ -19,6 +19,8 @@ import 'swiper/swiper.scss';
 import 'swiper/components/pagination/pagination.scss';
 import SwiperCore, { Pagination } from 'swiper';
 import { parse } from '@fortawesome/fontawesome-svg-core';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 SwiperCore.use([Pagination]);
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -286,34 +288,28 @@ const ProfileAnalysis = styled.div`
   }
 `;
 
+async function fetchMonthlyDataByCustomUrl(customUrl) {
+  return await axios.get(`/youtube/monthly/${customUrl}`, { responseType: 'json' });
+}
+
 const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailData2 }) => {
   const [spinner, setSpinner] = useState(true);
+  const [monthlyDataByCustomUrl, setMonthlyDataByCustomUrl] = useState(null);
+  console.log(monthlyDataByCustomUrl);
   const [likesVSdislikes, setLikesVSdislikes] = useState(0);
   const [recentAverageView, setRecentAverageView] = useState(0);
   const [commentsVSviewCount, setCommentsVSviewCount] = useState(0);
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-  const view = {
-    labels,
-    datasets: [
-      {
-        label: '채널 조회수',
-        data: labels.map(() => faker.datatype.number({ min: 500000, max: 100000000 })),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-    ],
-  };
-  const subscriber = {
-    labels,
-    datasets: [
-      {
-        label: '채널 구독자수',
-        data: labels.map(() => faker.datatype.number({ min: 100000000, max: 111000000 })),
-        borderColor: 'rgb(255, 209, 132)',
-        backgroundColor: 'rgba(255, 209, 132, 0.5)',
-      },
-    ],
-  };
+
+  useEffect(() => {
+    if (!data.snippet.customUrl) return;
+
+    (async () => {
+      const monthlyDataByCustomUrl = await fetchMonthlyDataByCustomUrl(data.snippet.customUrl);
+      console.log(monthlyDataByCustomUrl);
+      setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
+    })();
+  }, []);
+
   const close = () => {
     document.body.style.overflow = 'unset';
     setShow(!show);
@@ -343,6 +339,9 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     setLikesVSdislikes(sumDislikes / sumLikes);
     setRecentAverageView(sumViewcount / cnt);
   }, []);
+
+  console.log(monthlyDataByCustomUrl?.data.subscriber);
+
   return (
     <Container show={show}>
       <Overlay onClick={close} />
@@ -534,11 +533,41 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
             <div>
               <h2 style={{ opacity: '0.5' }}>채널 조회수</h2>
             </div>
-            <Line data={view} style={{ width: '100%', height: '100%' }} />
+            {monthlyDataByCustomUrl?.data.data.view && (
+              <Line
+                data={{
+                  labels: Object.keys(monthlyDataByCustomUrl?.data.data.view),
+                  datasets: [
+                    {
+                      label: '채널 조회수',
+                      data: Object.values(monthlyDataByCustomUrl?.data.data.view),
+                      borderColor: 'rgb(255, 99, 132)',
+                      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    },
+                  ],
+                }}
+                style={{ width: '100%', height: '100%' }}
+              />
+            )}
           </ViewChartContainer>
           <SubscriberChartContainer>
             <h2 style={{ opacity: '0.5' }}>채널 구독자수</h2>
-            <Line data={subscriber} style={{ width: '100%', height: '100%' }} />
+            {monthlyDataByCustomUrl?.data.data.subscriber && (
+              <Line
+                data={{
+                  labels: Object.keys(monthlyDataByCustomUrl?.data.data.subscriber),
+                  datasets: [
+                    {
+                      label: '채널 구독자수',
+                      data: Object.values(monthlyDataByCustomUrl?.data.data.subscriber),
+                      borderColor: 'rgb(255, 209, 132)',
+                      backgroundColor: 'rgba(255, 209, 132, 0.5)',
+                    },
+                  ],
+                }}
+                style={{ width: '100%', height: '100%' }}
+              />
+            )}
           </SubscriberChartContainer>
 
           <SizedBox />
