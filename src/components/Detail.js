@@ -66,6 +66,9 @@ const FormContainer = styled.div`
   @media screen and (min-width: 992px) {
     width: 850px;
   }
+  @media screen and (min-width: 1280px) {
+    width: 1050px;
+  }
 `;
 
 const Form = styled.div`
@@ -136,12 +139,25 @@ const ProfileInfo = styled.div`
   } ;
 `;
 
+const Channel = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const ChannelName = styled.h4``;
+
+const ChannelTier = styled.h5`
+  margin-left: 1rem;
+  font-weight: 600;
+`;
 
 const DetailInfo = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+  @media screen and (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const Subscribers = styled.div`
@@ -277,6 +293,9 @@ const ProfileAnalysis = styled.div`
   border-radius: 20px;
   padding: 20px;
   display: flex;
+  @media screen and (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 async function fetchMonthlyDataByCustomUrl(customUrl) {
@@ -290,6 +309,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
   const [likesVSdislikes, setLikesVSdislikes] = useState(0);
   const [recentAverageView, setRecentAverageView] = useState(0);
   const [commentsVSviewCount, setCommentsVSviewCount] = useState(0);
+  const [tier, setTier] = useState('');
 
   useEffect(() => {
     if (!data.snippet.customUrl) return;
@@ -315,7 +335,6 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     var sumViewcount = 0;
     var comments = 0;
     var cnt = 0;
-
     detailData.forEach((element) => {
       sumDislikes += element.data.dislikes;
       cnt += 1;
@@ -326,9 +345,26 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
       sumViewcount += parseInt(element.statistics.viewCount);
       comments += parseInt(element.statistics.commentCount);
     });
+
     setCommentsVSviewCount(comments / sumViewcount);
     setLikesVSdislikes(sumDislikes / sumLikes);
     setRecentAverageView(sumViewcount / cnt);
+
+    data.statistics.subscriberCount >= 10000000
+      ? setTier('Tier 7')
+      : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
+      ? setTier('Tier 6')
+      : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
+      ? setTier('Tier 5')
+      : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
+      ? setTier('Tier 4')
+      : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
+      ? setTier('Tier 3')
+      : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
+      ? setTier('Tier 2')
+      : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
+      ? setTier('Tier 1')
+      : null;
   }, []);
 
   console.log(monthlyDataByCustomUrl?.data.subscriber);
@@ -346,56 +382,98 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               </ProfileImageWrapper>
             </ProfileImageContainer>
             <ProfileInfo>
-              <ChannelName>{data.snippet.title}</ChannelName>
+              <Channel>
+                <ChannelName>{data.snippet.title}</ChannelName>
+                <ChannelTier>{tier}</ChannelTier>
+              </Channel>
               <DetailInfo>
                 <Subscribers>
                   <span style={{ opacity: '0.5' }}>구독자 수</span>
-                  <span>{data.statistics.subscriberCount}</span>
+                  <span>
+                    {data.statistics.subscriberCount
+                      .toString()
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                  </span>
                 </Subscribers>
                 <Views>
                   <span style={{ opacity: '0.5' }}>총 조회수</span>
-                  <span>{data.statistics.viewCount}</span>
+                  <span>
+                    {data.statistics.viewCount
+                      .toString()
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                  </span>
                 </Views>
                 <Videos>
                   <span style={{ opacity: '0.5' }}>총 비디오수</span>
-                  <span>{data.statistics.videoCount}</span>
+                  <span>
+                    {data.statistics.videoCount
+                      .toString()
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                  </span>
                 </Videos>
                 <ChannelIncome>
                   <span style={{ opacity: '0.5' }}>예상 채널 수익</span>
-                  <span>{(data.statistics.viewCount / 1000) * 4}$</span>
+                  <span>
+                    {((data.statistics.viewCount / 1000) * 4)
+                      .toString()
+                      .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                    $
+                  </span>
                 </ChannelIncome>
               </DetailInfo>
             </ProfileInfo>
           </ProfileContainer>
           <ProfileAnalysis>
             <ChannelAverageView>
-              <span style={{ opacity: '0.5' }}>채널 전체의 평균 조회수</span>
+              <span style={{ opacity: '0.5' }}>전체 영상 평균 조회수</span>
               <span>
-                <b>{Math.round(data.statistics.viewCount / data.statistics.videoCount)}</b>
+                <b>
+                  {Math.round(data.statistics.viewCount / data.statistics.videoCount)
+                    .toString()
+                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                </b>
               </span>
             </ChannelAverageView>
             <ChannelRecentAverageView>
-              <span style={{ opacity: '0.5' }}>채널의 최근 영상 평균 조회수</span>
+              <span style={{ opacity: '0.5' }}>최근 영상 평균 조회수</span>
               <span>
-                <b>{Math.round(recentAverageView)}</b>
+                <b>
+                  {Math.round(recentAverageView)
+                    .toString()
+                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                </b>
               </span>
             </ChannelRecentAverageView>
             <ChannelViewCountvsSubscribers>
-              <span style={{ opacity: '0.5' }}>채널 구독자 수 대비 조회수</span>
+              <span style={{ opacity: '0.5' }}>구독자 수 대비 조회수</span>
               <span>
-                <b>{Math.round(data.statistics.viewCount / data.statistics.subscriberCount)}</b>
+                <b>
+                  {Math.round(data.statistics.viewCount / data.statistics.subscriberCount)
+                    .toString()
+                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                </b>
               </span>
             </ChannelViewCountvsSubscribers>
             <ChannelLikesvsDislikes>
-              <span style={{ opacity: '0.5' }}>채널 좋아요 수 대비 싫어요 수</span>
+              <span style={{ opacity: '0.5' }}>좋아요 수 대비 싫어요 수</span>
               <span>
-                <b>{likesVSdislikes.toFixed(4)}</b>
+                <b>
+                  {likesVSdislikes
+                    .toFixed(4)
+                    .toString()
+                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                </b>
               </span>
             </ChannelLikesvsDislikes>
             <ChannelCommentsVSviewCount>
-              <span style={{ opacity: '0.5' }}>채널 조회수 수 대비 코멘트 수</span>
+              <span style={{ opacity: '0.5' }}>조회수 수 대비 코멘트 수</span>
               <span>
-                <b>{commentsVSviewCount.toFixed(4)}</b>
+                <b>
+                  {commentsVSviewCount
+                    .toFixed(4)
+                    .toString()
+                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                </b>
               </span>
             </ChannelCommentsVSviewCount>
           </ProfileAnalysis>

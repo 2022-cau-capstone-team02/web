@@ -200,11 +200,29 @@ const Assets = ({ apiData, videoData, popularVideoData, detailData, detailData2 
                   <ChannelInfo>
                     <Info>
                       <Title>{data.snippet.title}</Title>
-                      <Subscribers>구독자수 {data.statistics.subscriberCount}</Subscribers>
-                      <Views>총 조회수 {data.statistics.viewCount}</Views>
-                      <Videos>총 비디오수 {data.statistics.videoCount}</Videos>
+                      <Subscribers>
+                        구독자수{' '}
+                        {data.statistics.subscriberCount
+                          .toString()
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                      </Subscribers>
+                      <Views>
+                        총 조회수{' '}
+                        {data.statistics.viewCount
+                          .toString()
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                      </Views>
+                      <Videos>
+                        총 비디오수{' '}
+                        {data.statistics.videoCount
+                          .toString()
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                      </Videos>
                       <ChannelIncome>
-                        예상 채널 수익 ${(data.statistics.viewCount / 1000) * 4}
+                        예상 채널 수익 $
+                        {((data.statistics.viewCount / 1000) * 4)
+                          .toString()
+                          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
                       </ChannelIncome>
                       {/* <AffiliateIncome>동영상 1개당 예상 제휴 수익 : {}</AffiliateIncome> */}
                       <HoldingShare>보유지분 ??</HoldingShare>
