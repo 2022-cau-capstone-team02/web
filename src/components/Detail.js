@@ -139,7 +139,17 @@ const ProfileInfo = styled.div`
   } ;
 `;
 
+const Channel = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const ChannelName = styled.h4``;
+
+const ChannelTier = styled.h5`
+  margin-left: 1rem;
+  font-weight: 600;
+`;
 
 const DetailInfo = styled.div`
   display: flex;
@@ -299,6 +309,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
   const [likesVSdislikes, setLikesVSdislikes] = useState(0);
   const [recentAverageView, setRecentAverageView] = useState(0);
   const [commentsVSviewCount, setCommentsVSviewCount] = useState(0);
+  const [tier, setTier] = useState('');
 
   useEffect(() => {
     if (!data.snippet.customUrl) return;
@@ -324,7 +335,6 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     var sumViewcount = 0;
     var comments = 0;
     var cnt = 0;
-
     detailData.forEach((element) => {
       sumDislikes += element.data.dislikes;
       cnt += 1;
@@ -335,9 +345,26 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
       sumViewcount += parseInt(element.statistics.viewCount);
       comments += parseInt(element.statistics.commentCount);
     });
+
     setCommentsVSviewCount(comments / sumViewcount);
     setLikesVSdislikes(sumDislikes / sumLikes);
     setRecentAverageView(sumViewcount / cnt);
+
+    data.statistics.subscriberCount >= 10000000
+      ? setTier('Tier 7')
+      : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
+      ? setTier('Tier 6')
+      : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
+      ? setTier('Tier 5')
+      : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
+      ? setTier('Tier 4')
+      : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
+      ? setTier('Tier 3')
+      : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
+      ? setTier('Tier 2')
+      : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
+      ? setTier('Tier 1')
+      : null;
   }, []);
 
   console.log(monthlyDataByCustomUrl?.data.subscriber);
@@ -355,7 +382,10 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               </ProfileImageWrapper>
             </ProfileImageContainer>
             <ProfileInfo>
-              <ChannelName>{data.snippet.title}</ChannelName>
+              <Channel>
+                <ChannelName>{data.snippet.title}</ChannelName>
+                <ChannelTier>{tier}</ChannelTier>
+              </Channel>
               <DetailInfo>
                 <Subscribers>
                   <span style={{ opacity: '0.5' }}>구독자 수</span>

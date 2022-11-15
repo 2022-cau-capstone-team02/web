@@ -13,7 +13,7 @@ const apiData = [];
 const apiData2 = [];
 const apiData3 = [];
 const apiData5 = [];
-var apiData4;
+var apiData4 = [];
 let searchCnt = 15;
 let cnt = 0;
 let cnt2 = 0;
@@ -57,7 +57,6 @@ function Dashboard() {
       .get('https://www.googleapis.com/youtube/v3/channels', { params })
       .then((res) => {
         apiData.push(res.data.items);
-        console.log(apiData[0]);
         for (const data of res.data.items) {
           let video = data.contentDetails.relatedPlaylists.uploads;
           let id = data.id;
@@ -84,7 +83,6 @@ function Dashboard() {
           fetchRecentVideoData(video.snippet.resourceId.videoId, cnt, cnt2); // 동영상의 싫어요 수를 가져오는 함수
           cnt2 += 1;
         }
-        console.log(ids);
         fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수
         cnt2 = 0;
       })
@@ -96,7 +94,7 @@ function Dashboard() {
       .get(`/Votes?videoId=${id}`)
       .then((res) => {
         apiData4[cnt][cnt2] = res;
-        console.log(cnt2);
+        console.log(apiData4);
       })
       .catch((err) => console.log(err));
   }
@@ -131,7 +129,7 @@ function Dashboard() {
       apiData2.length = data.data.data[0].stake.length;
       apiData3.length = data.data.data[0].stake.length;
       apiData5.length = data.data.data[0].stake.length;
-      apiData4 = new Array(data.data.data[0].stake.length);
+      apiData4.length = data.data.data[0].stake.length;
       data.data.data[0].stake.forEach((element) => {
         channel += element;
       });
