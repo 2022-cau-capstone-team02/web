@@ -1,4 +1,4 @@
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faAmbulance } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useNavigate } from 'react-router';
@@ -63,7 +63,17 @@ const Navigator = styled.li`
   }
 `;
 
+const uint8ToBase64 = (arr) => {
+  return btoa(
+    Array(arr.length)
+      .fill('')
+      .map((_, i) => String.fromCharCode(arr[i]))
+      .join(''),
+  );
+};
+
 function NavBar({ menu, setMenu }) {
+  let keplr = undefined;
   const open = () => {
     document.body.style.overflow = 'hidden';
     setMenu(!menu);
@@ -95,6 +105,29 @@ function NavBar({ menu, setMenu }) {
           대시보드
         </Navigator>
       </Navigators>
+      <a>
+        <FontAwesomeIcon
+          style={{
+            color: '#343434',
+            fontSize: '2.5rem',
+          }}
+          icon={faAmbulance}
+          onClick={async () => {
+            try {
+              keplr = window.keplr;
+              const offlineSigner = keplr.getOfflineSigner('cosmoshub-4');
+              console.log(keplr);
+              const chainId = offlineSigner.chainId;
+              const accounts = await offlineSigner.getAccounts();
+              const publicAddress = accounts[0].address;
+              const pubkey = uint8ToBase64(accounts[0].pubkey);
+              console.log(accounts, publicAddress, pubkey);
+            } catch (e) {
+              console.log('케플러 지갑을 먼저 설치해주세요.');
+            }
+          }}
+        />
+      </a>
       <MenuIcon icon={faBars} onClick={open} />
     </Container>
   );
