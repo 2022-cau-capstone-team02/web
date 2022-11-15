@@ -85,7 +85,7 @@ function Dashboard() {
           cnt2 += 1;
         }
         console.log(ids);
-        fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수 
+        fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수
         cnt2 = 0;
       })
       .catch((err) => console.log(err));
