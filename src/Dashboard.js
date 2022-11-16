@@ -14,7 +14,7 @@ const apiData2 = [];
 const apiData3 = [];
 const apiData5 = [];
 var apiData4 = [];
-let searchCnt = 10;
+let searchCnt = 15;
 let cnt = 0;
 let cnt2 = 0;
 
@@ -78,7 +78,7 @@ function Dashboard() {
         let ids = '';
         apiData2[cnt] = res.data.items;
         apiData4[cnt] = new Array(searchCnt);
-        for (const video of apiData2) {
+        for (const video of apiData2[cnt]) {
           ids += `${video.snippet.resourceId.videoId},`;
           fetchRecentVideoData(video.snippet.resourceId.videoId, cnt, cnt2); // 동영상의 싫어요 수를 가져오는 함수
           cnt2 += 1;
