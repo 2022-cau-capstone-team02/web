@@ -8,6 +8,7 @@ import Exchange from './Exchange';
 import Dashboard from './Dashboard';
 import Sidebar from './components/Sidebar';
 import Progressbar from './components/ProgressBar';
+import Test from './Test';
 
 const CustomContainer = styled(Container)`
   position: relative;
@@ -37,6 +38,7 @@ const App = ({ history }) => {
           <Route path="/" element={<Info />} />
           <Route path="/exchange" element={<Exchange />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/test" element={<Test />} />
         </Routes>
       </CustomRow>
     </CustomContainer>
