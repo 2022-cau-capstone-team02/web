@@ -94,7 +94,6 @@ function Dashboard() {
       .get(`/Votes?videoId=${id}`)
       .then((res) => {
         apiData4[cnt][cnt2] = res;
-        console.log(apiData4);
       })
       .catch((err) => console.log(err));
   }

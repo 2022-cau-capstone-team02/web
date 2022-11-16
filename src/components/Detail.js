@@ -25,6 +25,11 @@ SwiperCore.use([Pagination]);
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
+var likeDislike = [];
+var viewCountArr = [];
+var viewCountComment = [];
+var labels = [];
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -298,6 +303,42 @@ const ProfileAnalysis = styled.div`
   }
 `;
 
+const YoutubeChart = styled.div`
+  display: flex;
+  justify-content: space-between;
+  @media screen and (max-width: 992px) {
+    flex-direction: column;
+  }
+`;
+
+const RecentView = styled.div``;
+
+const LikeDislike = styled.div`
+  margin-top: 50px;
+  box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+  border-radius: 20px;
+  padding: 20px;
+  @media screen and (min-width: 992px) {
+    width: 380px;
+  }
+  @media screen and (min-width: 1280px) {
+    width: 450px;
+  }
+`;
+
+const ViewCountComment = styled.div`
+  margin-top: 50px;
+  box-shadow: 0 0 5px 0 rgb(51 3 0 / 20%);
+  border-radius: 20px;
+  padding: 20px;
+  @media screen and (min-width: 992px) {
+    width: 380px;
+  }
+  @media screen and (min-width: 1280px) {
+    width: 450px;
+  }
+`;
+
 async function fetchMonthlyDataByCustomUrl(customUrl) {
   return await axios.get(`/youtube/monthly/${customUrl}`, { responseType: 'json' });
 }
@@ -335,15 +376,21 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     var sumViewcount = 0;
     var comments = 0;
     var cnt = 0;
-    detailData.forEach((element) => {
-      sumDislikes += element.data.dislikes;
-      cnt += 1;
-    });
-
-    detailData2.forEach((element) => {
+    console.log(detailData);
+    detailData2.forEach((element, index) => {
+      sumDislikes += parseInt(detailData[index].data.dislikes);
       sumLikes += parseInt(element.statistics.likeCount);
       sumViewcount += parseInt(element.statistics.viewCount);
       comments += parseInt(element.statistics.commentCount);
+      viewCountArr.unshift(parseInt(element.statistics.viewCount));
+      likeDislike.unshift(
+        parseInt(detailData[index].data.dislikes) / parseInt(element.statistics.likeCount),
+      );
+      viewCountComment.unshift(
+        parseInt(element.statistics.commentCount) / parseInt(element.statistics.viewCount),
+      );
+      cnt += 1;
+      labels.unshift(`${cnt}`);
     });
 
     setCommentsVSviewCount(comments / sumViewcount);
@@ -365,6 +412,12 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
       : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
       ? setTier('Tier 1')
       : null;
+    return () => {
+      likeDislike = [];
+      viewCountArr = [];
+      viewCountComment = [];
+      labels = [];
+    };
   }, []);
 
   console.log(monthlyDataByCustomUrl?.data.subscriber);
@@ -436,13 +489,17 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
             </ChannelAverageView>
             <ChannelRecentAverageView>
               <span style={{ opacity: '0.5' }}>최근 영상 평균 조회수</span>
-              <span>
-                <b>
-                  {Math.round(recentAverageView)
-                    .toString()
-                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-                </b>
-              </span>
+              {recentAverageView != 0 ? (
+                <>
+                  <span>
+                    <b>
+                      {Math.round(recentAverageView)
+                        .toString()
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                    </b>
+                  </span>
+                </>
+              ) : null}
             </ChannelRecentAverageView>
             <ChannelViewCountvsSubscribers>
               <span style={{ opacity: '0.5' }}>구독자 수 대비 조회수</span>
@@ -456,25 +513,33 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
             </ChannelViewCountvsSubscribers>
             <ChannelLikesvsDislikes>
               <span style={{ opacity: '0.5' }}>좋아요 수 대비 싫어요 수</span>
-              <span>
-                <b>
-                  {likesVSdislikes
-                    .toFixed(4)
-                    .toString()
-                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-                </b>
-              </span>
+              {likesVSdislikes != 0 ? (
+                <>
+                  <span>
+                    <b>
+                      {likesVSdislikes
+                        .toFixed(4)
+                        .toString()
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                    </b>
+                  </span>
+                </>
+              ) : null}
             </ChannelLikesvsDislikes>
             <ChannelCommentsVSviewCount>
               <span style={{ opacity: '0.5' }}>조회수 수 대비 코멘트 수</span>
-              <span>
-                <b>
-                  {commentsVSviewCount
-                    .toFixed(4)
-                    .toString()
-                    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
-                </b>
-              </span>
+              {commentsVSviewCount != 0 ? (
+                <>
+                  <span>
+                    <b>
+                      {commentsVSviewCount
+                        .toFixed(4)
+                        .toString()
+                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
+                    </b>
+                  </span>
+                </>
+              ) : null}
             </ChannelCommentsVSviewCount>
           </ProfileAnalysis>
           <RecentYoutubeList>
@@ -559,6 +624,54 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
                 : null}
             </Swiper>
           </PopularYoutubeList>
+          <YoutubeChart>
+            <LikeDislike>
+              <div>
+                <h2 style={{ opacity: '0.5' }}>좋아요 수 / 싫어요 수</h2>
+              </div>
+              {likeDislike.length == 15 ? (
+                <Line
+                  data={{
+                    labels: labels,
+                    datasets: [
+                      {
+                        label: '좋아요 수 대비 싫어요 수',
+                        data: likeDislike,
+                        borderColor: 'rgb(235, 139, 122)',
+                        backgroundColor: 'rgba(235, 139, 122, 0.5)',
+                      },
+                    ],
+                  }}
+                  style={{ width: '100%', height: '100%', flexGrow: '1' }}
+                />
+              ) : (
+                console.log(likeDislike)
+              )}
+            </LikeDislike>
+            <ViewCountComment>
+              <div>
+                <h2 style={{ opacity: '0.5' }}>조회수 수 / 코멘트 수</h2>
+              </div>
+              {viewCountComment.length == 15 ? (
+                <Line
+                  data={{
+                    labels: labels,
+                    datasets: [
+                      {
+                        label: '조회수 수 대비 코멘트 수',
+                        data: viewCountComment,
+                        borderColor: 'rgb(235, 139, 122)',
+                        backgroundColor: 'rgba(235, 139, 122, 0.5)',
+                      },
+                    ],
+                  }}
+                  style={{ width: '100%', height: '100%', flexGrow: '1' }}
+                />
+              ) : (
+                console.log(viewCountComment)
+              )}
+            </ViewCountComment>
+          </YoutubeChart>
           <ViewChartContainer>
             <div>
               <h2 style={{ opacity: '0.5' }}>채널 조회수</h2>
@@ -580,6 +693,29 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               />
             )}
           </ViewChartContainer>
+          {/* <RecentView>
+            <div>
+              <h2 style={{ opacity: '0.5' }}>채널 최근 조회수</h2>
+            </div>
+            {viewCountArr.length == 15 ? (
+              <Line
+                data={{
+                  labels: labels,
+                  datasets: [
+                    {
+                      label: '최근 영상 조회수',
+                      data: viewCountArr,
+                      borderColor: 'rgb(255, 99, 132)',
+                      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    },
+                  ],
+                }}
+                style={{ width: '100%', height: '100%' }}
+              />
+            ) : (
+              console.log(viewCountArr)
+            )}
+          </RecentView> */}
           <SubscriberChartContainer>
             <h2 style={{ opacity: '0.5' }}>채널 구독자수</h2>
             {monthlyDataByCustomUrl?.data.data.subscriber && (
