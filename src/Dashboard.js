@@ -14,7 +14,7 @@ const apiData2 = [];
 const apiData3 = [];
 const apiData5 = [];
 var apiData4 = [];
-let searchCnt = 15;
+let searchCnt = 10;
 let cnt = 0;
 let cnt2 = 0;
 
@@ -83,6 +83,7 @@ function Dashboard() {
           fetchRecentVideoData(video.snippet.resourceId.videoId, cnt, cnt2); // 동영상의 싫어요 수를 가져오는 함수
           cnt2 += 1;
         });
+        console.log(apiData4);
         fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수
         cnt2 = 0;
       })
@@ -91,8 +92,10 @@ function Dashboard() {
 
   async function fetchRecentVideoData(id, cnt, cnt2) {
     await axios
-      .get(`/Votes?videoId=${id}`)
+      .get(`/votes?videoId=${id}`)
       .then((res) => {
+        console.log(cnt);
+        console.log(cnt2);
         apiData4[cnt][cnt2] = res;
       })
       .catch((err) => console.log(err));
@@ -144,6 +147,19 @@ function Dashboard() {
       fetchYoutubeData();
     }
   }, [params]);
+
+  useEffect(() => {
+    return () => {
+      const apiData = [];
+      const apiData2 = [];
+      const apiData3 = [];
+      const apiData5 = [];
+      var apiData4 = [];
+      let searchCnt = 15;
+      let cnt = 0;
+      let cnt2 = 0;
+    };
+  }, []);
 
   if (isLoading) {
     return <div>Loading..</div>;
