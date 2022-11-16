@@ -131,6 +131,7 @@ const ChannelIncome = styled.p`
 `;
 
 const Assets = ({ apiData, videoData, popularVideoData, detailData, detailData2 }) => {
+  console.log(detailData);
   console.log(detailData2);
   const [dataIndex, setDataIndex] = useState(-1);
   const [show, setShow] = useState(false);
