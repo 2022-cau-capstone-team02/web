@@ -158,7 +158,7 @@ const ChannelTier = styled.h5`
 
 const DetailInfo = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   margin-top: 20px;
   @media screen and (max-width: 768px) {
     font-size: 0.8rem;
