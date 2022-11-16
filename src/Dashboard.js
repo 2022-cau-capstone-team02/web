@@ -78,11 +78,11 @@ function Dashboard() {
         let ids = '';
         apiData2[cnt] = res.data.items;
         apiData4[cnt] = new Array(searchCnt);
-        apiData2[cnt].forEach((video) => {
+        for (const video of apiData2) {
           ids += `${video.snippet.resourceId.videoId},`;
           fetchRecentVideoData(video.snippet.resourceId.videoId, cnt, cnt2); // 동영상의 싫어요 수를 가져오는 함수
           cnt2 += 1;
-        });
+        }
         console.log(apiData4);
         fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수
         cnt2 = 0;
@@ -94,7 +94,6 @@ function Dashboard() {
     await axios
       .get(`/votes?videoId=${id}`)
       .then((res) => {
-        console.log(cnt);
         console.log(cnt2);
         apiData4[cnt][cnt2] = res;
       })
