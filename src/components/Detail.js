@@ -29,7 +29,7 @@ var likeDislike = [];
 var viewCountArr = [];
 var viewCountComment = [];
 var labels = [];
-var apiData4;
+var apiData4 = [];
 
 const Container = styled.div`
   width: 100vw;
@@ -381,6 +381,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
       fetchRecentVideoData(element.snippet.resourceId.videoId, cnt);
       cnt += 1;
     });
+
     if (!data.snippet.customUrl) return;
 
     (async () => {
@@ -393,7 +394,6 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
       cnt = 0;
       console.log(detailData2);
       detailData2.forEach((element, index) => {
-        console.log(apiData4);
         sumDislikes += parseInt(apiData4[index].data.dislikes);
         sumLikes += parseInt(element.statistics.likeCount);
         sumViewcount += parseInt(element.statistics.viewCount);
@@ -412,29 +412,30 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
       setCommentsVSviewCount(comments / sumViewcount);
       setLikesVSdislikes(sumDislikes / sumLikes);
       setRecentAverageView(sumViewcount / cnt);
+    }, 400);
 
-      data.statistics.subscriberCount >= 10000000
-        ? setTier('Tier 7')
-        : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
-        ? setTier('Tier 6')
-        : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
-        ? setTier('Tier 5')
-        : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
-        ? setTier('Tier 4')
-        : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
-        ? setTier('Tier 3')
-        : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
-        ? setTier('Tier 2')
-        : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
-        ? setTier('Tier 1')
-        : null;
-    }, 300);
+    data.statistics.subscriberCount >= 10000000
+      ? setTier('Tier 7')
+      : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
+      ? setTier('Tier 6')
+      : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
+      ? setTier('Tier 5')
+      : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
+      ? setTier('Tier 4')
+      : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
+      ? setTier('Tier 3')
+      : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
+      ? setTier('Tier 2')
+      : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
+      ? setTier('Tier 1')
+      : null;
 
     return () => {
       likeDislike = [];
       viewCountArr = [];
       viewCountComment = [];
       labels = [];
+      apiData4 = [];
     };
   }, []);
 
