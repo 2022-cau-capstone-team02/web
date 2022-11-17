@@ -29,6 +29,8 @@ var likeDislike = [];
 var viewCountArr = [];
 var viewCountComment = [];
 var labels = [];
+var apiData4 = [];
+var cnt = 0;
 
 const Container = styled.div`
   width: 100vw;
@@ -343,7 +345,7 @@ async function fetchMonthlyDataByCustomUrl(customUrl) {
   return await axios.get(`/youtube/monthly/${customUrl}`, { responseType: 'json' });
 }
 
-const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailData2 }) => {
+const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
   const [spinner, setSpinner] = useState(true);
   const [monthlyDataByCustomUrl, setMonthlyDataByCustomUrl] = useState(null);
   console.log(monthlyDataByCustomUrl);
@@ -352,15 +354,14 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
   const [commentsVSviewCount, setCommentsVSviewCount] = useState(0);
   const [tier, setTier] = useState('');
 
-  useEffect(() => {
-    if (!data.snippet.customUrl) return;
-
-    (async () => {
-      const monthlyDataByCustomUrl = await fetchMonthlyDataByCustomUrl(data.snippet.customUrl);
-      console.log(monthlyDataByCustomUrl);
-      setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
-    })();
-  }, []);
+  async function fetchRecentVideoData(id, cnt, cnt2) {
+    await axios
+      .get(`/votes?videoId=${id}`)
+      .then((res) => {
+        apiData4[cnt] = res;
+      })
+      .catch((err) => console.log(err));
+  }
 
   const close = () => {
     document.body.style.overflow = 'unset';
@@ -375,43 +376,60 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
     var sumDislikes = 0;
     var sumViewcount = 0;
     var comments = 0;
-    var cnt = 0;
-    console.log(detailData);
-    detailData2.forEach((element, index) => {
-      sumDislikes += parseInt(detailData[index].data.dislikes);
-      sumLikes += parseInt(element.statistics.likeCount);
-      sumViewcount += parseInt(element.statistics.viewCount);
-      comments += parseInt(element.statistics.commentCount);
-      viewCountArr.unshift(parseInt(element.statistics.viewCount));
-      likeDislike.unshift(
-        parseInt(detailData[index].data.dislikes) / parseInt(element.statistics.likeCount),
-      );
-      viewCountComment.unshift(
-        parseInt(element.statistics.commentCount) / parseInt(element.statistics.viewCount),
-      );
-      cnt += 1;
-      labels.unshift(`${cnt}`);
-    });
+    apiData4 = new Array(video.length);
+    async function doForOperation(cnt) {
+      for await (let value of video) {
+        fetchRecentVideoData(value.snippet.resourceId.videoId, cnt);
+        cnt += 1;
+      }
+      cnt = 0;
+      detailData2.forEach((element, index) => {
+        console.log(apiData4);
+        sumDislikes += parseInt(apiData4[index].data.dislikes);
+        sumLikes += parseInt(element.statistics.likeCount);
+        sumViewcount += parseInt(element.statistics.viewCount);
+        comments += parseInt(element.statistics.commentCount);
+        viewCountArr.unshift(parseInt(element.statistics.viewCount));
+        likeDislike.unshift(
+          parseInt(apiData4[index].data.dislikes) / parseInt(element.statistics.likeCount),
+        );
+        viewCountComment.unshift(
+          parseInt(element.statistics.commentCount) / parseInt(element.statistics.viewCount),
+        );
+        cnt += 1;
+        labels.unshift(`${cnt}`);
+      });
 
-    setCommentsVSviewCount(comments / sumViewcount);
-    setLikesVSdislikes(sumDislikes / sumLikes);
-    setRecentAverageView(sumViewcount / cnt);
+      setCommentsVSviewCount(comments / sumViewcount);
+      setLikesVSdislikes(sumDislikes / sumLikes);
+      setRecentAverageView(sumViewcount / cnt);
 
-    data.statistics.subscriberCount >= 10000000
-      ? setTier('Tier 7')
-      : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
-      ? setTier('Tier 6')
-      : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
-      ? setTier('Tier 5')
-      : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
-      ? setTier('Tier 4')
-      : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
-      ? setTier('Tier 3')
-      : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
-      ? setTier('Tier 2')
-      : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
-      ? setTier('Tier 1')
-      : null;
+      data.statistics.subscriberCount >= 10000000
+        ? setTier('Tier 7')
+        : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
+        ? setTier('Tier 6')
+        : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
+        ? setTier('Tier 5')
+        : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
+        ? setTier('Tier 4')
+        : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
+        ? setTier('Tier 3')
+        : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
+        ? setTier('Tier 2')
+        : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
+        ? setTier('Tier 1')
+        : null;
+    }
+    doForOperation(cnt);
+    console.log(apiData4);
+    if (!data.snippet.customUrl) return;
+
+    (async () => {
+      const monthlyDataByCustomUrl = await fetchMonthlyDataByCustomUrl(data.snippet.customUrl);
+      console.log(monthlyDataByCustomUrl);
+      setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
+    })();
+
     return () => {
       likeDislike = [];
       viewCountArr = [];
@@ -629,7 +647,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               <div>
                 <h2 style={{ opacity: '0.5' }}>좋아요 수 / 싫어요 수</h2>
               </div>
-              {likeDislike.length == 10 ? (
+              {likeDislike.length == video.length ? (
                 <Line
                   data={{
                     labels: labels,
@@ -652,7 +670,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               <div>
                 <h2 style={{ opacity: '0.5' }}>조회수 수 / 코멘트 수</h2>
               </div>
-              {viewCountComment.length == 10 ? (
+              {viewCountComment.length == video.length ? (
                 <Line
                   data={{
                     labels: labels,
