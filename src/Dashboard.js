@@ -15,7 +15,6 @@ const apiData3 = [];
 const apiData5 = [];
 let searchCnt = 10;
 let cnt = 0;
-let cnt2 = 0;
 
 const StyledContainer = styled(Container)`
   margin-top: 90px;
