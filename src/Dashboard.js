@@ -6,15 +6,18 @@ import Assets from './components/Assets';
 import _Navbar from './components/Navbar';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import axiosRetry from 'axios-retry';
 import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 // import Sidebar from './components/Sidebar';
+
+axiosRetry(axios, { retries: 5 });
 
 const apiData = [];
 const apiData2 = [];
 const apiData3 = [];
 const apiData5 = [];
 var apiData4 = [];
-let searchCnt = 15;
+let searchCnt = 10;
 let cnt = 0;
 let cnt2 = 0;
 

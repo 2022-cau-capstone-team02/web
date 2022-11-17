@@ -527,7 +527,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               ) : null}
             </ChannelLikesvsDislikes>
             <ChannelCommentsVSviewCount>
-              <span style={{ opacity: '0.5' }}>조회수 수 대비 코멘트 수</span>
+              <span style={{ opacity: '0.5' }}>조회수 대비 코멘트 수</span>
               {commentsVSviewCount != 0 ? (
                 <>
                   <span>
@@ -629,7 +629,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               <div>
                 <h2 style={{ opacity: '0.5' }}>좋아요 수 / 싫어요 수</h2>
               </div>
-              {likeDislike.length == 15 ? (
+              {likeDislike.length == 10 ? (
                 <Line
                   data={{
                     labels: labels,
@@ -652,13 +652,13 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData, detailDa
               <div>
                 <h2 style={{ opacity: '0.5' }}>조회수 수 / 코멘트 수</h2>
               </div>
-              {viewCountComment.length == 15 ? (
+              {viewCountComment.length == 10 ? (
                 <Line
                   data={{
                     labels: labels,
                     datasets: [
                       {
-                        label: '조회수 수 대비 코멘트 수',
+                        label: '조회수 대비 코멘트 수',
                         data: viewCountComment,
                         borderColor: 'rgb(235, 139, 122)',
                         backgroundColor: 'rgba(235, 139, 122, 0.5)',
