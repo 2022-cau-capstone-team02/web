@@ -13,12 +13,10 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import faker from 'faker';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.scss';
 import 'swiper/components/pagination/pagination.scss';
 import SwiperCore, { Pagination } from 'swiper';
-import { parse } from '@fortawesome/fontawesome-svg-core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 SwiperCore.use([Pagination]);
@@ -344,63 +342,59 @@ async function fetchMonthlyDataByCustomUrl(customUrl) {
   return await axios.get(`/youtube/monthly/${customUrl}`, { responseType: 'json' });
 }
 
+async function fetchRecentVideoData(id) {
+  return await axios.get(`/votes?videoId=${id}`);
+}
+
+const getTier = (subscriberCount) => {
+  if (subscriberCount >= 10000000) return 'Tier 7';
+  else if (subscriberCount >= 500000) return 'Tier 6';
+  else if (subscriberCount >= 300000) return 'Tier 5';
+  else if (subscriberCount >= 100000) return 'Tier 4';
+  else if (subscriberCount >= 50000) return 'Tier 3';
+  else if (subscriberCount >= 10000) return 'Tier 2';
+  else return 'Tier 없음';
+};
+
 const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
   const [spinner, setSpinner] = useState(true);
-  const [monthlyDataByCustomUrl, setMonthlyDataByCustomUrl] = useState(null);
-  console.log(monthlyDataByCustomUrl);
   const [likesVSdislikes, setLikesVSdislikes] = useState(0);
   const [recentAverageView, setRecentAverageView] = useState(0);
   const [commentsVSviewCount, setCommentsVSviewCount] = useState(0);
-  const [tier, setTier] = useState('');
 
-  async function fetchRecentVideoData(id, cnt, cnt2) {
-    await axios
-      .get(`/votes?videoId=${id}`)
-      .then((res) => {
-        apiData4[cnt] = res;
-      })
-      .catch((err) => console.log(err));
-  }
+  const { data: monthlyDataByCustomUrl, isLoading: monthlyDataByCustomUrlIsLoading } = useQuery(
+    ['monthlyDataByCustomUrl'],
+    () => fetchMonthlyDataByCustomUrl(data.snippet.customUrl),
+  );
 
-  const close = () => {
-    document.body.style.overflow = 'unset';
-    setShow(!show);
-  };
-
-  const hideSpinner = () => {
-    setSpinner(false);
-  };
   useEffect(() => {
-    var sumLikes = 0;
-    var sumDislikes = 0;
-    var sumViewcount = 0;
-    var comments = 0;
-    var cnt = 0;
-    apiData4 = new Array(video.length);
-    video.forEach((element) => {
-      fetchRecentVideoData(element.snippet.resourceId.videoId, cnt);
-      cnt += 1;
+    const promises = video.map((element) => {
+      return fetchRecentVideoData(element.snippet.resourceId.videoId).then(
+        (currentRecentVideoData) => currentRecentVideoData.data,
+      );
     });
 
-    if (!data.snippet.customUrl) return;
+    const promiseFunction = () => {
+      return Promise.all(promises);
+    };
 
+    let sumLikes = 0;
+    let sumDislikes = 0;
+    let sumViewcount = 0;
+    let comments = 0;
+    let cnt = 0;
     (async () => {
-      const monthlyDataByCustomUrl = await fetchMonthlyDataByCustomUrl(data.snippet.customUrl);
-      console.log(monthlyDataByCustomUrl);
-      setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
-    })();
+      const results = await promiseFunction();
+      console.log(results);
 
-    setTimeout(() => {
-      cnt = 0;
-      console.log(detailData2);
       detailData2.forEach((element, index) => {
-        sumDislikes += parseInt(apiData4[index].data.dislikes);
+        sumDislikes += parseInt(results[index].dislikes);
         sumLikes += parseInt(element.statistics.likeCount);
         sumViewcount += parseInt(element.statistics.viewCount);
         comments += parseInt(element.statistics.commentCount);
         viewCountArr.unshift(parseInt(element.statistics.viewCount));
         likeDislike.unshift(
-          parseInt(apiData4[index].data.dislikes) / parseInt(element.statistics.likeCount),
+          parseInt(results[index].dislikes) / parseInt(element.statistics.likeCount),
         );
         viewCountComment.unshift(
           parseInt(element.statistics.commentCount) / parseInt(element.statistics.viewCount),
@@ -412,34 +406,17 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
       setCommentsVSviewCount(comments / sumViewcount);
       setLikesVSdislikes(sumDislikes / sumLikes);
       setRecentAverageView(sumViewcount / cnt);
-    }, 400);
-
-    data.statistics.subscriberCount >= 10000000
-      ? setTier('Tier 7')
-      : data.statistics.subscriberCount < 10000000 && data.statistics.subscriberCount >= 1000000
-      ? setTier('Tier 6')
-      : data.statistics.subscriberCount < 1000000 && data.statistics.subscriberCount >= 500000
-      ? setTier('Tier 5')
-      : data.statistics.subscriberCount < 500000 && data.statistics.subscriberCount >= 300000
-      ? setTier('Tier 4')
-      : data.statistics.subscriberCount < 300000 && data.statistics.subscriberCount > 100000
-      ? setTier('Tier 3')
-      : data.statistics.subscriberCount < 100000 && data.statistics.subscriberCount >= 50000
-      ? setTier('Tier 2')
-      : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
-      ? setTier('Tier 1')
-      : null;
-
-    return () => {
-      likeDislike = [];
-      viewCountArr = [];
-      viewCountComment = [];
-      labels = [];
-      apiData4 = [];
-    };
+    })();
   }, []);
 
-  console.log(monthlyDataByCustomUrl?.data.subscriber);
+  const close = () => {
+    document.body.style.overflow = 'unset';
+    setShow(!show);
+  };
+
+  const hideSpinner = () => {
+    setSpinner(false);
+  };
 
   return (
     <Container show={show}>
@@ -456,7 +433,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
             <ProfileInfo>
               <Channel>
                 <ChannelName>{data.snippet.title}</ChannelName>
-                <ChannelTier>{tier}</ChannelTier>
+                <ChannelTier>{getTier(data.statistics.subscriberCount)}</ChannelTier>
               </Channel>
               <DetailInfo>
                 <Subscribers>
