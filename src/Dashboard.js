@@ -13,10 +13,8 @@ const apiData = [];
 const apiData2 = [];
 const apiData3 = [];
 const apiData5 = [];
-var apiData4 = [];
-let searchCnt = 15;
+let searchCnt = 10;
 let cnt = 0;
-let cnt2 = 0;
 
 const StyledContainer = styled(Container)`
   margin-top: 90px;
@@ -77,25 +75,10 @@ function Dashboard() {
       .then((res) => {
         let ids = '';
         apiData2[cnt] = res.data.items;
-        apiData4[cnt] = new Array(searchCnt);
         for (const video of apiData2[cnt]) {
           ids += `${video.snippet.resourceId.videoId},`;
-          fetchRecentVideoData(video.snippet.resourceId.videoId, cnt, cnt2); // 동영상의 싫어요 수를 가져오는 함수
-          cnt2 += 1;
         }
-        console.log(apiData4);
         fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수
-        cnt2 = 0;
-      })
-      .catch((err) => console.log(err));
-  }
-
-  async function fetchRecentVideoData(id, cnt, cnt2) {
-    await axios
-      .get(`/votes?videoId=${id}`)
-      .then((res) => {
-        console.log(cnt2);
-        apiData4[cnt][cnt2] = res;
       })
       .catch((err) => console.log(err));
   }
@@ -130,7 +113,6 @@ function Dashboard() {
       apiData2.length = data.data.data[0].stake.length;
       apiData3.length = data.data.data[0].stake.length;
       apiData5.length = data.data.data[0].stake.length;
-      apiData4.length = data.data.data[0].stake.length;
       data.data.data[0].stake.forEach((element) => {
         channel += element;
       });
@@ -173,7 +155,6 @@ function Dashboard() {
               apiData={apiData}
               videoData={apiData2}
               popularVideoData={apiData3}
-              detailData={apiData4}
               detailData2={apiData5}
             />
           </AssetWrapper>
