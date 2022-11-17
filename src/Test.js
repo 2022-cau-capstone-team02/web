@@ -207,7 +207,7 @@ const Test = () => {
         'CHA',
         accounts[0].address,
       );
-
+      console.log('token_contract_address: ');
       console.log(token_contract_address);
 
       let ico_contract_address = await instantiate_ico_contract(
@@ -220,6 +220,7 @@ const Test = () => {
         '100000000000',
         'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
       );
+      console.log('ico_contract_address: ');
       console.log(ico_contract_address);
 
       let fund_channel_result = await fund_channel(
@@ -228,6 +229,7 @@ const Test = () => {
         ico_contract_address,
         100,
       );
+      console.log('fund_channel_result: ');
       console.log(fund_channel_result);
 
       let end_funding_result = await end_funding(
@@ -235,6 +237,7 @@ const Test = () => {
         accounts[0].address,
         ico_contract_address,
       );
+      console.log('end_funding_result: ');
       console.log(end_funding_result);
 
       let new_channel_token_address = end_funding_result.logs[0].events[1].attributes[0].value;
@@ -244,6 +247,7 @@ const Test = () => {
         accounts[0].address,
         new_channel_token_address,
       );
+      console.log('channel_token_balance: ');
       console.log(channel_token_balance);
 
       let transfer_fund_result = await transfer_fund(
@@ -252,6 +256,7 @@ const Test = () => {
         ico_contract_address,
         '100',
       );
+      console.log('transfer_fund_result: ');
       console.log(transfer_fund_result);
 
       let allocation_result = await allocation(
@@ -260,6 +265,7 @@ const Test = () => {
         ico_contract_address,
         '1000',
       );
+      console.log('allocation_result: ');
       console.log(allocation_result);
     }
   };
