@@ -29,7 +29,7 @@ var likeDislike = [];
 var viewCountArr = [];
 var viewCountComment = [];
 var labels = [];
-var apiData4 = [];
+var apiData4;
 var cnt = 0;
 
 const Container = styled.div`
@@ -376,13 +376,24 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
     var sumDislikes = 0;
     var sumViewcount = 0;
     var comments = 0;
+    var cnt = 0;
     apiData4 = new Array(video.length);
-    async function doForOperation(cnt) {
-      for await (let value of video) {
-        fetchRecentVideoData(value.snippet.resourceId.videoId, cnt);
-        cnt += 1;
-      }
+    for (let value of video) {
+      fetchRecentVideoData(value.snippet.resourceId.videoId, cnt);
+      cnt += 1;
+    }
+
+    if (!data.snippet.customUrl) return;
+
+    (async () => {
+      const monthlyDataByCustomUrl = await fetchMonthlyDataByCustomUrl(data.snippet.customUrl);
+      console.log(monthlyDataByCustomUrl);
+      setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
+    })();
+
+    setTimeout(()=>{
       cnt = 0;
+      console.log(detailData2);
       detailData2.forEach((element, index) => {
         console.log(apiData4);
         sumDislikes += parseInt(apiData4[index].data.dislikes);
@@ -419,16 +430,8 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
         : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
         ? setTier('Tier 1')
         : null;
-    }
-    doForOperation(cnt);
-    console.log(apiData4);
-    if (!data.snippet.customUrl) return;
-
-    (async () => {
-      const monthlyDataByCustomUrl = await fetchMonthlyDataByCustomUrl(data.snippet.customUrl);
-      console.log(monthlyDataByCustomUrl);
-      setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
-    })();
+    },200);
+    
 
     return () => {
       likeDislike = [];
