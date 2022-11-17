@@ -30,7 +30,6 @@ var viewCountArr = [];
 var viewCountComment = [];
 var labels = [];
 var apiData4;
-var cnt = 0;
 
 const Container = styled.div`
   width: 100vw;
@@ -378,11 +377,10 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
     var comments = 0;
     var cnt = 0;
     apiData4 = new Array(video.length);
-    for (let value of video) {
-      fetchRecentVideoData(value.snippet.resourceId.videoId, cnt);
+    video.forEach((element) => {
+      fetchRecentVideoData(element.snippet.resourceId.videoId, cnt);
       cnt += 1;
-    }
-
+    });
     if (!data.snippet.customUrl) return;
 
     (async () => {
@@ -391,7 +389,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
       setMonthlyDataByCustomUrl(monthlyDataByCustomUrl);
     })();
 
-    setTimeout(()=>{
+    setTimeout(() => {
       cnt = 0;
       console.log(detailData2);
       detailData2.forEach((element, index) => {
@@ -430,8 +428,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
         : data.statistics.subscriberCount < 50000 && data.statistics.subscriberCount >= 10000
         ? setTier('Tier 1')
         : null;
-    },200);
-    
+    }, 300);
 
     return () => {
       likeDislike = [];

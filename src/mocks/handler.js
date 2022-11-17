@@ -7,8 +7,8 @@ const userInfo = [
     totalAsset: '3920000',
     stake: [
       'UCSLrpBAzr-ROVGHQ5EmxnUg,',
-      // 'UCaO6VoaYJv4kS-TQO_M-N_g,',
-      // 'UC-lHJZR3Gqxm24_Vd_AJ5Yw,',
+      'UCaO6VoaYJv4kS-TQO_M-N_g,',
+      'UC-lHJZR3Gqxm24_Vd_AJ5Yw,',
       // 'UCOmHUn--16B90oW2L6FRR3A,',
       // 'UClRNDVO8093rmRTtLe4GEPw,',
     ],
