@@ -76,6 +76,9 @@ function Dashboard() {
       .then((res) => {
         let ids = '';
         apiData2[cnt] = res.data.items;
+        for (const video of apiData2[cnt]) {
+          ids += `${video.snippet.resourceId.videoId},`;
+        }
         fetchRecentVideoData2(cnt, ids); // 동영상의 싫어요 수와 같은 민감한 정보는 제외된 좀더 디테일한 정보를 가져오는 함수
       })
       .catch((err) => console.log(err));
