@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import KeplrImg from '../images/keplr.png';
 
 const Container = styled.div`
   height: 80px;
@@ -105,28 +106,23 @@ function NavBar({ menu, setMenu }) {
           대시보드
         </Navigator>
       </Navigators>
-      <a>
-        <FontAwesomeIcon
-          style={{
-            color: '#343434',
-            fontSize: '2.5rem',
-          }}
-          icon={faAmbulance}
-          onClick={async () => {
-            try {
-              keplr = window.keplr;
-              const offlineSigner = keplr.getOfflineSigner('cosmoshub-4');
-              console.log(keplr);
-              const chainId = offlineSigner.chainId;
-              const accounts = await offlineSigner.getAccounts();
-              const publicAddress = accounts[0].address;
-              const pubkey = uint8ToBase64(accounts[0].pubkey);
-              console.log(accounts, publicAddress, pubkey);
-            } catch (e) {
-              console.log('케플러 지갑을 먼저 설치해주세요.');
-            }
-          }}
-        />
+      <a
+        onClick={async () => {
+          try {
+            keplr = window.keplr;
+            const offlineSigner = keplr.getOfflineSigner('cosmoshub-4');
+            console.log(keplr);
+            const chainId = offlineSigner.chainId;
+            const accounts = await offlineSigner.getAccounts();
+            const publicAddress = accounts[0].address;
+            const pubkey = uint8ToBase64(accounts[0].pubkey);
+            console.log(accounts, publicAddress, pubkey);
+          } catch (e) {
+            console.log('케플러 지갑을 먼저 설치해주세요.');
+          }
+        }}
+      >
+        <img src={KeplrImg} style={{ width: 30, height: 30 }} />
       </a>
       <MenuIcon icon={faBars} onClick={open} />
     </Container>

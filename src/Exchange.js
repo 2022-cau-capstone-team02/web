@@ -1,9 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { commonTheme } from './theme';
 import styled from 'styled-components';
 import FlexRowCenter from './components/FlexRowCenter';
 import Modal from 'react-modal';
 import { HiChevronDown } from 'react-icons/hi';
+import { CosmWasmClient } from 'cosmwasm';
+
+// This is your rpc endpoint
+const rpcEndpoint = 'https://rpc.cliffnet.cosmwasm.com:443/';
 
 const customStyles = {
   content: {
@@ -44,10 +48,17 @@ const tokenList = [
 ];
 
 const Exchange = () => {
+  let client;
   const [topInput, setTopInput] = useState(0);
   const [currentTokenPosition, setCurrentTokenPosition] = useState('TOP');
   const [bottomToken, setBottomToken] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      client = await CosmWasmClient.connect(rpcEndpoint);
+    })();
+  }, []);
 
   const handleModal = useCallback(() => {
     setModalIsOpen((prev) => !prev);
