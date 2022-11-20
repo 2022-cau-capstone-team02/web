@@ -1,4 +1,5 @@
 import { coin, coins, SigningCosmWasmClient } from 'cosmwasm';
+import { SigningStargateClient } from '@cosmjs/stargate';
 import React from 'react';
 
 const rpcEndpoint = 'http://127.0.0.1:26657';
@@ -213,11 +214,11 @@ const Test = () => {
       let ico_contract_address = await instantiate_ico_contract(
         cosmwasmClient,
         accounts[0].address,
-        '100',
+        '1000000',
         3000,
         'channalB',
         'CHB',
-        '100000000000',
+        '1000000000000',
         'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
       );
       console.log('ico_contract_address: ');
@@ -227,7 +228,7 @@ const Test = () => {
         cosmwasmClient,
         accounts[0].address,
         ico_contract_address,
-        100,
+        1000000,
       );
       console.log('fund_channel_result: ');
       console.log(fund_channel_result);
@@ -254,7 +255,7 @@ const Test = () => {
         cosmwasmClient,
         accounts[0].address,
         ico_contract_address,
-        '100',
+        '1000000',
       );
       console.log('transfer_fund_result: ');
       console.log(transfer_fund_result);
@@ -263,10 +264,20 @@ const Test = () => {
         cosmwasmClient,
         accounts[0].address,
         ico_contract_address,
-        '1000',
+        '1000000',
       );
       console.log('allocation_result: ');
       console.log(allocation_result);
+
+      // chain과 통신하기 위한 client
+      let stargate_client = await SigningStargateClient.connect(
+        rpcEndpoint,
+        accounts[0].address,
+        offlineSigner,
+      );
+      // ukrw 코인 밸런스 조회
+      let coin_balance = await stargate_client.getBalance(accounts[0].address, 'ukrw');
+      console.log(coin_balance);
     }
   };
   return <div></div>;
