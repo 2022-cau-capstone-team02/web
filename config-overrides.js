@@ -1,26 +1,25 @@
-const webpack = require('webpack');
-
-module.exports = function override(config) {
-    const fallback = config.resolve.fallback || {};
-    Object.assign(fallback, {
-        "crypto": require.resolve("crypto-browserify"),
-        "stream": require.resolve("stream-browserify"),
-        "assert": require.resolve("assert"),
-        "http": require.resolve("stream-http"),
-        "https": require.resolve("https-browserify"),
-        "os": require.resolve("os-browserify"),
-        "url": require.resolve("url"),
-        "path": require.resolve("path-browserify")
-    })
-    config.resolve.fallback = fallback;
-    config.plugins = (config.plugins || []).concat([
-        new webpack.ProvidePlugin({
-            process: 'process/browser',
-            Buffer: ['buffer', 'Buffer']
-        })
-    ])
-    config.ignoreWarnings = [/Failed to parse source map/];
-
-    return config;
-}
-
+// config-overrides.js
+module.exports = {
+  // The Webpack config to use when compiling your react app for development or production.
+  webpack: function (config, env) {
+    const overridedConfig = {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        fallback: {
+          ...config.resolve.fallback,
+          fs: false,
+          net: false,
+          path: require.resolve('path-browserify'),
+          stream: require.resolve('stream-browserify'),
+          crypto: require.resolve('crypto-browserify'),
+          http: require.resolve('stream-http'),
+          https: require.resolve('https-browserify'),
+          os: require.resolve('os-browserify/browser'),
+          url: require.resolve('url'),
+        },
+      },
+    };
+    return overridedConfig;
+  },
+};

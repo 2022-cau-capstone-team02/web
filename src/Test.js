@@ -1,5 +1,5 @@
 import { coin, coins, SigningCosmWasmClient } from 'cosmwasm';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const rpcEndpoint = 'http://127.0.0.1:26657';
 const chainId = 'ysip';
@@ -78,7 +78,7 @@ const instantiate_token = async (client, name, symbol, minter) => {
     minter,
     1,
     token_instantiate_msg,
-    'channal',
+    'channel',
     feeMsg,
   );
 
@@ -188,88 +188,96 @@ const allocation = async (client, admin, ico_contract_address, amount) => {
 };
 
 const Test = () => {
-  window.onload = async () => {
-    if (!window.keplr) {
-      alert('Please install keplr extension');
-    } else {
-      await suggest_ysip_chain();
-      window.keplr.enable(chainId);
+  useEffect(() => {
+    (async () => {
+      if (!window.keplr) {
+        alert('Please install keplr extension');
+      } else {
+        await suggest_ysip_chain();
+        window.keplr.enable(chainId);
 
-      const offlineSigner = window.keplr.getOfflineSigner(chainId);
-      const accounts = await offlineSigner.getAccounts();
-      let cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(
-        rpcEndpoint,
-        offlineSigner,
-      );
-      let token_contract_address = await instantiate_token(
-        cosmwasmClient,
-        'channelA',
-        'CHA',
-        accounts[0].address,
-      );
-      console.log('token_contract_address: ');
-      console.log(token_contract_address);
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        const accounts = await offlineSigner.getAccounts();
+        let cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(
+          rpcEndpoint,
+          offlineSigner,
+        );
 
-      let ico_contract_address = await instantiate_ico_contract(
-        cosmwasmClient,
-        accounts[0].address,
-        '100',
-        3000,
-        'channalB',
-        'CHB',
-        '100000000000',
-        'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
-      );
-      console.log('ico_contract_address: ');
-      console.log(ico_contract_address);
+        // let token_contract_address = await instantiate_token(
+        //   cosmwasmClient,
+        //   'channelA',
+        //   'CHA',
+        //   accounts[0].address,
+        // );
+        // console.log('token_contract_address: ');
+        // console.log(token_contract_address);
+        //
+        // let ico_contract_address = await instantiate_ico_contract(
+        //   cosmwasmClient,
+        //   accounts[0].address,
+        //   '100',
+        //   3000,
+        //   'channelB',
+        //   'CHB',
+        //   '100000000000',
+        //   'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
+        // );
+        // console.log('ico_contract_address: ');
+        // console.log(ico_contract_address);
+        //
+        // let fund_channel_result = await fund_channel(
+        //   cosmwasmClient,
+        //   accounts[0].address,
+        //   ico_contract_address,
+        //   100,
+        // );
+        // console.log('fund_channel_result: ');
+        // console.log(fund_channel_result);
+        //
+        // let end_funding_result = await end_funding(
+        //   cosmwasmClient,
+        //   accounts[0].address,
+        //   ico_contract_address,
+        // );
+        // console.log('end_funding_result: ');
+        // console.log(end_funding_result);
+        //
+        // let new_channel_token_address = end_funding_result.logs[0].events[1].attributes[0].value;
+        //
+        // let channel_token_balance = await query_channel_token_balance(
+        //   cosmwasmClient,
+        //   accounts[0].address,
+        //   new_channel_token_address,
+        // );
+        // console.log('channel_token_balance: ');
+        // console.log(channel_token_balance);
+        //
+        // let transfer_fund_result = await transfer_fund(
+        //   cosmwasmClient,
+        //   accounts[0].address,
+        //   ico_contract_address,
+        //   '100',
+        // );
+        // console.log('transfer_fund_result: ');
+        // console.log(transfer_fund_result);
+        //
+        // let allocation_result = await allocation(
+        //   cosmwasmClient,
+        //   accounts[0].address,
+        //   ico_contract_address,
+        //   '1000',
+        // );
+        // console.log('allocation_result: ');
+        // console.log(allocation_result);
+      }
+    })();
+  }, []);
 
-      let fund_channel_result = await fund_channel(
-        cosmwasmClient,
-        accounts[0].address,
-        ico_contract_address,
-        100,
-      );
-      console.log('fund_channel_result: ');
-      console.log(fund_channel_result);
-
-      let end_funding_result = await end_funding(
-        cosmwasmClient,
-        accounts[0].address,
-        ico_contract_address,
-      );
-      console.log('end_funding_result: ');
-      console.log(end_funding_result);
-
-      let new_channel_token_address = end_funding_result.logs[0].events[1].attributes[0].value;
-
-      let channel_token_balance = await query_channel_token_balance(
-        cosmwasmClient,
-        accounts[0].address,
-        new_channel_token_address,
-      );
-      console.log('channel_token_balance: ');
-      console.log(channel_token_balance);
-
-      let transfer_fund_result = await transfer_fund(
-        cosmwasmClient,
-        accounts[0].address,
-        ico_contract_address,
-        '100',
-      );
-      console.log('transfer_fund_result: ');
-      console.log(transfer_fund_result);
-
-      let allocation_result = await allocation(
-        cosmwasmClient,
-        accounts[0].address,
-        ico_contract_address,
-        '1000',
-      );
-      console.log('allocation_result: ');
-      console.log(allocation_result);
-    }
-  };
-  return <div></div>;
+  return (
+    <div style={{ paddingTop: 100 }}>
+      <span>123</span>
+    </div>
+  );
 };
 
 export default Test;
