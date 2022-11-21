@@ -1,5 +1,6 @@
 import { coin, coins, SigningCosmWasmClient } from 'cosmwasm';
 import React, { useEffect } from 'react';
+import { SigningStargateClient } from '@cosmjs/stargate';
 
 const rpcEndpoint = 'http://127.0.0.1:26657';
 const chainId = 'ysip';
@@ -202,7 +203,6 @@ const Test = () => {
           rpcEndpoint,
           offlineSigner,
         );
-
         // let token_contract_address = await instantiate_token(
         //   cosmwasmClient,
         //   'channelA',
