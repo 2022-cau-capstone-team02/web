@@ -13,6 +13,7 @@ import Liquidity from './Liquidity';
 import Funding from './Funding';
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from '@chakra-ui/react';
+import FundingAdmin from './FundingAdmin';
 
 const CustomContainer = styled(Container)`
   position: relative;
@@ -45,6 +46,7 @@ const App = ({ history }) => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/test" element={<Test />} />
             <Route path="/funding" element={<Funding />} />
+            <Route path="/funding/admin" element={<FundingAdmin />} />
             <Route path="/liquidity" element={<Liquidity />} />
           </Routes>
         </CustomRow>
