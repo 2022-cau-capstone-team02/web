@@ -7,6 +7,7 @@ import {
   REST_END_POINT,
   RPC_END_POINT,
 } from '../constants';
+import { uuidv4 } from '../utils/common';
 
 const feeMsg = {
   amount: [
@@ -84,7 +85,7 @@ export const instantiateToken = async (client, tokenName, tokenSymbol, minter) =
 
 export const instantiateIcoContract = async (
   client,
-  admin,
+  userAddress,
   targetFunding,
   deadline,
   tokenName,
@@ -95,15 +96,24 @@ export const instantiateIcoContract = async (
   const message = {
     target_funding: targetFunding,
     deadline: deadline,
-    token_code_id: 1,
+    token_code_id: 9,
     token_name: tokenName,
     token_symbol: tokenSymbol,
     channel_token_amount: channelTokenAmount,
     recipient: recipient,
   };
 
-  const result = await client.instantiate(admin, 2, message, 'ico', feeMsg);
+  const result = await client.instantiate(userAddress, 10, message, 'ico', feeMsg);
   return result.contractAddress;
+};
+
+export const endFunding = async (client, admin, icoContractAddress) => {
+  const message = {
+    end_funding: {},
+  };
+
+  const result = await client.execute(admin, icoContractAddress, message, feeMsg, null, []);
+  return result;
 };
 
 // 사용자가 특정한 채널 컨트랙트에 펀딩을 하는 트랜잭션 (개인이 ICO에 돈을 넣는 것)
@@ -112,8 +122,33 @@ export const fundingChannel = async (client, userAddress, icoAddress, amount) =>
     fund_channel_token: {},
   };
   return await client.execute(userAddress, icoAddress, message, feeMsg, null, [
-    coin(amount, 'ukrw'),
+    coin(amount, COIN_MINIMAL_DENOM),
   ]);
+};
+
+export const icoInfoQuery = async (client, address) => {
+  const message = {
+    ico_info: {},
+  };
+  return await client.queryContractSmart(address, message);
+};
+
+// 내가 일정 ICO 컨트랙트에 돈을 얼마 넣었는지
+export const myFundingAmountQuery = async (client, userAddress, address) => {
+  const message = {
+    funding_amount: {
+      addr: userAddress,
+    },
+  };
+  return await client.queryContractSmart(address, message);
+};
+
+// 일정 ICO 컨트랙트가 모아들인 총 금액
+export const totalFundingAmountQuery = async (client, address) => {
+  const message = {
+    total_funding_amount: {},
+  };
+  return await client.queryContractSmart(address, message);
 };
 
 // 관리자가 instantiate 할 때 지정한 채널 주인에게 펀딩 금액 전송
@@ -127,8 +162,16 @@ export const transferFunding = async (client, admin, icoContractAddress, amount)
   return await client.execute(admin, icoContractAddress, message, feeMsg, null, []);
 };
 
+// ICO 성공한 토큰의 어드레스 주소
+export const tokenAddressQuery = async (client, icoContractAddress) => {
+  const message = {
+    token_address: {},
+  };
+  return await client.queryContractSmart(icoContractAddress, message);
+};
+
 //
-export const queryChannelTokenBalance = async (client, accountAddress, tokenAddress) => {
+export const channelTokenBalanceQuery = async (client, accountAddress, tokenAddress) => {
   const message = {
     balance: {
       address: accountAddress,
