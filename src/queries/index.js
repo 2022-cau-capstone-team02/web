@@ -1,14 +1,69 @@
 import { coin } from 'cosmwasm';
+import {
+  CHAIN_ID,
+  CHAIN_NAME,
+  COIN_DENOM,
+  COIN_MINIMAL_DENOM,
+  REST_END_POINT,
+  RPC_END_POINT,
+} from '../constants';
 
 const feeMsg = {
   amount: [
     {
-      denom: 'ukrw',
+      denom: COIN_MINIMAL_DENOM,
       amount: '1',
     },
   ],
   // gas는 항상 이만큼 사용되는 것이 아니라 상한선임
   gas: '450000',
+};
+
+export const suggestYsipChain = async () => {
+  await window.keplr.experimentalSuggestChain({
+    chainId: CHAIN_ID,
+    chainName: CHAIN_NAME,
+    rpc: RPC_END_POINT,
+    rest: REST_END_POINT,
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: {
+      bech32PrefixAccAddr: CHAIN_ID,
+      bech32PrefixAccPub: CHAIN_ID + 'pub',
+      bech32PrefixValAddr: CHAIN_ID + 'valoper',
+      bech32PrefixValPub: CHAIN_ID + 'valoperpub',
+      bech32PrefixConsAddr: CHAIN_ID + 'valcons',
+      bech32PrefixConsPub: CHAIN_ID + 'valconspub',
+    },
+    currencies: [
+      {
+        coinDenom: COIN_DENOM,
+        coinMinimalDenom: COIN_MINIMAL_DENOM,
+        coinDecimals: 6,
+        // coinGeckoId: 'krw',
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: COIN_DENOM,
+        coinMinimalDenom: COIN_MINIMAL_DENOM,
+        coinDecimals: 6,
+        // coinGeckoId: 'krw',
+        gasPriceStep: {
+          low: 0.01,
+          average: 0.025,
+          high: 0.04,
+        },
+      },
+    ],
+    stakeCurrency: {
+      coinDenom: COIN_DENOM,
+      coinMinimalDenom: COIN_MINIMAL_DENOM,
+      coinDecimals: 6,
+      // coinGeckoId: 'skrw',
+    },
+  });
 };
 
 export const instantiateToken = async (client, tokenName, tokenSymbol, minter) => {
@@ -92,7 +147,7 @@ export const allocation = async (client, admin, icoContractAddress, amount) => {
     },
   };
   return await client.execute(admin, icoContractAddress, message, feeMsg, null, [
-    coin(amount, 'ukrw'),
+    coin(amount, COIN_MINIMAL_DENOM),
   ]);
 };
 
