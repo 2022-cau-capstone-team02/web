@@ -47,6 +47,8 @@ export const instantiateIcoContract = async (
     recipient: recipient,
   };
 
+  console.log(message);
+
   const result = await client.instantiate(admin, 2, message, 'ico', feeMsg);
   return result.contractAddress;
 };
@@ -92,4 +94,13 @@ export const allocation = async (client, admin, icoContractAddress, amount) => {
   return await client.execute(admin, icoContractAddress, message, feeMsg, null, [
     coin(amount, 'ukrw'),
   ]);
+};
+
+// 채널의 현재 펀딩 금액 확인 가능
+export const totalFundingAmount = async (client, address) => {
+  const message = {
+    total_funding_amount: {},
+  };
+  console.log(message);
+  return await client.queryContractSmart(client, address, message);
 };

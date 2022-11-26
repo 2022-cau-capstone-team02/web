@@ -13,6 +13,7 @@ import Liquidity from './Liquidity';
 import Funding from './Funding';
 // 1. import `ChakraProvider` component
 import { ChakraProvider } from '@chakra-ui/react';
+import Youtuber from './Youtuber';
 
 const CustomContainer = styled(Container)`
   position: relative;
