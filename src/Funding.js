@@ -2,16 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import {
-  Box,
-  Button,
-  CircularProgress,
-  Flex,
-  Heading,
-  Image,
-  Input,
-  Stack,
-} from '@chakra-ui/react';
-import {
   fundingChannel,
   totalFundingAmountQuery,
   icoInfoQuery,
@@ -20,101 +10,61 @@ import {
   channelTokenBalanceQuery,
 } from './queries';
 import useClient from './hooks/useClient';
-import { COIN_MINIMAL_DENOM } from './constants';
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
-
-const icoChannelList = [
-  {
-    id: 0,
-    name: 'Channel A',
-    src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
-    ticker: 'CHA',
-    address: 'ysip19wfdqvt2rfhffpl0unulepjuwcgf0ycz3fu448u2v6f45j2c7fvqysrygz',
-  },
-  // {
-  //   id: 1,
-  //   name: 'Channel B',
-  //   src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
-  //   ticker: 'CHB',
-  //   address: 'ysip1aakfpghcanxtc45gpqlx8j3rq0zcpyf49qmhm9mdjrfx036h4z5sj0pstt',
-  // },
-];
-
-// ysip1vhndln95yd7rngslzvf6sax6axcshkxqpmpr886ntelh28p9ghuqyrsx7m
+import { COIN_MINIMAL_DENOM, UPPERCASE_COIN_MINIMAL_DENOM, icoChannelList } from './constants';
+import { useRecoilState } from 'recoil';
+import { userAssetAtom, userFundingAtom } from './atoms';
 
 const Funding = () => {
   const { client, stargateClient, userAddress } = useClient();
-  const [availableKrw, setAvailableKrw] = useState();
+  const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
 
   useEffect(() => {
     if (!stargateClient || !userAddress) return;
 
     (async () => {
       const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
-      setAvailableKrw(balance);
+      setUserAsset((prev) => {
+        return {
+          ...prev,
+          [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
+        };
+      });
     })();
   }, [stargateClient, userAddress]);
-
-  useEffect(() => {
-    if (!client || !userAddress) return;
-
-    (async () => {
-      const result = await tokenAddressQuery(
-        client,
-        'ysip19wfdqvt2rfhffpl0unulepjuwcgf0ycz3fu448u2v6f45j2c7fvqysrygz',
-      );
-      const tokenAddress = result.address;
-      const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
-      console.log(newResult, result);
-    })();
-  }, [client, userAddress]);
 
   return (
     <React.Fragment>
       <Container>
-        <div>투자 가능한 금액 : {availableKrw?.amount} uKRW</div>
-        <Stack>
-          <Box>
+        <div>
+          투자 가능한 금액 : {userAsset[UPPERCASE_COIN_MINIMAL_DENOM]}{' '}
+          {UPPERCASE_COIN_MINIMAL_DENOM}
+        </div>
+        <div>
+          <div>
             {icoChannelList.map((icoChannel) => {
               return (
                 <IcoChannel
                   key={icoChannel.address}
                   icoChannel={icoChannel}
                   userAddress={userAddress}
-                  availableKrw={availableKrw}
-                  setAvailableKrw={setAvailableKrw}
+                  availableKrw={userAsset[UPPERCASE_COIN_MINIMAL_DENOM]}
                   client={client}
                   stargateClient={stargateClient}
                 />
               );
             })}
-          </Box>
-        </Stack>
+          </div>
+        </div>
       </Container>
     </React.Fragment>
   );
 };
 
-const IcoChannel = ({
-  icoChannel,
-  availableKrw,
-  client,
-  stargateClient,
-  setAvailableKrw,
-  userAddress,
-}) => {
-  const [totalFundingAmount, setTotalFundingAmount] = useState();
-  const [myFundingAmount, setMyFundingAmount] = useState();
+const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddress }) => {
+  const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
+  const [userFunding, setUserFunding] = useRecoilState(userFundingAtom);
+
+  const [icoChannelTotalFundingAmount, setIcoChannelTotalFundingAmount] = useState();
   const [icoInfo, setIcoInfo] = useState();
   const [isFundingChannelLoading, setIsFundingChannelLoading] = useState(false);
   const { control, handleSubmit, setValue } = useForm({
@@ -127,11 +77,11 @@ const IcoChannel = ({
     if (!client) return;
 
     (async () => {
-      const totalFundingAmountQueryResult = await totalFundingAmountQuery(
+      const icoChannelTotalFundingAmountQueryResult = await totalFundingAmountQuery(
         client,
         icoChannel.address,
       );
-      setTotalFundingAmount(totalFundingAmountQueryResult);
+      setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
 
       const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.address);
       setIcoInfo(icoInfoQueryResult);
@@ -141,42 +91,64 @@ const IcoChannel = ({
         userAddress,
         icoChannel.address,
       );
-      setMyFundingAmount(myFundingAmountQueryResult);
+      setUserFunding((prev) => {
+        return {
+          ...prev,
+          [icoChannel.ticker]: {
+            amount: myFundingAmountQueryResult.amount,
+            base: UPPERCASE_COIN_MINIMAL_DENOM,
+          },
+        };
+      });
+
+      const result = await tokenAddressQuery(client, icoChannel.address);
+      const tokenAddress = result.address;
+      const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
+      setUserAsset((props) => {
+        return {
+          ...props,
+          [icoChannel.ticker]: newResult.balance,
+        };
+      });
     })();
   }, [client]);
 
-  console.log(
-    Number(totalFundingAmount?.amount),
-    Number(icoInfo?.target_funding_amount),
-    Math.floor(Number(totalFundingAmount?.amount) / Number(icoInfo?.target_funding_amount)),
-  );
-
   return (
-    <Flex alignItems={'center'} flexDirection={'row'}>
-      <Box mr={8}>
-        <Image rounded={'md'} src={icoChannel.src} />
-      </Box>
-      <Box>
-        <Box mb={4}>
-          <Heading>
+    <div alignItems={'center'} flexDirection={'row'}>
+      <div mr={8}>
+        <img rounded={'md'} src={icoChannel.src} />
+      </div>
+      <div>
+        <div mb={4}>
+          <h1>
             {icoChannel.name} ({icoChannel.ticker})
-          </Heading>
-        </Box>
-        <Flex mb={4} alignItems={'center'}>
-          <CircularProgress
-            mr={4}
-            value={Math.floor(
-              Number(totalFundingAmount?.amount) / Number(icoInfo?.target_funding_amount),
+          </h1>
+        </div>
+        <div mb={4} alignItems={'center'}>
+          {/*<CircularProgress*/}
+          {/*  mr={4}*/}
+          {/*  value={*/}
+          {/*    Math.floor(*/}
+          {/*      Number(icoChannelTotalFundingAmount?.amount) /*/}
+          {/*        Number(icoInfo?.target_funding_amount),*/}
+          {/*    ) * 100*/}
+          {/*  }*/}
+          {/*  size={'120px'}*/}
+          {/*/>*/}
+          <div flexDirection={'column'}>
+            <div>현재까지 모집 금액 : {icoChannelTotalFundingAmount?.amount} uKRW</div>
+            {userAsset?.[icoChannel.ticker] && (
+              <div>
+                내가 보유한 수량 : {userAsset[icoChannel.ticker]} {icoChannel.ticker}
+              </div>
             )}
-            size={'120px'}
-          />
-          <Flex flexDirection={'column'}>
-            <Box>현재까지 모집 금액 : {totalFundingAmount?.amount} uKRW</Box>
-            <Box>내가 투자한 금액 : {myFundingAmount?.amount} uKRW</Box>
-            <Box>총 모집 금액 : {icoInfo?.target_funding_amount} uKRW</Box>
-          </Flex>
-        </Flex>
-
+            <div>
+              내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount}{' '}
+              {userFunding[icoChannel.ticker]?.base}
+            </div>
+            <div>총 모집 금액 : {icoInfo?.target_funding_amount} uKRW</div>
+          </div>
+        </div>
         <Controller
           name="fundingAmount"
           control={control}
@@ -184,8 +156,7 @@ const IcoChannel = ({
             required: true,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              mb={4}
+            <input
               type={'number'}
               max={availableKrw ? Number(availableKrw?.amount) : undefined}
               value={value}
@@ -194,9 +165,7 @@ const IcoChannel = ({
             />
           )}
         />
-        <Button
-          w={'100%'}
-          isLoading={isFundingChannelLoading}
+        <button
           onClick={() => {
             handleSubmit(async (data) => {
               const { fundingAmount } = data;
@@ -205,20 +174,33 @@ const IcoChannel = ({
                 await fundingChannel(client, userAddress, icoChannel.address, fundingAmount);
 
                 const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
-                setAvailableKrw(balance);
+                setUserAsset((prev) => {
+                  return {
+                    ...prev,
+                    [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
+                  };
+                });
 
-                const totalFundingAmountQueryResult = await totalFundingAmountQuery(
+                const icoChannelTotalFundingAmountQueryResult = await totalFundingAmountQuery(
                   client,
                   icoChannel.address,
                 );
-                setTotalFundingAmount(totalFundingAmountQueryResult);
+                setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
 
                 const myFundingAmountQueryResult = await myFundingAmountQuery(
                   client,
                   userAddress,
                   icoChannel.address,
                 );
-                setMyFundingAmount(myFundingAmountQueryResult);
+                setUserFunding((prev) => {
+                  return {
+                    ...prev,
+                    [icoChannel.ticker]: {
+                      amount: myFundingAmountQueryResult.amount,
+                      base: UPPERCASE_COIN_MINIMAL_DENOM,
+                    },
+                  };
+                });
 
                 setValue('fundingAmount', 0);
               } finally {
@@ -226,12 +208,11 @@ const IcoChannel = ({
               }
             })();
           }}
-          colorScheme="teal"
         >
           투자하기
-        </Button>
-      </Box>
-    </Flex>
+        </button>
+      </div>
+    </div>
   );
 };
 

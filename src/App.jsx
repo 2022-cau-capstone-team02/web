@@ -11,11 +11,10 @@ import Progressbar from './components/ProgressBar';
 import Test from './Test';
 import Liquidity from './Liquidity';
 import Funding from './Funding';
-// 1. import `ChakraProvider` component
-import { ChakraProvider } from '@chakra-ui/react';
 import Youtuber from './Youtuber';
 import FundingAdmin from './FundingAdmin';
 import Dashboard from './Dashboard';
+import { RecoilRoot } from 'recoil';
 
 const CustomContainer = styled(Container)`
   position: relative;
@@ -34,7 +33,7 @@ const CustomRow = styled(Row)`
 const App = ({ history }) => {
   const [menu, setMenu] = useState(false);
   return (
-    <ChakraProvider>
+    <RecoilRoot>
       <CustomContainer fluid>
         <Progressbar />
         <Sidebar menu={menu} setMenu={setMenu} />
@@ -55,7 +54,7 @@ const App = ({ history }) => {
           </Routes>
         </CustomRow>
       </CustomContainer>
-    </ChakraProvider>
+    </RecoilRoot>
   );
 };
 
