@@ -327,7 +327,7 @@ const EndFunding = ({ client, userAddress }) => {
                 client,
                 userAddress,
                 icoContractAddress,
-                (25000).toString(10),
+                (25000000).toString(10),
               );
               console.log(result);
             } finally {
