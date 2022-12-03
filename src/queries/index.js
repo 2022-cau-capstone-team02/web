@@ -191,15 +191,3 @@ export const allocation = async (client, admin, icoContractAddress, amount) => {
     coin(amount, COIN_MINIMAL_DENOM),
   ]);
 };
-<<<<<<< HEAD
-
-// 채널의 현재 펀딩 금액 확인 가능
-export const totalFundingAmount = async (client, address) => {
-  const message = {
-    total_funding_amount: {},
-  };
-  console.log(message);
-  return await client.queryContractSmart(address, message);
-};
-=======
->>>>>>> 539d7dffbbaebb5093a99c2368b96d91daf5fe6a

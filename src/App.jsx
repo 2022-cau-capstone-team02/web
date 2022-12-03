@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router';
 import NavBar from './components/Navbar';
 import Info from './Info';
 import Exchange from './Exchange';
-import Dashboard from './Dashboard';
+import Investor from './Investor';
 import Sidebar from './components/Sidebar';
 import Progressbar from './components/ProgressBar';
 import Test from './Test';
@@ -15,6 +15,7 @@ import Funding from './Funding';
 import { ChakraProvider } from '@chakra-ui/react';
 import Youtuber from './Youtuber';
 import FundingAdmin from './FundingAdmin';
+import Dashboard from './Dashboard';
 
 const CustomContainer = styled(Container)`
   position: relative;
@@ -44,8 +45,9 @@ const App = ({ history }) => {
           <Routes>
             <Route path="/" element={<Info />} />
             <Route path="/exchange" element={<Exchange />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/test" element={<Test />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/investor" element={<Investor />} />
             <Route path="/dashboard/youtuber" element={<Youtuber />} />
             <Route path="/funding" element={<Funding />} />
             <Route path="/funding/admin" element={<FundingAdmin />} />
