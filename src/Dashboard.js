@@ -64,7 +64,9 @@ const Dashboard = () => {
           }}
         >
           <Image src={process.env.PUBLIC_URL + '/image/investor.png'} />
-          <p style={{ fontSize: '3rem', color: '#202121' }}>투자자</p>
+          <p style={{ fontSize: '3rem', color: '#202121' }}>
+            <b>투자자</b>
+          </p>
         </InvestorPath>
         <YoutuberPath
           onClick={() => {
@@ -72,7 +74,9 @@ const Dashboard = () => {
           }}
         >
           <Image src={process.env.PUBLIC_URL + '/image/youtube.png'} />
-          <p style={{ fontSize: '3rem', color: '#202121' }}>유튜버</p>
+          <p style={{ fontSize: '3rem', color: '#202121' }}>
+            <b>유튜버</b>
+          </p>
         </YoutuberPath>
       </StyledContainer>
       <div style={{ padding: '50px' }} />

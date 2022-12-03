@@ -5,15 +5,17 @@ import { coin, coins, SigningCosmWasmClient } from 'cosmwasm';
 import { SigningStargateClient } from '@cosmjs/stargate';
 import { totalFundingAmountQuery, instantiateIcoContract, fundingChannel } from './queries';
 import useClient from './hooks/useClient';
+import { useRecoilState } from 'recoil';
+import { channelListAtom, userAssetAtom, userFundingAtom } from './atoms';
 
 const rpcEndpoint = 'http://localhost:26657';
 const chainId = 'ysip';
 
 const icoChannelList = {
   id: 0,
-  name: '곽튜브KWAKTUBE',
-  src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
-  ticker: 'KWAK',
+  name: '방성원',
+  src: 'https://yt3.ggpht.com/ytc/AMLnZu-aO9vHmg6ClLIweCyo5auE1HhpGz-YZKOa6m7h0Q=s176-c-k-c0x00ffffff-no-rj',
+  ticker: 'KAPU',
   address: '123123121233',
   funding: 252310002324,
 };
@@ -21,48 +23,33 @@ const icoChannelList = {
 const Youtuber = () => {
   const { client, stargateClient, userAddress } = useClient();
   const [fundingAmount, setFundingAmount] = useState();
+  const [channelList, setChannelList] = useRecoilState(channelListAtom);
+  const youtuber = channelList[0];
+  console.log(youtuber);
   useEffect(() => {
-    if (!stargateClient || !userAddress) return;
+    if (!client) return;
     (async () => {
-      let ico_contract_address = await instantiateIcoContract(
+      const currentFundingAmount = await totalFundingAmountQuery(
         client,
-        userAddress,
-        '100',
-        3000,
-        'channelB',
-        'CHB',
-        '100000000000',
-        'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
+        youtuber.icoContractAddress,
       );
-      console.log(ico_contract_address);
-      console.log(userAddress);
-
-      const fund = await fundingChannel(client, userAddress, ico_contract_address, 100);
-      console.log(fund);
-      const currentFundingAmount = await totalFundingAmountQuery(client, ico_contract_address);
       console.log(currentFundingAmount);
       setFundingAmount(currentFundingAmount);
     })();
-  }, [stargateClient, userAddress]);
+  }, [client, youtuber]);
   return (
     <StyledContainer>
       <Wrapper>
         <YoutuberDashboard>
-          <ChannelImg src={icoChannelList.src} />
+          <ChannelImg src={youtuber.src} />
           <ChannelInfo>
             <b>
-              <p style={{ fontSize: '1.2rem' }}>{icoChannelList.name} 채널</p>
+              <p style={{ fontSize: '1.5rem' }}>{youtuber.name}님의 채널</p>
             </b>
             <FundingInfo>
-              <p style={{ fontSize: '1.2rem' }}>펀딩 금액</p>
-              <p style={{ fontSize: '2rem' }}>
-                <b>
-                  {fundingAmount
-                    ? (parseFloat(fundingAmount.amount) / 1000000)
-                        .toString()
-                        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',') + 'KRW'
-                    : null}
-                </b>
+              <p style={{ fontSize: '1.5rem' }}>펀딩 금액</p>
+              <p style={{ fontSize: '2.5rem' }}>
+                <b>{fundingAmount ? fundingAmount.amount : null}</b>
               </p>
             </FundingInfo>
           </ChannelInfo>
@@ -91,7 +78,7 @@ const Wrapper = styled.div`
 const YoutuberDashboard = styled.div`
   display: flex;
   border-radius: 25px;
-  padding: 20px;
+  padding: 50px;
   background-color: aliceblue;
 `;
 
