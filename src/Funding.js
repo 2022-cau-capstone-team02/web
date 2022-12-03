@@ -10,13 +10,14 @@ import {
   channelTokenBalanceQuery,
 } from './queries';
 import useClient from './hooks/useClient';
-import { COIN_MINIMAL_DENOM, UPPERCASE_COIN_MINIMAL_DENOM, icoChannelList } from './constants';
-import { useRecoilState } from 'recoil';
-import { userAssetAtom, userFundingAtom } from './atoms';
+import { COIN_MINIMAL_DENOM, UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { channelListAtom, userAssetAtom, userFundingAtom } from './atoms';
 
 const Funding = () => {
   const { client, stargateClient, userAddress } = useClient();
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
+  const channelList = useRecoilValue(channelListAtom);
 
   useEffect(() => {
     if (!stargateClient || !userAddress) return;
@@ -41,11 +42,11 @@ const Funding = () => {
         </div>
         <div>
           <div>
-            {icoChannelList.map((icoChannel) => {
+            {channelList.map((channel) => {
               return (
                 <IcoChannel
-                  key={icoChannel.address}
-                  icoChannel={icoChannel}
+                  key={channel.icoContractAddress}
+                  icoChannel={channel}
                   userAddress={userAddress}
                   availableKrw={userAsset[UPPERCASE_COIN_MINIMAL_DENOM]}
                   client={client}
@@ -73,23 +74,27 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
     },
   });
 
+  console.log(userAsset, userFunding, icoInfo, icoChannelTotalFundingAmount);
+
   useEffect(() => {
     if (!client) return;
 
     (async () => {
       const icoChannelTotalFundingAmountQueryResult = await totalFundingAmountQuery(
         client,
-        icoChannel.address,
+        icoChannel.icoContractAddress,
       );
       setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
 
-      const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.address);
+      const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.icoContractAddress);
       setIcoInfo(icoInfoQueryResult);
+
+      console.log(icoInfo);
 
       const myFundingAmountQueryResult = await myFundingAmountQuery(
         client,
         userAddress,
-        icoChannel.address,
+        icoChannel.icoContractAddress,
       );
       setUserFunding((prev) => {
         return {
@@ -101,7 +106,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         };
       });
 
-      const result = await tokenAddressQuery(client, icoChannel.address);
+      const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
       const tokenAddress = result.address;
       const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
       setUserAsset((props) => {
@@ -114,17 +119,17 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
   }, [client]);
 
   return (
-    <div alignItems={'center'} flexDirection={'row'}>
-      <div mr={8}>
-        <img rounded={'md'} src={icoChannel.src} />
+    <div>
+      <div>
+        <img src={icoChannel.src} />
       </div>
       <div>
-        <div mb={4}>
+        <div>
           <h1>
             {icoChannel.name} ({icoChannel.ticker})
           </h1>
         </div>
-        <div mb={4} alignItems={'center'}>
+        <div>
           {/*<CircularProgress*/}
           {/*  mr={4}*/}
           {/*  value={*/}
@@ -135,7 +140,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
           {/*  }*/}
           {/*  size={'120px'}*/}
           {/*/>*/}
-          <div flexDirection={'column'}>
+          <div>
             <div>현재까지 모집 금액 : {icoChannelTotalFundingAmount?.amount} uKRW</div>
             {userAsset?.[icoChannel.ticker] && (
               <div>
@@ -171,7 +176,12 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
               const { fundingAmount } = data;
               setIsFundingChannelLoading(true);
               try {
-                await fundingChannel(client, userAddress, icoChannel.address, fundingAmount);
+                await fundingChannel(
+                  client,
+                  userAddress,
+                  icoChannel.icoContractAddress,
+                  fundingAmount,
+                );
 
                 const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
                 setUserAsset((prev) => {
@@ -183,14 +193,14 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
 
                 const icoChannelTotalFundingAmountQueryResult = await totalFundingAmountQuery(
                   client,
-                  icoChannel.address,
+                  icoChannel.icoContractAddress,
                 );
                 setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
 
                 const myFundingAmountQueryResult = await myFundingAmountQuery(
                   client,
                   userAddress,
-                  icoChannel.address,
+                  icoChannel.icoContractAddress,
                 );
                 setUserFunding((prev) => {
                   return {

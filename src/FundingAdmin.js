@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
-import { createPool, endFunding, instantiateIcoContract, transferFunding } from './queries';
+import {
+  increaseAllowance,
+  instantiateIcoContract,
+  provideLiquidity,
+  transferFunding,
+} from './queries';
 import useClient from './hooks/useClient';
+import { useRecoilState } from 'recoil';
+import { channelListAtom } from './atoms';
 
 const FundingAdmin = () => {
   const { client, userAddress } = useClient();
   const [isInstantiateIcoContractLoading, setIsInstantiateIcoContractLoading] = useState(false);
+  const [createdIcoContractAddress, setCreatedIcoContractAddress] = useState('');
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -23,8 +31,8 @@ const FundingAdmin = () => {
       <Container>
         <div>
           <p>관리자 영역</p>
-          <div flexDirection={'row'}>
-            <div flexDirection={'column'} mr={4}>
+          <div>
+            <div>
               Step1. ICO 컨트렉트를 생성합니다.
               <Controller
                 name="fundingAmount"
@@ -77,7 +85,6 @@ const FundingAdmin = () => {
                 )}
               />
               <button
-                isLoading={isInstantiateIcoContractLoading}
                 onClick={() => {
                   handleSubmit(async (data) => {
                     setIsInstantiateIcoContractLoading(true);
@@ -96,6 +103,7 @@ const FundingAdmin = () => {
                         recipient,
                       );
                       console.log(result);
+                      setCreatedIcoContractAddress(result);
                     } finally {
                       setIsInstantiateIcoContractLoading(false);
                     }
@@ -104,6 +112,14 @@ const FundingAdmin = () => {
               >
                 ICO 컨트랙트 생성
               </button>
+              {createdIcoContractAddress && (
+                <div>
+                  생성된 ICO Contract 주소 : {createdIcoContractAddress}
+                  <button onClick={() => navigator.clipboard.writeText(createdIcoContractAddress)}>
+                    복사
+                  </button>
+                </div>
+              )}
             </div>
             <EndFunding client={client} userAddress={userAddress} />
           </div>
@@ -114,6 +130,7 @@ const FundingAdmin = () => {
 };
 
 const EndFunding = ({ client, userAddress }) => {
+  const [channelList, setChannelList] = useRecoilState(channelListAtom);
   const [isEndFundingLoading, setIsEndFundingLoading] = useState(false);
   const [isTransferFundingLoading, setIsTransferFundingLoading] = useState(false);
   const { control, handleSubmit } = useForm({
@@ -122,8 +139,10 @@ const EndFunding = ({ client, userAddress }) => {
     },
   });
 
+  console.log(channelList);
+
   return (
-    <div flexDirection={'column'}>
+    <div>
       Step3. ICO 마무리, 코인 개수를 모집된 금액에 따라 배분합니다
       <Controller
         name="icoContractAddress"
@@ -141,17 +160,56 @@ const EndFunding = ({ client, userAddress }) => {
             setIsEndFundingLoading(true);
             const { icoContractAddress } = data;
             try {
-              const endFundingResult = await endFunding(client, userAddress, icoContractAddress);
-              console.log(endFundingResult);
-              const tokenContractAddress = endFundingResult.logs[0].events[1].attributes[0].value;
-              const createPoolResult = await createPool(
+              // const endFundingResult = await endFunding(client, userAddress, icoContractAddress);
+              // console.log('endFundingResult', endFundingResult);
+              // const tokenAddress = endFundingResult.logs[0].events[1].attributes[0].value;
+              const tokenAddress =
+                'ysip12njsx22ne73swjqxxn5e7xtc2n95y2aw8r73cqdth0g86way24cqzkjlar';
+              //
+              // const createPoolResult = await createPool(
+              //   client,
+              //   userAddress,
+              //   tokenAddress,
+              //   '0.1',
+              //   '0.2',
+              // );
+              //
+              // console.log('createPoolResult', createPoolResult);
+              // const poolAddress = createPoolResult.contractAddress;
+              const poolAddress = 'ysip1fjvnr96n8kcl6d8qzr74klqjl9wakmqv5c9hzvqwr904kp34ye8qu6zt9z';
+
+              // setChannelList((prev) => {
+              //   let newChannelList = prev;
+              //   const currentChannelIndex = findIndex(
+              //     prev,
+              //     (channel) => channel.icoContractAddress === icoContractAddress,
+              //   );
+              //   newChannelList[currentChannelIndex] = {
+              //     ...newChannelList[currentChannelIndex],
+              //     tokenAddress,
+              //     poolAddress,
+              //   };
+              //   return newChannelList;
+              // });
+              const tokenAmount = '5';
+              const increaseAllowanceResult = await increaseAllowance(
                 client,
                 userAddress,
-                tokenContractAddress,
-                '0.1',
-                '0.2',
+                tokenAddress,
+                poolAddress,
+                tokenAmount,
               );
-              console.log(createPoolResult);
+              console.log('increaseAllowanceResult', increaseAllowanceResult);
+
+              const provideLiquidityResult = await provideLiquidity(
+                client,
+                userAddress,
+                tokenAddress,
+                poolAddress,
+                '100000',
+                tokenAmount,
+              );
+              console.log('provideLiquidityResult', provideLiquidityResult);
             } finally {
               setIsEndFundingLoading(false);
             }
@@ -161,9 +219,6 @@ const EndFunding = ({ client, userAddress }) => {
         펀딩 종료
       </button>
       <button
-        colorScheme="teal"
-        isLoading={isTransferFundingLoading}
-        w={'100%'}
         onClick={() => {
           handleSubmit(async (data) => {
             setIsTransferFundingLoading(true);

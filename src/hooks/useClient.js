@@ -4,13 +4,12 @@ import { SigningCosmWasmClient } from 'cosmwasm';
 import {
   CHAIN_ID,
   COIN_MINIMAL_DENOM,
-  icoChannelList,
   RPC_END_POINT,
   UPPERCASE_COIN_MINIMAL_DENOM,
 } from '../constants';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { useRecoilState } from 'recoil';
-import { userAssetAtom } from '../atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { channelListAtom, userAssetAtom } from '../atoms';
 import forEach from 'lodash/forEach';
 
 const useClient = () => {
@@ -18,6 +17,7 @@ const useClient = () => {
   const [userAddress, setUserAddress] = useState();
   const [stargateClient, setStargateClient] = useState();
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
+  const channelList = useRecoilValue(channelListAtom);
 
   useEffect(() => {
     (async () => {
@@ -48,8 +48,8 @@ const useClient = () => {
           };
         });
 
-        forEach(icoChannelList, async (icoChannel) => {
-          const result = await tokenAddressQuery(client, icoChannel.address);
+        forEach(channelList, async (icoChannel) => {
+          const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
           const tokenAddress = result.address;
           const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
           setUserAsset((props) => {

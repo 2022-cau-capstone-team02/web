@@ -19,7 +19,7 @@ const feeMsg = {
     },
   ],
   // gas는 항상 이만큼 사용되는 것이 아니라 상한선임
-  gas: '450000',
+  gas: '600000',
 };
 
 export const suggestYsipChain = async () => {
@@ -195,16 +195,20 @@ export const allocation = async (client, admin, icoContractAddress, amount) => {
   ]);
 };
 
-export const createPool = async (
-  client,
-  admin,
-  tokenContractAddress,
-  protocolFeePercent,
-  lpFeePercent,
-) => {
+export const mint = async (client, admin, tokenAddress) => {
+  const message = {
+    mint: {
+      recipient: admin,
+      amount: '10000',
+    },
+  };
+
+  return await client.execute(admin, tokenAddress, message, feeMsg, null, []);
+};
+export const createPool = async (client, admin, tokenAddress, protocolFeePercent, lpFeePercent) => {
   const message = {
     asset_infos: [
-      { token: { contract_addr: tokenContractAddress } },
+      { token: { contract_addr: tokenAddress } },
       { native_token: { denom: COIN_MINIMAL_DENOM } },
     ],
     token_code_id: TOKEN_CODE_ID,
@@ -214,4 +218,57 @@ export const createPool = async (
   };
 
   return await client.instantiate(admin, PAIR_CODE_ID, message, 'pair', feeMsg);
+};
+
+export const liquidityQuery = async (client, tokenAddress) => {
+  const message = {
+    liquidity: {},
+  };
+  return await client.queryContractSmart(tokenAddress, message);
+};
+
+export const pairQuery = async (client, tokenAddress) => {
+  const message = {
+    pair: {},
+  };
+  return await client.queryContractSmart(tokenAddress, message);
+};
+
+export const provideLiquidity = async (
+  client,
+  admin,
+  tokenAddress,
+  poolAddress,
+  uKrwAmount,
+  tokenAmount,
+) => {
+  const message = {
+    provide_liquidity: {
+      assets: [
+        {
+          info: { token: { contract_addr: tokenAddress } },
+          amount: tokenAmount,
+        },
+        {
+          info: { native_token: { denom: COIN_MINIMAL_DENOM } },
+          amount: uKrwAmount,
+        },
+      ],
+    },
+  };
+
+  return await client.execute(admin, poolAddress, message, feeMsg, null, [
+    coin(uKrwAmount, COIN_MINIMAL_DENOM),
+  ]);
+};
+
+export const increaseAllowance = async (client, admin, tokenAddress, poolAddress, tokenAmount) => {
+  const message = {
+    increase_allowance: {
+      spender: poolAddress,
+      amount: tokenAmount,
+      expires: null,
+    },
+  };
+  return await client.execute(admin, tokenAddress, message, feeMsg, null, []);
 };

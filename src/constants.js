@@ -25,4 +25,11 @@ export const icoChannelList = [
     ticker: 'CHB',
     address: 'ysip1xr3rq8yvd7qplsw5yx90ftsr2zdhg4e9z60h5duusgxpv72hud3synt0pz',
   },
+  {
+    id: 2,
+    name: 'Channel C',
+    src: 'https://yt3.ggpht.com/ytc/AMLnZu8td4l9aiJVroGuuXWhv8FNayQXpKqykx3ihfyk=s88-c-k-c0x00ffffff-no-rj',
+    ticker: 'CHC',
+    address: 'ysip1z7asfxkwv0t863rllul570eh5pf2zk07k3d86ag4vtghaue37l5s7demmt',
+  },
 ];
