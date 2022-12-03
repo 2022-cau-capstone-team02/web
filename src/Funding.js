@@ -19,20 +19,6 @@ const Funding = () => {
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
   const channelList = useRecoilValue(channelListAtom);
 
-  useEffect(() => {
-    if (!stargateClient || !userAddress) return;
-
-    (async () => {
-      const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
-      setUserAsset((prev) => {
-        return {
-          ...prev,
-          [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
-        };
-      });
-    })();
-  }, [stargateClient, userAddress]);
-
   return (
     <React.Fragment>
       <Container>
@@ -77,8 +63,6 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
     },
   });
 
-  console.log(userAsset, userFunding, icoInfo, icoChannelTotalFundingAmount);
-
   useEffect(() => {
     if (!client) return;
 
@@ -91,8 +75,6 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
 
       const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.icoContractAddress);
       setIcoInfo(icoInfoQueryResult);
-
-      console.log(icoInfo);
 
       const myFundingAmountQueryResult = await myFundingAmountQuery(
         client,
@@ -131,8 +113,8 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         boxShadow: '0px 3px 10px grey',
       }}
     >
-      <div mr={8} style={{ display: 'flex', justifyContent: 'center' }}>
-        <img rounded={'md'} src={icoChannel.src} />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <img src={icoChannel.src} />
       </div>
       <div style={{ marginTop: '30px' }}>
         <div>

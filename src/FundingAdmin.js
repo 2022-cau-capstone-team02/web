@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import {
+  createPool,
+  endFunding,
   increaseAllowance,
   instantiateIcoContract,
   provideLiquidity,
@@ -186,23 +188,20 @@ const EndFunding = ({ client, userAddress }) => {
             setIsEndFundingLoading(true);
             const { icoContractAddress } = data;
             try {
-              // const endFundingResult = await endFunding(client, userAddress, icoContractAddress);
-              // console.log('endFundingResult', endFundingResult);
-              // const tokenAddress = endFundingResult.logs[0].events[1].attributes[0].value;
-              const tokenAddress =
-                'ysip12njsx22ne73swjqxxn5e7xtc2n95y2aw8r73cqdth0g86way24cqzkjlar';
-              //
-              // const createPoolResult = await createPool(
-              //   client,
-              //   userAddress,
-              //   tokenAddress,
-              //   '0.1',
-              //   '0.2',
-              // );
-              //
-              // console.log('createPoolResult', createPoolResult);
-              // const poolAddress = createPoolResult.contractAddress;
-              const poolAddress = 'ysip1fjvnr96n8kcl6d8qzr74klqjl9wakmqv5c9hzvqwr904kp34ye8qu6zt9z';
+              const endFundingResult = await endFunding(client, userAddress, icoContractAddress);
+              console.log('endFundingResult', endFundingResult);
+              const tokenAddress = endFundingResult.logs[0].events[1].attributes[0].value;
+
+              const createPoolResult = await createPool(
+                client,
+                userAddress,
+                tokenAddress,
+                '0.1',
+                '0.2',
+              );
+
+              console.log('createPoolResult', createPoolResult);
+              const poolAddress = createPoolResult.contractAddress;
 
               // setChannelList((prev) => {
               //   let newChannelList = prev;

@@ -5,6 +5,9 @@ import FlexRowCenter from './components/FlexRowCenter';
 import Modal from 'react-modal';
 import { HiChevronDown } from 'react-icons/hi';
 import { CosmWasmClient } from 'cosmwasm';
+import { useRecoilValue } from 'recoil';
+import useClient from './hooks/useClient';
+import { channelListAtom, userAssetAtom } from './atoms';
 
 // This is your rpc endpoint
 const rpcEndpoint = 'https://rpc.cliffnet.cosmwasm.com:443/';
@@ -48,17 +51,16 @@ const tokenList = [
 ];
 
 const Exchange = () => {
-  let client;
+  const { client, stargateClient, userAddress } = useClient();
+  const channelList = useRecoilValue(channelListAtom);
+  const userAsset = useRecoilValue(userAssetAtom);
   const [topInput, setTopInput] = useState(0);
   const [currentTokenPosition, setCurrentTokenPosition] = useState('TOP');
   const [bottomToken, setBottomToken] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isBid, setIsBid] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      client = await CosmWasmClient.connect(rpcEndpoint);
-    })();
-  }, []);
+  console.log(userAsset);
 
   const handleModal = useCallback(() => {
     setModalIsOpen((prev) => !prev);
@@ -79,7 +81,7 @@ const Exchange = () => {
           <span>토큰 선택</span>
           <button onClick={handleModal}>X</button>
         </div>
-        {tokenList.map((token, index) => {
+        {channelList.map((token, index) => {
           return (
             <a
               onClick={() => {

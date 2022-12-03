@@ -57,7 +57,7 @@ export const channelListAtom = atom({
     {
       id: 4,
       name: 'Channel E',
-      src: 'https://yt3.ggpht.com/P5HXQNMuTDRWwudWf7SyRX47GmPQvgo3hfpEniFCAA6vhSFBjU8oEVqHStEErz2PjJXMhuK3nw=s68-c-k-c0x00ffffff-no-rj',
+      src: 'https://yt3.ggpht.com/5oUY3tashyxfqsjO5SGhjT4dus8FkN9CsAHwXWISFrdPYii1FudD4ICtLfuCw6-THJsJbgoY=s176-c-k-c0x00ffffff-no-rj',
       ticker: 'CHE',
       icoContractAddress: 'ysip1yrnh5d60cp5tctt8ngv626u7g3ejkmmecc92etjt2wue5ff9wxsqjc942j',
       tokenAddress: '',

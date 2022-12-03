@@ -30,7 +30,7 @@ const useClient = () => {
         const offlineSigner = window.keplr.getOfflineSigner(CHAIN_ID);
         const accounts = await offlineSigner.getAccounts();
         setUserAddress(accounts[0].address);
-        console.log(accounts[0].addres);
+
         const currentClient = await SigningCosmWasmClient.connectWithSigner(
           RPC_END_POINT,
           offlineSigner,
@@ -39,29 +39,39 @@ const useClient = () => {
 
         const currentStargateClient = await SigningStargateClient.connect(RPC_END_POINT);
         setStargateClient(currentStargateClient);
-
-        const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
-        setUserAsset((prev) => {
-          return {
-            ...prev,
-            [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
-          };
-        });
-
-        forEach(channelList, async (icoChannel) => {
-          const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
-          const tokenAddress = result.address;
-          const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
-          setUserAsset((props) => {
-            return {
-              ...props,
-              [icoChannel.ticker]: newResult.balance,
-            };
-          });
-        });
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!client) return;
+
+    forEach(channelList, async (icoChannel) => {
+      const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
+      const tokenAddress = result.address;
+      const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
+      setUserAsset((props) => {
+        return {
+          ...props,
+          [icoChannel.ticker]: newResult.balance,
+        };
+      });
+    });
+  }, [client]);
+
+  useEffect(() => {
+    if (!stargateClient || !userAddress) return;
+
+    (async () => {
+      const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
+      setUserAsset((prev) => {
+        return {
+          ...prev,
+          [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
+        };
+      });
+    })();
+  }, [stargateClient, userAddress]);
 
   return {
     client,
