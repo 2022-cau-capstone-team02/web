@@ -4,10 +4,11 @@ import {
   CHAIN_NAME,
   COIN_DENOM,
   COIN_MINIMAL_DENOM,
+  ICO_CODE_ID,
   REST_END_POINT,
   RPC_END_POINT,
+  TOKEN_CODE_ID,
 } from '../constants';
-import { uuidv4 } from '../utils/common';
 
 const feeMsg = {
   amount: [
@@ -96,14 +97,14 @@ export const instantiateIcoContract = async (
   const message = {
     target_funding: targetFunding,
     deadline: deadline,
-    token_code_id: 9,
+    token_code_id: TOKEN_CODE_ID,
     token_name: tokenName,
     token_symbol: tokenSymbol,
     channel_token_amount: channelTokenAmount,
     recipient: recipient,
   };
 
-  const result = await client.instantiate(userAddress, 10, message, 'ico', feeMsg);
+  const result = await client.instantiate(userAddress, ICO_CODE_ID, message, 'ico', feeMsg);
   return result.contractAddress;
 };
 
@@ -126,6 +127,7 @@ export const fundingChannel = async (client, userAddress, icoAddress, amount) =>
   ]);
 };
 
+// 진행된 ICO의 상세 정보
 export const icoInfoQuery = async (client, address) => {
   const message = {
     ico_info: {},

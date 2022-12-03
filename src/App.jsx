@@ -13,6 +13,7 @@ import Liquidity from './Liquidity';
 import Funding from './Funding';
 import Youtuber from './Youtuber';
 import FundingAdmin from './FundingAdmin';
+import { RecoilRoot } from 'recoil';
 
 const CustomContainer = styled(Container)`
   position: relative;
@@ -31,25 +32,27 @@ const CustomRow = styled(Row)`
 const App = ({ history }) => {
   const [menu, setMenu] = useState(false);
   return (
-    <CustomContainer fluid>
-      <Progressbar />
-      <Sidebar menu={menu} setMenu={setMenu} />
-      <CustomRow>
-        <NavBar menu={menu} setMenu={setMenu} />
-      </CustomRow>
-      <CustomRow>
-        <Routes>
-          <Route path="/" element={<Info />} />
-          <Route path="/exchange" element={<Exchange />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/test" element={<Test />} />
-          <Route path="/dashboard/youtuber" element={<Youtuber />} />
-          <Route path="/funding" element={<Funding />} />
-          <Route path="/funding/admin" element={<FundingAdmin />} />
-          <Route path="/liquidity" element={<Liquidity />} />
-        </Routes>
-      </CustomRow>
-    </CustomContainer>
+    <RecoilRoot>
+      <CustomContainer fluid>
+        <Progressbar />
+        <Sidebar menu={menu} setMenu={setMenu} />
+        <CustomRow>
+          <NavBar menu={menu} setMenu={setMenu} />
+        </CustomRow>
+        <CustomRow>
+          <Routes>
+            <Route path="/" element={<Info />} />
+            <Route path="/exchange" element={<Exchange />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/test" element={<Test />} />
+            <Route path="/dashboard/youtuber" element={<Youtuber />} />
+            <Route path="/funding" element={<Funding />} />
+            <Route path="/funding/admin" element={<FundingAdmin />} />
+            <Route path="/liquidity" element={<Liquidity />} />
+          </Routes>
+        </CustomRow>
+      </CustomContainer>
+    </RecoilRoot>
   );
 };
 

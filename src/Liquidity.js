@@ -4,23 +4,9 @@ import styled from 'styled-components';
 import FlexRowCenter from './components/FlexRowCenter';
 import Modal from 'react-modal';
 import { HiChevronDown } from 'react-icons/hi';
-import { coin, CosmWasmClient, SigningCosmWasmClient } from 'cosmwasm';
+import { CosmWasmClient } from 'cosmwasm';
 
 // This is your rpc endpoint
-const rpcEndpoint = 'http://127.0.0.1:26657';
-const chainId = 'ysip';
-
-const feeMsg = {
-  amount: [
-    {
-      denom: 'ukrw',
-      amount: '1',
-    },
-  ],
-  // gas는 항상 이만큼 사용되는 것이 아니라 상한선임
-  gas: '450000',
-};
-
 const customStyles = {
   content: {
     top: '50%',
@@ -59,73 +45,12 @@ const tokenList = [
   },
 ];
 
-const suggest_ysip_chain = async () => {
-  await window.keplr.experimentalSuggestChain({
-    chainId: 'ysip',
-    chainName: 'ysip chain',
-    rpc: 'http://127.0.0.1:26657',
-    rest: 'http://127.0.0.1:1317',
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: {
-      bech32PrefixAccAddr: 'ysip',
-      bech32PrefixAccPub: 'ysip' + 'pub',
-      bech32PrefixValAddr: 'ysip' + 'valoper',
-      bech32PrefixValPub: 'ysip' + 'valoperpub',
-      bech32PrefixConsAddr: 'ysip' + 'valcons',
-      bech32PrefixConsPub: 'ysip' + 'valconspub',
-    },
-    currencies: [
-      {
-        coinDenom: 'KRW',
-        coinMinimalDenom: 'ukrw',
-        coinDecimals: 6,
-        // coinGeckoId: 'krw',
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: 'KRW',
-        coinMinimalDenom: 'ukrw',
-        coinDecimals: 6,
-        // coinGeckoId: 'krw',
-        gasPriceStep: {
-          low: 0.01,
-          average: 0.025,
-          high: 0.04,
-        },
-      },
-    ],
-    stakeCurrency: {
-      coinDenom: 'KRW',
-      coinMinimalDenom: 'ukrw',
-      coinDecimals: 6,
-      // coinGeckoId: 'skrw',
-    },
-  });
-};
-
-const Liquidity = () => {
-  let client;
+const Exchange = () => {
   const [topInput, setTopInput] = useState(0);
   const [currentTokenPosition, setCurrentTokenPosition] = useState('TOP');
+  const [topToken, setTopToken] = useState(null);
   const [bottomToken, setBottomToken] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      if (!window.keplr) {
-        alert('Please install keplr extension');
-      } else {
-        await suggest_ysip_chain();
-        window.keplr.enable(chainId);
-
-        const offlineSigner = window.keplr.getOfflineSigner(chainId);
-        const accounts = await offlineSigner.getAccounts();
-      }
-    })();
-  }, []);
 
   const handleModal = useCallback(() => {
     setModalIsOpen((prev) => !prev);
@@ -150,7 +75,11 @@ const Liquidity = () => {
           return (
             <a
               onClick={() => {
-                setBottomToken(token);
+                if (currentTokenPosition === 'TOP') {
+                  setTopToken(token);
+                } else {
+                  setBottomToken(token);
+                }
                 handleModal();
               }}
               key={token.id}
@@ -185,7 +114,7 @@ const Liquidity = () => {
       <Container style={{ backgroundColor: commonTheme.palette.light.blue900 }}>
         <SwapWrapper border={`1px solid ${commonTheme.palette.light.blue700}`}>
           <SwapHeader>
-            <span>스왑</span>
+            <span>유동성 공급</span>
           </SwapHeader>
           <SwapTokenContainer>
             <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
@@ -205,9 +134,28 @@ const Liquidity = () => {
                   spellCheck="false"
                   value={topInput}
                 />
-                <button>
-                  <span>μKRW</span>
-                </button>
+                <a
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: '1px solid black',
+                    padding: '4px 8px',
+                  }}
+                  onClick={() => {
+                    setCurrentTokenPosition('TOP');
+                    handleModal();
+                  }}
+                >
+                  {topToken && (
+                    <img
+                      alt={`TOKEN_IMG--${topToken.ticker}`}
+                      src={topToken.src}
+                      style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
+                    />
+                  )}
+                  {topToken ? topToken.ticker : '토큰 선택'}
+                  <HiChevronDown />
+                </a>
               </FlexRowCenter>
               <span>₩{topInput * 0.000001}</span>
             </SwapTokenWrapper>
@@ -322,4 +270,4 @@ const SwapButton = styled.button`
   justify-content: center;
 `;
 
-export default Liquidity;
+export default Exchange;
