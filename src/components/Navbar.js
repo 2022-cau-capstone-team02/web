@@ -100,6 +100,13 @@ function NavBar({ menu, setMenu }) {
         </Navigator>
         <Navigator
           onClick={() => {
+            navigate('/funding');
+          }}
+        >
+          펀딩
+        </Navigator>
+        <Navigator
+          onClick={() => {
             navigate('/dashboard');
           }}
         >

@@ -36,11 +36,13 @@ const Funding = () => {
   return (
     <React.Fragment>
       <Container>
-        <div>
-          투자 가능한 금액 : {userAsset[UPPERCASE_COIN_MINIMAL_DENOM]}{' '}
-          {UPPERCASE_COIN_MINIMAL_DENOM}
+        <div style={{ fontSize: '2rem' }}>
+          <b>
+            투자 가능한 금액 : {userAsset[UPPERCASE_COIN_MINIMAL_DENOM]}{' '}
+            {UPPERCASE_COIN_MINIMAL_DENOM}
+          </b>
         </div>
-        <div>
+        <ICO>
           <div>
             {channelList.map((channel) => {
               return (
@@ -55,7 +57,8 @@ const Funding = () => {
               );
             })}
           </div>
-        </div>
+        </ICO>
+        <div style={{ padding: '20px' }} />
       </Container>
     </React.Fragment>
   );
@@ -119,11 +122,19 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
   }, [client]);
 
   return (
-    <div>
-      <div>
-        <img src={icoChannel.src} />
+    <div
+      style={{
+        background: 'aliceblue',
+        padding: '50px',
+        marginTop: '40px',
+        borderRadius: '20px',
+        boxShadow: '0px 3px 10px grey',
+      }}
+    >
+      <div mr={8} style={{ display: 'flex', justifyContent: 'center' }}>
+        <img rounded={'md'} src={icoChannel.src} />
       </div>
-      <div>
+      <div style={{ marginTop: '30px' }}>
         <div>
           <h1>
             {icoChannel.name} ({icoChannel.ticker})
@@ -140,18 +151,20 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
           {/*  }*/}
           {/*  size={'120px'}*/}
           {/*/>*/}
-          <div>
+          <div style={{ fontSize: '1.5rem' }}>
             <div>현재까지 모집 금액 : {icoChannelTotalFundingAmount?.amount} uKRW</div>
             {userAsset?.[icoChannel.ticker] && (
-              <div>
+              <div style={{ marginTop: '10px' }}>
                 내가 보유한 수량 : {userAsset[icoChannel.ticker]} {icoChannel.ticker}
               </div>
             )}
-            <div>
+            <div style={{ marginTop: '10px' }}>
               내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount}{' '}
               {userFunding[icoChannel.ticker]?.base}
             </div>
-            <div>총 모집 금액 : {icoInfo?.target_funding_amount} uKRW</div>
+            <div style={{ marginTop: '10px' }}>
+              총 모집 금액 : {icoInfo?.target_funding_amount} uKRW
+            </div>
           </div>
         </div>
         <Controller
@@ -225,6 +238,12 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
     </div>
   );
 };
+
+const ICO = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const Container = styled.div`
   width: 100vw;

@@ -29,11 +29,14 @@ const FundingAdmin = () => {
   return (
     <React.Fragment>
       <Container>
-        <div>
-          <p>관리자 영역</p>
-          <div>
-            <div>
-              Step1. ICO 컨트렉트를 생성합니다.
+        <div style={{ background: 'aliceblue', padding: '20px', borderRadius: '20px' }}>
+          <p style={{ fontSize: '2rem' }}>관리자 영역</p>
+          <div flexDirection={'row'}>
+            <div style={{ display: 'flex', flexDirection: 'column' }} mr={4}>
+              <p style={{ fontSize: '1.5rem' }}>
+                <b>Step1. ICO 컨트렉트를 생성합니다.</b>
+              </p>
+              <div style={{ padding: '10px' }} />
               <Controller
                 name="fundingAmount"
                 control={control}
@@ -44,6 +47,7 @@ const FundingAdmin = () => {
                   <input value={value} onChange={onChange} placeholder="총 모집 금액" />
                 )}
               />
+              <div style={{ padding: '10px' }} />
               <Controller
                 name="totalTokenAmount"
                 control={control}
@@ -54,6 +58,7 @@ const FundingAdmin = () => {
                   <input value={value} onChange={onChange} placeholder="생성될 토큰 개수" />
                 )}
               />
+              <div style={{ padding: '10px' }} />
               <Controller
                 name="tokenName"
                 control={control}
@@ -64,6 +69,7 @@ const FundingAdmin = () => {
                   <input mb={4} value={value} onChange={onChange} placeholder="채널 이름" />
                 )}
               />
+              <div style={{ padding: '10px' }} />
               <Controller
                 name="tokenSymbol"
                 control={control}
@@ -74,6 +80,7 @@ const FundingAdmin = () => {
                   <input value={value} onChange={onChange} placeholder="채널 토큰 이름" />
                 )}
               />
+              <div style={{ padding: '10px' }} />
               <Controller
                 name="recipient"
                 control={control}
@@ -84,7 +91,15 @@ const FundingAdmin = () => {
                   <input value={value} onChange={onChange} placeholder="채널 주인의 지갑 주소" />
                 )}
               />
+              <div style={{ padding: '10px' }} />
               <button
+                style={{
+                  border: 'none',
+                  padding: '10px',
+                  borderRadius: '10px',
+                  boxShadow: '0px 3px 10px grey',
+                }}
+                isLoading={isInstantiateIcoContractLoading}
                 onClick={() => {
                   handleSubmit(async (data) => {
                     setIsInstantiateIcoContractLoading(true);
@@ -124,6 +139,7 @@ const FundingAdmin = () => {
             <EndFunding client={client} userAddress={userAddress} />
           </div>
         </div>
+        <div style={{ padding: '10px' }} />
       </Container>
     </React.Fragment>
   );
@@ -142,8 +158,11 @@ const EndFunding = ({ client, userAddress }) => {
   console.log(channelList);
 
   return (
-    <div>
-      Step3. ICO 마무리, 코인 개수를 모집된 금액에 따라 배분합니다
+    <div style={{ display: 'flex', flexDirection: 'column', marginTop: '30px' }}>
+      <p style={{ fontSize: '1.5rem' }}>
+        <b>Step2. ICO 마무리, 코인 개수를 모집된 금액에 따라 배분합니다</b>
+      </p>
+      <div style={{ padding: '10px' }} />
       <Controller
         name="icoContractAddress"
         control={control}
@@ -154,7 +173,14 @@ const EndFunding = ({ client, userAddress }) => {
           <input value={value} onChange={onChange} placeholder="펀딩 종료된 ICO 컨트랙트 주소" />
         )}
       />
+      <div style={{ padding: '10px' }} />
       <button
+        style={{
+          border: 'none',
+          padding: '10px',
+          borderRadius: '10px',
+          boxShadow: '0px 3px 10px grey',
+        }}
         onClick={() => {
           handleSubmit(async (data) => {
             setIsEndFundingLoading(true);
@@ -218,7 +244,14 @@ const EndFunding = ({ client, userAddress }) => {
       >
         펀딩 종료
       </button>
+      <div style={{ padding: '10px' }} />
       <button
+        style={{
+          border: 'none',
+          padding: '10px',
+          borderRadius: '10px',
+          boxShadow: '0px 3px 10px grey',
+        }}
         onClick={() => {
           handleSubmit(async (data) => {
             setIsTransferFundingLoading(true);
