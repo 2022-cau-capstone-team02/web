@@ -220,6 +220,13 @@ export const createPool = async (client, admin, tokenAddress, protocolFeePercent
   return await client.instantiate(admin, PAIR_CODE_ID, message, 'pair', feeMsg);
 };
 
+export const channelFundingState = async (client, icoContractAddress) => {
+  const message = {
+    is_funding_finished: {},
+  };
+  return await client.queryContractSmart(icoContractAddress, message);
+};
+
 export const liquidityQuery = async (client, tokenAddress) => {
   const message = {
     liquidity: {},

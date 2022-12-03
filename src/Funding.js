@@ -8,17 +8,19 @@ import {
   myFundingAmountQuery,
   tokenAddressQuery,
   channelTokenBalanceQuery,
+  channelFundingState,
 } from './queries';
 import useClient from './hooks/useClient';
 import { COIN_MINIMAL_DENOM, UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { channelListAtom, userAssetAtom, userFundingAtom } from './atoms';
+import { commonTheme } from './theme';
 
 const Funding = () => {
   const { client, stargateClient, userAddress } = useClient();
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
   const channelList = useRecoilValue(channelListAtom);
-
+  console.log(channelList);
   return (
     <React.Fragment>
       <Container>
@@ -53,7 +55,7 @@ const Funding = () => {
 const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddress }) => {
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
   const [userFunding, setUserFunding] = useRecoilState(userFundingAtom);
-
+  const [fundingState, setFundingState] = useState();
   const [icoChannelTotalFundingAmount, setIcoChannelTotalFundingAmount] = useState();
   const [icoInfo, setIcoInfo] = useState();
   const [isFundingChannelLoading, setIsFundingChannelLoading] = useState(false);
@@ -72,24 +74,12 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         icoChannel.icoContractAddress,
       );
       setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
+      console.log(icoChannelTotalFundingAmount);
 
       const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.icoContractAddress);
       setIcoInfo(icoInfoQueryResult);
-
-      const myFundingAmountQueryResult = await myFundingAmountQuery(
-        client,
-        userAddress,
-        icoChannel.icoContractAddress,
-      );
-      setUserFunding((prev) => {
-        return {
-          ...prev,
-          [icoChannel.ticker]: {
-            amount: myFundingAmountQueryResult.amount,
-            base: UPPERCASE_COIN_MINIMAL_DENOM,
-          },
-        };
-      });
+      console.log(icoInfo);
+      console.log(userAddress);
 
       const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
       const tokenAddress = result.address;
@@ -98,6 +88,25 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         return {
           ...props,
           [icoChannel.ticker]: newResult.balance,
+        };
+      });
+      const fundingStateResult = await channelFundingState(client, icoChannel.icoContractAddress);
+      setFundingState(fundingStateResult);
+      console.log(icoChannel.name);
+      console.log(fundingState);
+      const myFundingAmountQueryResult = await myFundingAmountQuery(
+        client,
+        userAddress,
+        icoChannel.icoContractAddress,
+      );
+      console.log(myFundingAmountQuery);
+      setUserFunding((prev) => {
+        return {
+          ...prev,
+          [icoChannel.ticker]: {
+            amount: myFundingAmountQueryResult.amount,
+            base: UPPERCASE_COIN_MINIMAL_DENOM,
+          },
         };
       });
     })();
@@ -117,10 +126,15 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         <img src={icoChannel.src} />
       </div>
       <div style={{ marginTop: '30px' }}>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <h1>
             {icoChannel.name} ({icoChannel.ticker})
           </h1>
+          {fundingState ? (
+            <FundingState fundingState={fundingState}>펀딩종료</FundingState>
+          ) : (
+            <FundingState fundingState={fundingState}>펀딩중</FundingState>
+          )}
         </div>
         <div>
           {/*<CircularProgress*/}
@@ -191,12 +205,13 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
                   icoChannel.icoContractAddress,
                 );
                 setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
-
+                console.log(icoChannelTotalFundingAmountQueryResult);
                 const myFundingAmountQueryResult = await myFundingAmountQuery(
                   client,
                   userAddress,
                   icoChannel.icoContractAddress,
                 );
+                console.log(myFundingAmountQueryResult.amount);
                 setUserFunding((prev) => {
                   return {
                     ...prev,
@@ -233,6 +248,16 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 100px;
+`;
+
+const FundingState = styled.span`
+  color: white;
+  font-weight: 700;
+  margin-left: 10px;
+  padding: 0 10px 0 10px;
+  border-radius: 5px;
+  background: ${({ fundingState }) =>
+    fundingState ? commonTheme.palette.light.blue700 : commonTheme.palette.light.green700};
 `;
 
 export default Funding;

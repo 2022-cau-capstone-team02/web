@@ -81,14 +81,5 @@ export const channelListAtom = atom({
       tokenAddress: 'ysip14sa4u42n2a8kmlvj3qcergjhy6g9ps06rzeth94f2y6grlat6u6st567us',
       poolAddress: 'ysip1nc84knc0n7td5xqplwy0luh97zd8hv5mhvm9cdempc05xk0xvxyqxprw5j',
     },
-    {
-      id: 7,
-      name: 'Channel H',
-      src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
-      ticker: 'CHH',
-      icoContractAddress: 'ysip1jy9dagaycutdcjf99tp9uhl5ev9lykegp2tph6r9vu6xg3td6krsevkh0e',
-      tokenAddress: '',
-      poolAddress: '',
-    },
   ],
 });
