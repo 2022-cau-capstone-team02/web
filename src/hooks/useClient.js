@@ -19,7 +19,31 @@ const useClient = () => {
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
   const channelList = useRecoilValue(channelListAtom);
 
+  const refreshAssetHandler = async () => {
+    const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
+    setUserAsset((prev) => {
+      return {
+        ...prev,
+        [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
+      };
+    });
+
+    forEach(channelList, async (icoChannel) => {
+      const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
+      const tokenAddress = result.address;
+      const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
+      setUserAsset((props) => {
+        return {
+          ...props,
+          [icoChannel.ticker]: newResult.balance,
+        };
+      });
+    });
+  };
+
   useEffect(() => {
+    window.addEventListener('refreshAsset', refreshAssetHandler, false);
+
     (async () => {
       if (!window.keplr) {
         alert('Please install keplr extension');

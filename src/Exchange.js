@@ -8,6 +8,8 @@ import { CosmWasmClient } from 'cosmwasm';
 import { useRecoilValue } from 'recoil';
 import useClient from './hooks/useClient';
 import { channelListAtom, userAssetAtom } from './atoms';
+import { liquidityQuery, swap } from './queries';
+import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
 
 // This is your rpc endpoint
 const rpcEndpoint = 'https://rpc.cliffnet.cosmwasm.com:443/';
@@ -55,16 +57,23 @@ const Exchange = () => {
   const channelList = useRecoilValue(channelListAtom);
   const userAsset = useRecoilValue(userAssetAtom);
   const [topInput, setTopInput] = useState(0);
+  const [liquidities, setLiquidities] = useState(0);
   const [currentTokenPosition, setCurrentTokenPosition] = useState('TOP');
   const [bottomToken, setBottomToken] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isBid, setIsBid] = useState(true);
 
-  console.log(userAsset);
-
   const handleModal = useCallback(() => {
     setModalIsOpen((prev) => !prev);
   }, [modalIsOpen]);
+
+  useEffect(() => {
+    if (!bottomToken) return;
+    (async () => {
+      const liquidityQueryResult = await liquidityQuery(client, bottomToken.poolAddress);
+      setLiquidities(liquidityQueryResult.liquidity);
+    })();
+  }, [bottomToken]);
 
   return (
     <React.Fragment>
@@ -141,10 +150,12 @@ const Exchange = () => {
                   value={topInput}
                 />
                 <button>
-                  <span>μKRW</span>
+                  <span>{UPPERCASE_COIN_MINIMAL_DENOM}</span>
                 </button>
               </FlexRowCenter>
-              <span>₩{topInput * 0.000001}</span>
+              <span>
+                보유량 : {userAsset?.[UPPERCASE_COIN_MINIMAL_DENOM]} {UPPERCASE_COIN_MINIMAL_DENOM}
+              </span>
             </SwapTokenWrapper>
             <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
               <FlexRowCenter>
@@ -161,7 +172,14 @@ const Exchange = () => {
                   minLength="1"
                   maxLength="79"
                   spellCheck="false"
-                  value={topInput}
+                  value={
+                    liquidities && Number(topInput) > 0
+                      ? (
+                          (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
+                          Number(topInput)
+                        ).toFixed(8)
+                      : 0
+                  }
                 />
                 <a
                   style={{
@@ -186,12 +204,29 @@ const Exchange = () => {
                   <HiChevronDown />
                 </a>
               </FlexRowCenter>
-              <span>
-                ₩123,456,789 <span style={{ color: 'red' }}>(-3.81%)</span>
-              </span>
+              {liquidities && (
+                <span>
+                  가격 :{' '}
+                  {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(8)}{' '}
+                  {UPPERCASE_COIN_MINIMAL_DENOM}
+                </span>
+              )}
             </SwapTokenWrapper>
           </SwapTokenContainer>
-          <SwapButton>스왑하기</SwapButton>
+          <SwapButton
+            onClick={async () => {
+              if (!bottomToken && Number(topInput) === 0) return;
+              const swapResult = await swap(
+                client,
+                userAddress,
+                bottomToken.poolAddress,
+                topInput.toString(10),
+              );
+              window.dispatchEvent('refreshAsset');
+            }}
+          >
+            스왑하기
+          </SwapButton>
         </SwapWrapper>
       </Container>
     </React.Fragment>

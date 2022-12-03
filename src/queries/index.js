@@ -272,3 +272,20 @@ export const increaseAllowance = async (client, admin, tokenAddress, poolAddress
   };
   return await client.execute(admin, tokenAddress, message, feeMsg, null, []);
 };
+
+export const swap = async (client, admin, poolAddress, uKrwAmount) => {
+  const message = {
+    swap: {
+      offer_asset: {
+        info: { native_token: { denom: COIN_MINIMAL_DENOM } },
+        amount: uKrwAmount,
+      },
+      min_output_amount: '0',
+      max_spread: '100',
+      to: admin,
+    },
+  };
+  return await client.execute(admin, poolAddress, message, feeMsg, null, [
+    coin(uKrwAmount, COIN_MINIMAL_DENOM),
+  ]);
+};

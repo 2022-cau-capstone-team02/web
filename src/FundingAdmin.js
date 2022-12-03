@@ -101,7 +101,6 @@ const FundingAdmin = () => {
                   borderRadius: '10px',
                   boxShadow: '0px 3px 10px grey',
                 }}
-                isLoading={isInstantiateIcoContractLoading}
                 onClick={() => {
                   handleSubmit(async (data) => {
                     setIsInstantiateIcoContractLoading(true);
@@ -109,6 +108,7 @@ const FundingAdmin = () => {
                       data;
                     const deadline = 10000000000;
                     try {
+                      console.log(client, userAddress);
                       const result = await instantiateIcoContract(
                         client,
                         userAddress,
@@ -156,8 +156,6 @@ const EndFunding = ({ client, userAddress }) => {
       icoContractAddress: '',
     },
   });
-
-  console.log(channelList);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', marginTop: '30px' }}>
