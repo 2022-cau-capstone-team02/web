@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
-import { Box, Button, Flex, Input, Stack } from '@chakra-ui/react';
 import { endFunding, instantiateIcoContract, transferFunding } from './queries';
 import useClient from './hooks/useClient';
 
@@ -22,10 +21,10 @@ const FundingAdmin = () => {
   return (
     <React.Fragment>
       <Container>
-        <Stack>
+        <div>
           <p>관리자 영역</p>
-          <Flex flexDirection={'row'}>
-            <Box flexDirection={'column'} mr={4}>
+          <div flexDirection={'row'}>
+            <div flexDirection={'column'} mr={4}>
               Step1. ICO 컨트렉트를 생성합니다.
               <Controller
                 name="fundingAmount"
@@ -34,7 +33,7 @@ const FundingAdmin = () => {
                   required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <Input mb={4} value={value} onChange={onChange} placeholder="총 모집 금액" />
+                  <input value={value} onChange={onChange} placeholder="총 모집 금액" />
                 )}
               />
               <Controller
@@ -44,7 +43,7 @@ const FundingAdmin = () => {
                   required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <Input mb={4} value={value} onChange={onChange} placeholder="생성될 토큰 개수" />
+                  <input value={value} onChange={onChange} placeholder="생성될 토큰 개수" />
                 )}
               />
               <Controller
@@ -54,7 +53,7 @@ const FundingAdmin = () => {
                   required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <Input mb={4} value={value} onChange={onChange} placeholder="채널 이름" />
+                  <input mb={4} value={value} onChange={onChange} placeholder="채널 이름" />
                 )}
               />
               <Controller
@@ -64,7 +63,7 @@ const FundingAdmin = () => {
                   required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <Input mb={4} value={value} onChange={onChange} placeholder="채널 토큰 이름" />
+                  <input value={value} onChange={onChange} placeholder="채널 토큰 이름" />
                 )}
               />
               <Controller
@@ -74,17 +73,10 @@ const FundingAdmin = () => {
                   required: true,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    mb={4}
-                    value={value}
-                    onChange={onChange}
-                    placeholder="채널 주인의 지갑 주소"
-                  />
+                  <input value={value} onChange={onChange} placeholder="채널 주인의 지갑 주소" />
                 )}
               />
-              <Button
-                w={'100%'}
-                colorScheme="teal"
+              <button
                 isLoading={isInstantiateIcoContractLoading}
                 onClick={() => {
                   handleSubmit(async (data) => {
@@ -111,11 +103,11 @@ const FundingAdmin = () => {
                 }}
               >
                 ICO 컨트랙트 생성
-              </Button>
-            </Box>
+              </button>
+            </div>
             <EndFunding client={client} userAddress={userAddress} />
-          </Flex>
-        </Stack>
+          </div>
+        </div>
       </Container>
     </React.Fragment>
   );
@@ -131,7 +123,7 @@ const EndFunding = ({ client, userAddress }) => {
   });
 
   return (
-    <Box flexDirection={'column'}>
+    <div flexDirection={'column'}>
       Step3. ICO 마무리, 코인 개수를 모집된 금액에 따라 배분합니다
       <Controller
         name="icoContractAddress"
@@ -140,18 +132,10 @@ const EndFunding = ({ client, userAddress }) => {
           required: true,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            mb={4}
-            value={value}
-            onChange={onChange}
-            placeholder="펀딩 종료된 ICO 컨트랙트 주소"
-          />
+          <input value={value} onChange={onChange} placeholder="펀딩 종료된 ICO 컨트랙트 주소" />
         )}
       />
-      <Button
-        colorScheme="teal"
-        isLoading={isEndFundingLoading}
-        w={'100%'}
+      <button
         onClick={() => {
           handleSubmit(async (data) => {
             setIsEndFundingLoading(true);
@@ -166,8 +150,8 @@ const EndFunding = ({ client, userAddress }) => {
         }}
       >
         펀딩 종료
-      </Button>
-      <Button
+      </button>
+      <button
         colorScheme="teal"
         isLoading={isTransferFundingLoading}
         w={'100%'}
@@ -190,8 +174,8 @@ const EndFunding = ({ client, userAddress }) => {
         }}
       >
         펀딩 금액 송금
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 };
 

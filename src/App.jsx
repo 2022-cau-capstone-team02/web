@@ -11,8 +11,6 @@ import Progressbar from './components/ProgressBar';
 import Test from './Test';
 import Liquidity from './Liquidity';
 import Funding from './Funding';
-// 1. import `ChakraProvider` component
-import { ChakraProvider } from '@chakra-ui/react';
 import Youtuber from './Youtuber';
 import FundingAdmin from './FundingAdmin';
 import { RecoilRoot } from 'recoil';
@@ -35,27 +33,25 @@ const App = ({ history }) => {
   const [menu, setMenu] = useState(false);
   return (
     <RecoilRoot>
-      <ChakraProvider>
-        <CustomContainer fluid>
-          <Progressbar />
-          <Sidebar menu={menu} setMenu={setMenu} />
-          <CustomRow>
-            <NavBar menu={menu} setMenu={setMenu} />
-          </CustomRow>
-          <CustomRow>
-            <Routes>
-              <Route path="/" element={<Info />} />
-              <Route path="/exchange" element={<Exchange />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/test" element={<Test />} />
-              <Route path="/dashboard/youtuber" element={<Youtuber />} />
-              <Route path="/funding" element={<Funding />} />
-              <Route path="/funding/admin" element={<FundingAdmin />} />
-              <Route path="/liquidity" element={<Liquidity />} />
-            </Routes>
-          </CustomRow>
-        </CustomContainer>
-      </ChakraProvider>
+      <CustomContainer fluid>
+        <Progressbar />
+        <Sidebar menu={menu} setMenu={setMenu} />
+        <CustomRow>
+          <NavBar menu={menu} setMenu={setMenu} />
+        </CustomRow>
+        <CustomRow>
+          <Routes>
+            <Route path="/" element={<Info />} />
+            <Route path="/exchange" element={<Exchange />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/test" element={<Test />} />
+            <Route path="/dashboard/youtuber" element={<Youtuber />} />
+            <Route path="/funding" element={<Funding />} />
+            <Route path="/funding/admin" element={<FundingAdmin />} />
+            <Route path="/liquidity" element={<Liquidity />} />
+          </Routes>
+        </CustomRow>
+      </CustomContainer>
     </RecoilRoot>
   );
 };

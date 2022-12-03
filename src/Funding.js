@@ -2,16 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import {
-  Box,
-  Button,
-  CircularProgress,
-  Flex,
-  Heading,
-  Image,
-  Input,
-  Stack,
-} from '@chakra-ui/react';
-import {
   fundingChannel,
   totalFundingAmountQuery,
   icoInfoQuery,
@@ -49,8 +39,8 @@ const Funding = () => {
           투자 가능한 금액 : {userAsset[UPPERCASE_COIN_MINIMAL_DENOM]}{' '}
           {UPPERCASE_COIN_MINIMAL_DENOM}
         </div>
-        <Stack>
-          <Box>
+        <div>
+          <div>
             {icoChannelList.map((icoChannel) => {
               return (
                 <IcoChannel
@@ -63,8 +53,8 @@ const Funding = () => {
                 />
               );
             })}
-          </Box>
-        </Stack>
+          </div>
+        </div>
       </Container>
     </React.Fragment>
   );
@@ -124,42 +114,41 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
   }, [client]);
 
   return (
-    <Flex alignItems={'center'} flexDirection={'row'}>
-      <Box mr={8}>
-        <Image rounded={'md'} src={icoChannel.src} />
-      </Box>
-      <Box>
-        <Box mb={4}>
-          <Heading>
+    <div alignItems={'center'} flexDirection={'row'}>
+      <div mr={8}>
+        <img rounded={'md'} src={icoChannel.src} />
+      </div>
+      <div>
+        <div mb={4}>
+          <h1>
             {icoChannel.name} ({icoChannel.ticker})
-          </Heading>
-        </Box>
-        <Flex mb={4} alignItems={'center'}>
-          <CircularProgress
-            mr={4}
-            value={
-              Math.floor(
-                Number(icoChannelTotalFundingAmount?.amount) /
-                  Number(icoInfo?.target_funding_amount),
-              ) * 100
-            }
-            size={'120px'}
-          />
-          <Flex flexDirection={'column'}>
-            <Box>현재까지 모집 금액 : {icoChannelTotalFundingAmount?.amount} uKRW</Box>
+          </h1>
+        </div>
+        <div mb={4} alignItems={'center'}>
+          {/*<CircularProgress*/}
+          {/*  mr={4}*/}
+          {/*  value={*/}
+          {/*    Math.floor(*/}
+          {/*      Number(icoChannelTotalFundingAmount?.amount) /*/}
+          {/*        Number(icoInfo?.target_funding_amount),*/}
+          {/*    ) * 100*/}
+          {/*  }*/}
+          {/*  size={'120px'}*/}
+          {/*/>*/}
+          <div flexDirection={'column'}>
+            <div>현재까지 모집 금액 : {icoChannelTotalFundingAmount?.amount} uKRW</div>
             {userAsset?.[icoChannel.ticker] && (
-              <Box>
+              <div>
                 내가 보유한 수량 : {userAsset[icoChannel.ticker]} {icoChannel.ticker}
-              </Box>
+              </div>
             )}
-            <Box>
+            <div>
               내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount}{' '}
               {userFunding[icoChannel.ticker]?.base}
-            </Box>
-            <Box>총 모집 금액 : {icoInfo?.target_funding_amount} uKRW</Box>
-          </Flex>
-        </Flex>
-
+            </div>
+            <div>총 모집 금액 : {icoInfo?.target_funding_amount} uKRW</div>
+          </div>
+        </div>
         <Controller
           name="fundingAmount"
           control={control}
@@ -167,8 +156,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
             required: true,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              mb={4}
+            <input
               type={'number'}
               max={availableKrw ? Number(availableKrw?.amount) : undefined}
               value={value}
@@ -177,9 +165,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
             />
           )}
         />
-        <Button
-          w={'100%'}
-          isLoading={isFundingChannelLoading}
+        <button
           onClick={() => {
             handleSubmit(async (data) => {
               const { fundingAmount } = data;
@@ -222,12 +208,11 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
               }
             })();
           }}
-          colorScheme="teal"
         >
           투자하기
-        </Button>
-      </Box>
-    </Flex>
+        </button>
+      </div>
+    </div>
   );
 };
 

@@ -7,8 +7,8 @@ export const COIN_MINIMAL_DENOM = 'ukrw';
 export const UPPERCASE_COIN_MINIMAL_DENOM = 'uKRW';
 
 export const TOKEN_CODE_ID = 1;
-export const _ID = 2;
-export const _IDD = 3;
+export const ICO_CODE_ID = 2;
+export const PAIR_CODE_ID = 3;
 
 export const icoChannelList = [
   {
@@ -16,7 +16,7 @@ export const icoChannelList = [
     name: 'Channel A',
     src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
     ticker: 'CHA',
-    address: 'ysip19wfdqvt2rfhffpl0unulepjuwcgf0ycz3fu448u2v6f45j2c7fvqysrygz',
+    address: 'ysip1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqusnwmv',
   },
   // {
   //   id: 1,
