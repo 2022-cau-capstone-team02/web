@@ -277,7 +277,7 @@ export const buySwap = async (client, admin, poolAddress, uKrwAmount) => {
   const message = {
     swap: {
       offer_asset: {
-        info: { token: { co: COIN_MINIMAL_DENOM } },
+        info: { native_token: { denom: COIN_MINIMAL_DENOM } },
         amount: uKrwAmount,
       },
       min_output_amount: '0',
