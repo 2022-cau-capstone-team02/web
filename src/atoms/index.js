@@ -23,7 +23,7 @@ export const channelListAtom = atom({
       name: 'Channel A',
       src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
       ticker: 'CHA',
-      icoContractAddress: 'ysip1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqusnwmv',
+      icoContractAddress: 'ysip1h0pgj6vrwrepmsyz0cg96829alrw7rnyt0lssj',
       tokenAddress: '',
       poolAddress: '',
     },
