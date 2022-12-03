@@ -13,7 +13,7 @@ const StyledContainer = styled(Container)`
 
 const InvestorPath = styled.div`
   width: 100%;
-  padding: 100px;
+  padding: 50px;
   margin-left: 30px;
   height: 100%;
   display: flex;
@@ -30,7 +30,7 @@ const InvestorPath = styled.div`
 
 const YoutuberPath = styled.div`
   width: 100%;
-  padding: 100px;
+  padding: 50px;
   margin-left: 50px;
   margin-right: 30px;
   height: 100%;
@@ -45,6 +45,14 @@ const YoutuberPath = styled.div`
     cursor: pointer;
   }
 `;
+
+const Image = styled.img`
+  height: 80%;
+  @media screen and (max-width: 992px) {
+    width: 100%;
+  } ;
+`;
+
 const Dashboard = () => {
   const navigate = useNavigate();
   return (
@@ -55,7 +63,7 @@ const Dashboard = () => {
             navigate('/dashboard/investor');
           }}
         >
-          <img style={{ width: '100%' }} src={process.env.PUBLIC_URL + '/image/investor.png'} />
+          <Image src={process.env.PUBLIC_URL + '/image/investor.png'} />
           <p style={{ fontSize: '3rem', color: '#202121' }}>투자자</p>
         </InvestorPath>
         <YoutuberPath
@@ -63,7 +71,7 @@ const Dashboard = () => {
             navigate('/dashboard/youtuber');
           }}
         >
-          <img style={{ width: '100%' }} src={process.env.PUBLIC_URL + '/image/youtube.png'} />
+          <Image src={process.env.PUBLIC_URL + '/image/youtube.png'} />
           <p style={{ fontSize: '3rem', color: '#202121' }}>유튜버</p>
         </YoutuberPath>
       </StyledContainer>
