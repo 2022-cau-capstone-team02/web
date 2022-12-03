@@ -18,11 +18,11 @@ export const icoChannelList = [
     ticker: 'CHA',
     address: 'ysip1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqusnwmv',
   },
-  // {
-  //   id: 1,
-  //   name: 'Channel B',
-  //   src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
-  //   ticker: 'CHB',
-  //   address: 'ysip1aakfpghcanxtc45gpqlx8j3rq0zcpyf49qmhm9mdjrfx036h4z5sj0pstt',
-  // },
+  {
+    id: 1,
+    name: 'Channel B',
+    src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
+    ticker: 'CHB',
+    address: 'ysip1xr3rq8yvd7qplsw5yx90ftsr2zdhg4e9z60h5duusgxpv72hud3synt0pz',
+  },
 ];

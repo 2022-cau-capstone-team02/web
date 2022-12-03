@@ -5,6 +5,7 @@ import {
   COIN_DENOM,
   COIN_MINIMAL_DENOM,
   ICO_CODE_ID,
+  PAIR_CODE_ID,
   REST_END_POINT,
   RPC_END_POINT,
   TOKEN_CODE_ID,
@@ -192,4 +193,25 @@ export const allocation = async (client, admin, icoContractAddress, amount) => {
   return await client.execute(admin, icoContractAddress, message, feeMsg, null, [
     coin(amount, COIN_MINIMAL_DENOM),
   ]);
+};
+
+export const createPool = async (
+  client,
+  admin,
+  tokenContractAddress,
+  protocolFeePercent,
+  lpFeePercent,
+) => {
+  const message = {
+    asset_infos: [
+      { token: { contract_addr: tokenContractAddress } },
+      { native_token: { denom: COIN_MINIMAL_DENOM } },
+    ],
+    token_code_id: TOKEN_CODE_ID,
+    protocol_fee_recipient: admin,
+    protocol_fee_percent: protocolFeePercent,
+    lp_fee_percent: lpFeePercent,
+  };
+
+  return await client.instantiate(admin, PAIR_CODE_ID, message, 'pair', feeMsg);
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
-import { endFunding, instantiateIcoContract, transferFunding } from './queries';
+import { createPool, endFunding, instantiateIcoContract, transferFunding } from './queries';
 import useClient from './hooks/useClient';
 
 const FundingAdmin = () => {
@@ -141,8 +141,17 @@ const EndFunding = ({ client, userAddress }) => {
             setIsEndFundingLoading(true);
             const { icoContractAddress } = data;
             try {
-              const result = await endFunding(client, userAddress, icoContractAddress);
-              console.log(result);
+              const endFundingResult = await endFunding(client, userAddress, icoContractAddress);
+              console.log(endFundingResult);
+              const tokenContractAddress = endFundingResult.logs[0].events[1].attributes[0].value;
+              const createPoolResult = await createPool(
+                client,
+                userAddress,
+                tokenContractAddress,
+                '0.1',
+                '0.2',
+              );
+              console.log(createPoolResult);
             } finally {
               setIsEndFundingLoading(false);
             }
