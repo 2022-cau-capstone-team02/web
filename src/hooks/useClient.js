@@ -30,11 +30,7 @@ const useClient = () => {
         const offlineSigner = window.keplr.getOfflineSigner(CHAIN_ID);
         const accounts = await offlineSigner.getAccounts();
         setUserAddress(accounts[0].address);
-<<<<<<< HEAD
         console.log(accounts[0].addres);
-=======
-
->>>>>>> c515a56d7e567e1d9b39fce7d7c3cf45546dad7f
         const currentClient = await SigningCosmWasmClient.connectWithSigner(
           RPC_END_POINT,
           offlineSigner,

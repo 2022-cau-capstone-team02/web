@@ -26,6 +26,14 @@ const SidebarData = [
     // ]
   },
   {
+    title: '펀딩',
+    link: '/funding',
+    iconClosed: <RiArrowDownSFill />,
+    iconOpened: <RiArrowUpSFill />,
+    // sub:[
+    // ]
+  },
+  {
     title: '대시보드',
     link: '/dashboard',
     iconClosed: <RiArrowDownSFill />,

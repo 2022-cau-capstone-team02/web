@@ -22,6 +22,10 @@ const InvestorPath = styled.div`
   background: aliceblue;
   border-radius: 50px;
   box-shadow: 0px 3px 20px grey;
+  flex-direction: column;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const YoutuberPath = styled.div`
@@ -36,26 +40,35 @@ const YoutuberPath = styled.div`
   background: aliceblue;
   border-radius: 50px;
   box-shadow: 0px 3px 20px grey;
+  flex-direction: column;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 const Dashboard = () => {
   const navigate = useNavigate();
   return (
-    <StyledContainer fluid>
-      <InvestorPath
-        onClick={() => {
-          navigate('/dashboard/investor');
-        }}
-      >
-        <p style={{ fontSize: '3rem', color: '#202121' }}>투자자</p>
-      </InvestorPath>
-      <YoutuberPath
-        onClick={() => {
-          navigate('/dashboard/youtuber');
-        }}
-      >
-        <p style={{ fontSize: '3rem', color: '#202121' }}>유튜버</p>
-      </YoutuberPath>
-    </StyledContainer>
+    <React.Fragment>
+      <StyledContainer fluid>
+        <InvestorPath
+          onClick={() => {
+            navigate('/dashboard/investor');
+          }}
+        >
+          <img style={{ width: '100%' }} src={process.env.PUBLIC_URL + '/image/investor.png'} />
+          <p style={{ fontSize: '3rem', color: '#202121' }}>투자자</p>
+        </InvestorPath>
+        <YoutuberPath
+          onClick={() => {
+            navigate('/dashboard/youtuber');
+          }}
+        >
+          <img style={{ width: '100%' }} src={process.env.PUBLIC_URL + '/image/youtube.png'} />
+          <p style={{ fontSize: '3rem', color: '#202121' }}>유튜버</p>
+        </YoutuberPath>
+      </StyledContainer>
+      <div style={{ padding: '50px' }} />
+    </React.Fragment>
   );
 };
 
