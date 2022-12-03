@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import {
+  allocation,
   createPool,
   endFunding,
   increaseAllowance,
@@ -10,7 +11,7 @@ import {
   transferFunding,
 } from './queries';
 import useClient from './hooks/useClient';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { channelListAtom } from './atoms';
 
 const FundingAdmin = () => {
@@ -139,11 +140,79 @@ const FundingAdmin = () => {
               )}
             </div>
             <EndFunding client={client} userAddress={userAddress} />
+            <Allocation client={client} userAddress={userAddress} />
           </div>
         </div>
         <div style={{ padding: '10px' }} />
       </Container>
     </React.Fragment>
+  );
+};
+
+const Allocation = ({ client, userAddress }) => {
+  const [channel, setChannel] = useState();
+  const channelList = useRecoilValue(channelListAtom);
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      amount: '',
+    },
+  });
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', marginTop: '30px' }}>
+      <p style={{ fontSize: '1.5rem' }}>
+        <b>Step3. 배당 합니다</b>
+      </p>
+      {channelList.map((currentChannel) => {
+        return (
+          <a
+            style={{
+              ...(channel?.id === currentChannel.id && {
+                color: 'red',
+              }),
+            }}
+            key={currentChannel.id}
+            onClick={() => setChannel(currentChannel)}
+          >
+            {currentChannel.name}
+          </a>
+        );
+      })}
+      <Controller
+        name="amount"
+        control={control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <input value={value} onChange={onChange} placeholder="배당 총액" />
+        )}
+      />
+      <div style={{ padding: '10px' }} />
+      <button
+        style={{
+          border: 'none',
+          padding: '10px',
+          borderRadius: '10px',
+          boxShadow: '0px 3px 10px grey',
+        }}
+        onClick={() => {
+          if (!channel) return;
+          handleSubmit(async (data) => {
+            const allocationResult = await allocation(
+              client,
+              userAddress,
+              channel.icoContractAddress,
+              data.amount,
+            );
+            console.log(allocationResult);
+          })();
+        }}
+      >
+        배당하기
+      </button>
+    </div>
   );
 };
 
