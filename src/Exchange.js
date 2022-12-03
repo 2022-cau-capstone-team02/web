@@ -154,9 +154,9 @@ const Exchange = () => {
                       value={
                         liquidities && Number(topInput) > 0
                           ? (
-                              (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
-                              Number(topInput)
-                            ).toFixed(8)
+                            (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
+                            Number(topInput)
+                          ).toFixed(8)
                           : 0
                       }
                     />
@@ -263,9 +263,9 @@ const Exchange = () => {
                       value={
                         liquidities && Number(topInput) > 0
                           ? (
-                              (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
-                              Number(topInput)
-                            ).toFixed(8)
+                            (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
+                            Number(topInput)
+                          ).toFixed(8)
                           : 0
                       }
                     />

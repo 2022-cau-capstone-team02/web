@@ -6,6 +6,6 @@ export const COIN_DENOM = 'KRW';
 export const COIN_MINIMAL_DENOM = 'ukrw';
 export const UPPERCASE_COIN_MINIMAL_DENOM = 'uKRW';
 
-export const TOKEN_CODE_ID = 4;
-export const ICO_CODE_ID = 5;
-export const PAIR_CODE_ID = 6;
+export const TOKEN_CODE_ID = 1;
+export const ICO_CODE_ID = 2;
+export const PAIR_CODE_ID = 4;
