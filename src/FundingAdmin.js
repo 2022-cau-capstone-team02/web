@@ -214,7 +214,7 @@ const EndFunding = ({ client, userAddress }) => {
               //   };
               //   return newChannelList;
               // });
-              const tokenAmount = '5';
+              const tokenAmount = '1000';
               const increaseAllowanceResult = await increaseAllowance(
                 client,
                 userAddress,

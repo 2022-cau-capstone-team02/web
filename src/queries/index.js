@@ -81,7 +81,7 @@ export const instantiateToken = async (client, tokenName, tokenSymbol, minter) =
     },
   };
 
-  const result = await client.instantiate(minter, 1, message, 'channel', feeMsg);
+  const result = await client.instantiate(minter, ICO_CODE_ID, message, 'channel', feeMsg);
   return result.contractAddress;
 };
 
@@ -147,11 +147,11 @@ export const myFundingAmountQuery = async (client, userAddress, address) => {
 };
 
 // 일정 ICO 컨트랙트가 모아들인 총 금액
-export const totalFundingAmountQuery = async (client, address) => {
+export const totalFundingAmountQuery = async (client, icoContractAddress) => {
   const message = {
     total_funding_amount: {},
   };
-  return await client.queryContractSmart(address, message);
+  return await client.queryContractSmart(icoContractAddress, message);
 };
 
 // 관리자가 instantiate 할 때 지정한 채널 주인에게 펀딩 금액 전송
@@ -273,11 +273,11 @@ export const increaseAllowance = async (client, admin, tokenAddress, poolAddress
   return await client.execute(admin, tokenAddress, message, feeMsg, null, []);
 };
 
-export const swap = async (client, admin, poolAddress, uKrwAmount) => {
+export const buySwap = async (client, admin, poolAddress, uKrwAmount) => {
   const message = {
     swap: {
       offer_asset: {
-        info: { native_token: { denom: COIN_MINIMAL_DENOM } },
+        info: { token: { co: COIN_MINIMAL_DENOM } },
         amount: uKrwAmount,
       },
       min_output_amount: '0',
@@ -288,4 +288,19 @@ export const swap = async (client, admin, poolAddress, uKrwAmount) => {
   return await client.execute(admin, poolAddress, message, feeMsg, null, [
     coin(uKrwAmount, COIN_MINIMAL_DENOM),
   ]);
+};
+
+export const sellSwap = async (client, admin, tokenAddress, poolAddress, tokenAmount) => {
+  const message = {
+    swap: {
+      offer_asset: {
+        info: { token: { contract_addr: tokenAddress } },
+        amount: tokenAmount,
+      },
+      min_output_amount: '0',
+      max_spread: '100',
+      to: admin,
+    },
+  };
+  return await client.execute(admin, poolAddress, message, feeMsg, null, []);
 };

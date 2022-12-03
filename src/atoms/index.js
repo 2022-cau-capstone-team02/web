@@ -66,11 +66,20 @@ export const channelListAtom = atom({
     {
       id: 5,
       name: 'Channel F',
-      src: 'https://yt3.ggpht.com/5oUY3tashyxfqsjO5SGhjT4dus8FkN9CsAHwXWISFrdPYii1FudD4ICtLfuCw6-THJsJbgoY=s176-c-k-c0x00ffffff-no-rj',
+      src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
       ticker: 'CHF',
       icoContractAddress: 'ysip1axw5he6ktvz8rgacec3ldxmegy0urn0xevsysl7e0hx6dx90er6qf406rq',
       tokenAddress: 'ysip1m4ns69zvkk2zv0946mw298tlky5ckvu08rtxggtg29p784kc5sxqfec72j',
       poolAddress: 'ysip18vq6emxwq0s77wpt0f5e4zujdjfndcs0kqlr7u8nn2uwv03nef8qeucjgw',
+    },
+    {
+      id: 6,
+      name: 'Channel G',
+      src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
+      ticker: 'CHG',
+      icoContractAddress: 'ysip1phczxfyh2jmymd3qn0u0unlazytqnrtasp8cdy20j6w6y323q8fswxass8',
+      tokenAddress: 'ysip14sa4u42n2a8kmlvj3qcergjhy6g9ps06rzeth94f2y6grlat6u6st567us',
+      poolAddress: 'ysip1nc84knc0n7td5xqplwy0luh97zd8hv5mhvm9cdempc05xk0xvxyqxprw5j',
     },
   ],
 });

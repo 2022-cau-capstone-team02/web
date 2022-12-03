@@ -4,11 +4,10 @@ import styled from 'styled-components';
 import FlexRowCenter from './components/FlexRowCenter';
 import Modal from 'react-modal';
 import { HiChevronDown } from 'react-icons/hi';
-import { CosmWasmClient } from 'cosmwasm';
 import { useRecoilValue } from 'recoil';
 import useClient from './hooks/useClient';
 import { channelListAtom, userAssetAtom } from './atoms';
-import { liquidityQuery, swap } from './queries';
+import { buySwap, sellSwap, liquidityQuery, increaseAllowance } from './queries';
 import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
 
 // This is your rpc endpoint
@@ -25,33 +24,6 @@ const customStyles = {
   },
 };
 
-const tokenList = [
-  {
-    id: 0,
-    name: '곽튜브KWAKTUBE',
-    src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
-    ticker: 'KBAK',
-  },
-  {
-    id: 1,
-    src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
-    name: '피지컬갤러리',
-    ticker: 'PG',
-  },
-  {
-    id: 2,
-    src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
-    name: 'MrBeast',
-    ticker: 'MRB',
-  },
-  {
-    id: 3,
-    src: 'https://yt3.ggpht.com/5oUY3tashyxfqsjO5SGhjT4dus8FkN9CsAHwXWISFrdPYii1FudD4ICtLfuCw6-THJsJbgoY=s176-c-k-c0x00ffffff-no-rj',
-    name: 'PewDiePie',
-    ticker: 'PDD',
-  },
-];
-
 const Exchange = () => {
   const { client, stargateClient, userAddress } = useClient();
   const channelList = useRecoilValue(channelListAtom);
@@ -61,7 +33,7 @@ const Exchange = () => {
   const [currentTokenPosition, setCurrentTokenPosition] = useState('TOP');
   const [bottomToken, setBottomToken] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [isBid, setIsBid] = useState(true);
+  const [isBuy, setIsBuy] = useState(true);
 
   const handleModal = useCallback(() => {
     setModalIsOpen((prev) => !prev);
@@ -102,7 +74,7 @@ const Exchange = () => {
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginBottom: tokenList.length === index + 1 ? 0 : 8,
+                marginBottom: channelList.length === index + 1 ? 0 : 8,
                 border: '1px solid red',
                 padding: '8px 24px',
               }}
@@ -133,98 +105,209 @@ const Exchange = () => {
         >
           <SwapHeader>
             <span style={{ fontSize: '2rem' }}>스왑</span>
+            <button onClick={() => setIsBuy((prev) => !prev)}>{isBuy ? '매수' : '매도'}</button>
           </SwapHeader>
-          <SwapTokenContainer>
-            <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
-              <FlexRowCenter>
-                <SwapTokenInput
-                  inputMode="decimal"
-                  onChange={(e) => {
-                    setTopInput(Number(e.target.value));
-                  }}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  type="text"
-                  pattern="^[0-9]*[.,]?[0-9]*$"
-                  placeholder="0"
-                  minLength="1"
-                  maxLength="79"
-                  spellCheck="false"
-                  value={topInput}
-                />
-                <button>
-                  <span>{UPPERCASE_COIN_MINIMAL_DENOM}</span>
-                </button>
-              </FlexRowCenter>
-              <span>
-                보유량 : {userAsset?.[UPPERCASE_COIN_MINIMAL_DENOM]} {UPPERCASE_COIN_MINIMAL_DENOM}
-              </span>
-            </SwapTokenWrapper>
-            <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
-              <FlexRowCenter>
-                <SwapTokenInput
-                  inputMode="decimal"
-                  onChange={(e) => {
-                    setTopInput(Number(e.target.value));
-                  }}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  type="text"
-                  pattern="^[0-9]*[.,]?[0-9]*$"
-                  placeholder="0"
-                  minLength="1"
-                  maxLength="79"
-                  spellCheck="false"
-                  value={
-                    liquidities && Number(topInput) > 0
-                      ? (
-                          (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
-                          Number(topInput)
-                        ).toFixed(8)
-                      : 0
-                  }
-                />
-                <a
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: '1px solid black',
-                    padding: '4px 8px',
-                  }}
-                  onClick={() => {
-                    setCurrentTokenPosition('BOTTOM');
-                    handleModal();
-                  }}
-                >
-                  {bottomToken && (
-                    <img
-                      alt={`TOKEN_IMG--${bottomToken.ticker}`}
-                      src={bottomToken.src}
-                      style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
+          {isBuy ? (
+            <React.Fragment>
+              <SwapTokenContainer>
+                <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
+                  <FlexRowCenter>
+                    <SwapTokenInput
+                      inputMode="decimal"
+                      onChange={(e) => {
+                        setTopInput(Number(e.target.value));
+                      }}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      type="text"
+                      pattern="^[0-9]*[.,]?[0-9]*$"
+                      placeholder="0"
+                      minLength="1"
+                      maxLength="79"
+                      spellCheck="false"
+                      value={topInput}
                     />
+                    <button>
+                      <span>{UPPERCASE_COIN_MINIMAL_DENOM}</span>
+                    </button>
+                  </FlexRowCenter>
+                  <span>
+                    보유량 : {userAsset?.[UPPERCASE_COIN_MINIMAL_DENOM]}{' '}
+                    {UPPERCASE_COIN_MINIMAL_DENOM}
+                  </span>
+                </SwapTokenWrapper>
+                <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
+                  <FlexRowCenter>
+                    <SwapTokenInput
+                      inputMode="decimal"
+                      onChange={(e) => {
+                        setTopInput(Number(e.target.value));
+                      }}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      type="text"
+                      pattern="^[0-9]*[.,]?[0-9]*$"
+                      placeholder="0"
+                      minLength="1"
+                      maxLength="79"
+                      spellCheck="false"
+                      value={
+                        liquidities && Number(topInput) > 0
+                          ? (
+                              (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
+                              Number(topInput)
+                            ).toFixed(8)
+                          : 0
+                      }
+                    />
+                    <a
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: '1px solid black',
+                        padding: '4px 8px',
+                      }}
+                      onClick={() => {
+                        setCurrentTokenPosition('BOTTOM');
+                        handleModal();
+                      }}
+                    >
+                      {bottomToken && (
+                        <img
+                          alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                          src={bottomToken.src}
+                          style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
+                        />
+                      )}
+                      {bottomToken ? bottomToken.ticker : '토큰 선택'}
+                      <HiChevronDown />
+                    </a>
+                  </FlexRowCenter>
+                  {liquidities && (
+                    <span>
+                      가격 :{' '}
+                      {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(
+                        8,
+                      )}{' '}
+                      {UPPERCASE_COIN_MINIMAL_DENOM}
+                    </span>
                   )}
-                  {bottomToken ? bottomToken.ticker : '토큰 선택'}
-                  <HiChevronDown />
-                </a>
-              </FlexRowCenter>
-              {liquidities && (
-                <span>
-                  가격 :{' '}
-                  {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(8)}{' '}
-                  {UPPERCASE_COIN_MINIMAL_DENOM}
-                </span>
-              )}
-            </SwapTokenWrapper>
-          </SwapTokenContainer>
+                </SwapTokenWrapper>
+              </SwapTokenContainer>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <SwapTokenContainer>
+                <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
+                  <FlexRowCenter>
+                    <SwapTokenInput
+                      inputMode="decimal"
+                      onChange={(e) => {
+                        setTopInput(Number(e.target.value));
+                      }}
+                      autoComplete="off"
+                      autoCorrect="off"
+                      type="text"
+                      pattern="^[0-9]*[.,]?[0-9]*$"
+                      placeholder="0"
+                      minLength="1"
+                      maxLength="79"
+                      spellCheck="false"
+                      value={topInput}
+                    />
+                    <a
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: '1px solid black',
+                        padding: '4px 8px',
+                      }}
+                      onClick={() => {
+                        setCurrentTokenPosition('BOTTOM');
+                        handleModal();
+                      }}
+                    >
+                      {bottomToken && (
+                        <img
+                          alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                          src={bottomToken.src}
+                          style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
+                        />
+                      )}
+                      {bottomToken ? bottomToken.ticker : '토큰 선택'}
+                      <HiChevronDown />
+                    </a>
+                  </FlexRowCenter>
+                  {liquidities && (
+                    <span>
+                      가격 :{' '}
+                      {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(
+                        8,
+                      )}{' '}
+                      {UPPERCASE_COIN_MINIMAL_DENOM}
+                    </span>
+                  )}
+                </SwapTokenWrapper>
+                <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
+                  <FlexRowCenter>
+                    <SwapTokenInput
+                      inputMode="decimal"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      type="text"
+                      pattern="^[0-9]*[.,]?[0-9]*$"
+                      placeholder="0"
+                      minLength="1"
+                      maxLength="79"
+                      spellCheck="false"
+                      value={
+                        liquidities && Number(topInput) > 0
+                          ? (
+                              (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
+                              Number(topInput)
+                            ).toFixed(8)
+                          : 0
+                      }
+                    />
+                    <button>
+                      <span>{UPPERCASE_COIN_MINIMAL_DENOM}</span>
+                    </button>
+                  </FlexRowCenter>
+                </SwapTokenWrapper>
+              </SwapTokenContainer>
+            </React.Fragment>
+          )}
           <SwapButton
             onClick={async () => {
               if (!bottomToken && Number(topInput) === 0) return;
-              const swapResult = await swap(
-                client,
-                userAddress,
-                bottomToken.poolAddress,
-                topInput.toString(10),
-              );
+              if (isBuy) {
+                const bidSwapResult = await buySwap(
+                  client,
+                  userAddress,
+                  bottomToken.poolAddress,
+                  topInput.toString(10),
+                );
+                console.log('bidSwapResult', bidSwapResult);
+              } else {
+                console.log(bottomToken);
+                const increaseAllowanceResult = await increaseAllowance(
+                  client,
+                  userAddress,
+                  bottomToken.tokenAddress,
+                  bottomToken.poolAddress,
+                  topInput.toString(10),
+                );
+                console.log('increaseAllowanceResult', increaseAllowanceResult);
+
+                const askSwapResult = await sellSwap(
+                  client,
+                  userAddress,
+                  bottomToken.tokenAddress,
+                  bottomToken.poolAddress,
+                  topInput.toString(10),
+                );
+                console.log('askSwapResult', askSwapResult);
+              }
               window.dispatchEvent('refreshAsset');
             }}
           >
