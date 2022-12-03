@@ -126,6 +126,7 @@ export const fundingChannel = async (client, userAddress, icoAddress, amount) =>
   ]);
 };
 
+// 진행된 ICO의 상세 정보
 export const icoInfoQuery = async (client, address) => {
   const message = {
     ico_info: {},
