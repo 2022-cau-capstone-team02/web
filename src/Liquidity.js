@@ -112,9 +112,12 @@ const Exchange = () => {
         })}
       </Modal>
       <Container style={{ backgroundColor: commonTheme.palette.light.blue900 }}>
-        <SwapWrapper border={`1px solid ${commonTheme.palette.light.blue700}`}>
+        <SwapWrapper
+          style={{ background: 'aliceblue' }}
+          border={`3px solid ${commonTheme.palette.light.blue700}`}
+        >
           <SwapHeader>
-            <span>유동성 공급</span>
+            <span style={{ fontSize: '2rem' }}>유동성 공급</span>
           </SwapHeader>
           <SwapTokenContainer>
             <SwapTokenWrapper bgColor={commonTheme.palette.light.blue300} className={'wrapper'}>
@@ -248,6 +251,7 @@ const SwapTokenWrapper = styled.div`
   background-color: ${(props) => props.bgColor};
   border-radius: 16px;
   padding: 16px;
+  box-shadow: 0px 2px 7px ${commonTheme.palette.light.blue700};
 `;
 
 const SwapTokenInput = styled.input`
@@ -264,6 +268,8 @@ const SwapTokenInput = styled.input`
 
 const SwapButton = styled.button`
   display: flex;
+  border: none;
+  box-shadow: 0px 3px 10px grey;
   padding: 16px;
   border-radius: 16px;
   align-items: center;
