@@ -18,7 +18,7 @@ const Funding = () => {
   const { client, stargateClient, userAddress } = useClient();
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
   const channelList = useRecoilValue(channelListAtom);
-
+  console.log(channelList);
   return (
     <React.Fragment>
       <Container>
@@ -72,15 +72,17 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         icoChannel.icoContractAddress,
       );
       setIcoChannelTotalFundingAmount(icoChannelTotalFundingAmountQueryResult);
-
+      console.log(icoChannelTotalFundingAmount);
       const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.icoContractAddress);
       setIcoInfo(icoInfoQueryResult);
-
+      console.log(icoInfo);
+      console.log(userAddress);
       const myFundingAmountQueryResult = await myFundingAmountQuery(
         client,
         userAddress,
         icoChannel.icoContractAddress,
       );
+      console.log(myFundingAmountQuery);
       setUserFunding((prev) => {
         return {
           ...prev,
