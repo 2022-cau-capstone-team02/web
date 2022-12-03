@@ -212,27 +212,27 @@ const Test = () => {
         console.log('token_contract_address: ');
         console.log(token_contract_address);
 
-        // let ico_contract_address = await instantiate_ico_contract(
-        //   cosmwasmClient,
-        //   accounts[0].address,
-        //   '100',
-        //   3000,
-        //   'channelB',
-        //   'CHB',
-        //   '100000000000',
-        //   'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
-        // );
-        // console.log('ico_contract_address: ');
-        // console.log(ico_contract_address);
+        let ico_contract_address = await instantiate_ico_contract(
+          cosmwasmClient,
+          accounts[0].address,
+          '100',
+          3000,
+          'channelB',
+          'CHB',
+          '100000000000',
+          'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
+        );
+        console.log('ico_contract_address: ');
+        console.log(ico_contract_address);
 
-        // let fund_channel_result = await fund_channel(
-        //   cosmwasmClient,
-        //   accounts[0].address,
-        //   ico_contract_address,
-        //   100,
-        // );
-        // console.log('fund_channel_result: ');
-        // console.log(fund_channel_result);
+        let fund_channel_result = await fund_channel(
+          cosmwasmClient,
+          accounts[0].address,
+          ico_contract_address,
+          100,
+        );
+        console.log('fund_channel_result: ');
+        console.log(fund_channel_result);
 
         // let end_funding_result = await end_funding(
         //   cosmwasmClient,

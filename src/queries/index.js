@@ -157,5 +157,5 @@ export const totalFundingAmount = async (client, address) => {
     total_funding_amount: {},
   };
   console.log(message);
-  return await client.queryContractSmart(client, address, message);
+  return await client.queryContractSmart(address, message);
 };
