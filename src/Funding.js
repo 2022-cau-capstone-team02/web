@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Modal from 'react-modal';
 import { useForm, Controller } from 'react-hook-form';
 import {
   Box,
@@ -11,10 +10,17 @@ import {
   Image,
   Input,
   Stack,
-  Text,
 } from '@chakra-ui/react';
-import { fundingChannel } from './queries';
+import {
+  fundingChannel,
+  totalFundingAmountQuery,
+  icoInfoQuery,
+  myFundingAmountQuery,
+  tokenAddressQuery,
+  channelTokenBalanceQuery,
+} from './queries';
 import useClient from './hooks/useClient';
+import { COIN_MINIMAL_DENOM } from './constants';
 
 const customStyles = {
   content: {
@@ -27,132 +33,56 @@ const customStyles = {
   },
 };
 
-const tokenList = [
-  {
-    id: 0,
-    name: '곽튜브KWAKTUBE',
-    src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
-    ticker: 'KBAK',
-  },
-  {
-    id: 1,
-    src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
-    name: '피지컬갤러리',
-    ticker: 'PG',
-  },
-  {
-    id: 2,
-    src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
-    name: 'MrBeast',
-    ticker: 'MRB',
-  },
-  {
-    id: 3,
-    src: 'https://yt3.ggpht.com/5oUY3tashyxfqsjO5SGhjT4dus8FkN9CsAHwXWISFrdPYii1FudD4ICtLfuCw6-THJsJbgoY=s176-c-k-c0x00ffffff-no-rj',
-    name: 'PewDiePie',
-    ticker: 'PDD',
-  },
-];
-
 const icoChannelList = [
   {
     id: 0,
-    name: '곽튜브KWAKTUBE',
+    name: 'Channel A',
     src: 'https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj',
-    ticker: 'KWAK',
-    address: '123123121233',
+    ticker: 'CHA',
+    address: 'ysip19wfdqvt2rfhffpl0unulepjuwcgf0ycz3fu448u2v6f45j2c7fvqysrygz',
   },
-  {
-    id: 1,
-    src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
-    name: '피지컬갤러리',
-    ticker: 'PG',
-    address: '12312312312323133121233',
-  },
-  {
-    id: 2,
-    src: 'https://yt3.ggpht.com/ytc/AMLnZu9NaXMe8tiBBVF3N608TFvJSihHF2Ez8yPIqkTl1g=s176-c-k-c0x00ffffff-no-rj',
-    name: 'MrBeast',
-    ticker: 'MRB',
-    address: '12312312fasdfasdf1233',
-  },
-  {
-    id: 3,
-    src: 'https://yt3.ggpht.com/5oUY3tashyxfqsjO5SGhjT4dus8FkN9CsAHwXWISFrdPYii1FudD4ICtLfuCw6-THJsJbgoY=s176-c-k-c0x00ffffff-no-rj',
-    name: 'PewDiePie',
-    ticker: 'PDD',
-    address: '12312123123das312fasdfasdf1233',
-  },
+  // {
+  //   id: 1,
+  //   name: 'Channel B',
+  //   src: 'https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj',
+  //   ticker: 'CHB',
+  //   address: 'ysip1aakfpghcanxtc45gpqlx8j3rq0zcpyf49qmhm9mdjrfx036h4z5sj0pstt',
+  // },
 ];
+
+// ysip1vhndln95yd7rngslzvf6sax6axcshkxqpmpr886ntelh28p9ghuqyrsx7m
 
 const Funding = () => {
   const { client, stargateClient, userAddress } = useClient();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [availableKrw, setAvailableKrw] = useState();
 
   useEffect(() => {
     if (!stargateClient || !userAddress) return;
 
     (async () => {
-      const balance = await stargateClient.getBalance(userAddress, 'ukrw');
+      const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
       setAvailableKrw(balance);
     })();
   }, [stargateClient, userAddress]);
 
-  const handleModal = useCallback(() => {
-    setIsModalOpen((prev) => !prev);
-  }, [isModalOpen]);
+  useEffect(() => {
+    if (!client || !userAddress) return;
+
+    (async () => {
+      const result = await tokenAddressQuery(
+        client,
+        'ysip19wfdqvt2rfhffpl0unulepjuwcgf0ycz3fu448u2v6f45j2c7fvqysrygz',
+      );
+      const tokenAddress = result.address;
+      const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
+      console.log(newResult, result);
+    })();
+  }, [client, userAddress]);
 
   return (
     <React.Fragment>
-      <Modal isOpen={isModalOpen} style={customStyles}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 16,
-          }}
-        >
-          <span>토큰 선택</span>
-          <button onClick={handleModal}>X</button>
-        </div>
-        {tokenList.map((token, index) => {
-          return (
-            <a
-              onClick={() => handleModal()}
-              key={token.id}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: tokenList.length === index + 1 ? 0 : 8,
-                border: '1px solid red',
-                padding: '8px 24px',
-              }}
-            >
-              <img
-                alt={`TOKEN_IMG--${token.ticker}`}
-                src={token.src}
-                style={{ width: 64, height: 64, borderRadius: 32, marginRight: 16 }}
-              />
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                }}
-              >
-                <span>{token.name}</span>
-                <span>{token.ticker}</span>
-              </div>
-            </a>
-          );
-        })}
-      </Modal>
       <Container>
+        <div>투자 가능한 금액 : {availableKrw?.amount} uKRW</div>
         <Stack>
           <Box>
             {icoChannelList.map((icoChannel) => {
@@ -162,7 +92,9 @@ const Funding = () => {
                   icoChannel={icoChannel}
                   userAddress={userAddress}
                   availableKrw={availableKrw}
+                  setAvailableKrw={setAvailableKrw}
                   client={client}
+                  stargateClient={stargateClient}
                 />
               );
             })}
@@ -173,12 +105,51 @@ const Funding = () => {
   );
 };
 
-const IcoChannel = ({ icoChannel, client, availableKrw, userAddress }) => {
-  const { control, handleSubmit } = useForm({
+const IcoChannel = ({
+  icoChannel,
+  availableKrw,
+  client,
+  stargateClient,
+  setAvailableKrw,
+  userAddress,
+}) => {
+  const [totalFundingAmount, setTotalFundingAmount] = useState();
+  const [myFundingAmount, setMyFundingAmount] = useState();
+  const [icoInfo, setIcoInfo] = useState();
+  const [isFundingChannelLoading, setIsFundingChannelLoading] = useState(false);
+  const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       fundingAmount: 0,
     },
   });
+
+  useEffect(() => {
+    if (!client) return;
+
+    (async () => {
+      const totalFundingAmountQueryResult = await totalFundingAmountQuery(
+        client,
+        icoChannel.address,
+      );
+      setTotalFundingAmount(totalFundingAmountQueryResult);
+
+      const icoInfoQueryResult = await icoInfoQuery(client, icoChannel.address);
+      setIcoInfo(icoInfoQueryResult);
+
+      const myFundingAmountQueryResult = await myFundingAmountQuery(
+        client,
+        userAddress,
+        icoChannel.address,
+      );
+      setMyFundingAmount(myFundingAmountQueryResult);
+    })();
+  }, [client]);
+
+  console.log(
+    Number(totalFundingAmount?.amount),
+    Number(icoInfo?.target_funding_amount),
+    Math.floor(Number(totalFundingAmount?.amount) / Number(icoInfo?.target_funding_amount)),
+  );
 
   return (
     <Flex alignItems={'center'} flexDirection={'row'}>
@@ -192,14 +163,20 @@ const IcoChannel = ({ icoChannel, client, availableKrw, userAddress }) => {
           </Heading>
         </Box>
         <Flex mb={4} alignItems={'center'}>
-          <CircularProgress mr={4} value={80} size={'120px'} />
+          <CircularProgress
+            mr={4}
+            value={Math.floor(
+              Number(totalFundingAmount?.amount) / Number(icoInfo?.target_funding_amount),
+            )}
+            size={'120px'}
+          />
           <Flex flexDirection={'column'}>
-            <Box>현재까지 모집 금액 : 80000 uKRW</Box>
-            <Box>총 모집 금액 : 100000 uKRW</Box>
+            <Box>현재까지 모집 금액 : {totalFundingAmount?.amount} uKRW</Box>
+            <Box>내가 투자한 금액 : {myFundingAmount?.amount} uKRW</Box>
+            <Box>총 모집 금액 : {icoInfo?.target_funding_amount} uKRW</Box>
           </Flex>
         </Flex>
 
-        <Text>투자 가능한 금액 : {availableKrw?.amount} uKRW</Text>
         <Controller
           name="fundingAmount"
           control={control}
@@ -210,7 +187,7 @@ const IcoChannel = ({ icoChannel, client, availableKrw, userAddress }) => {
             <Input
               mb={4}
               type={'number'}
-              max={Number(availableKrw?.amount)}
+              max={availableKrw ? Number(availableKrw?.amount) : undefined}
               value={value}
               onChange={onChange}
               placeholder="얼마만큼 투자하시겠어요?"
@@ -219,10 +196,34 @@ const IcoChannel = ({ icoChannel, client, availableKrw, userAddress }) => {
         />
         <Button
           w={'100%'}
+          isLoading={isFundingChannelLoading}
           onClick={() => {
             handleSubmit(async (data) => {
               const { fundingAmount } = data;
-              await fundingChannel(client, userAddress, icoChannel.address, fundingAmount);
+              setIsFundingChannelLoading(true);
+              try {
+                await fundingChannel(client, userAddress, icoChannel.address, fundingAmount);
+
+                const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
+                setAvailableKrw(balance);
+
+                const totalFundingAmountQueryResult = await totalFundingAmountQuery(
+                  client,
+                  icoChannel.address,
+                );
+                setTotalFundingAmount(totalFundingAmountQueryResult);
+
+                const myFundingAmountQueryResult = await myFundingAmountQuery(
+                  client,
+                  userAddress,
+                  icoChannel.address,
+                );
+                setMyFundingAmount(myFundingAmountQueryResult);
+
+                setValue('fundingAmount', 0);
+              } finally {
+                setIsFundingChannelLoading(false);
+              }
             })();
           }}
           colorScheme="teal"

@@ -3,8 +3,12 @@ import styled from 'styled-components';
 import { Container } from 'react-bootstrap';
 import { coin, coins, SigningCosmWasmClient } from 'cosmwasm';
 import { SigningStargateClient } from '@cosmjs/stargate';
+<<<<<<< HEAD
 import { totalFundingAmount, instantiateIcoContract, fundingChannel } from './queries';
 import useClient from './hooks/useClient';
+=======
+import { totalFundingAmountQuery, instantiateIcoContract } from './queries';
+>>>>>>> 539d7dffbbaebb5093a99c2368b96d91daf5fe6a
 
 const rpcEndpoint = 'http://localhost:26657';
 const chainId = 'ysip';
@@ -24,6 +28,7 @@ const Youtuber = () => {
   useEffect(() => {
     if (!stargateClient || !userAddress) return;
     (async () => {
+<<<<<<< HEAD
       let ico_contract_address = await instantiateIcoContract(
         client,
         userAddress,
@@ -42,6 +47,45 @@ const Youtuber = () => {
       const currentFundingAmount = await totalFundingAmount(client, ico_contract_address);
       console.log(currentFundingAmount);
       setFundingAmount(currentFundingAmount);
+=======
+      if (!window.keplr) {
+        alert('Please install keplr extension');
+      } else {
+        await suggest_ysip_chain();
+        window.keplr.enable(chainId);
+        const offlineSigner = window.keplr.getOfflineSigner(chainId);
+        const accounts = await offlineSigner.getAccounts();
+        setUserAddress(accounts[0].address);
+        const currentClient = await SigningCosmWasmClient.connectWithSigner(
+          rpcEndpoint,
+          offlineSigner,
+        );
+        setClient(currentClient);
+        const currentStargateClient = await SigningStargateClient.connect(
+          rpcEndpoint,
+          // userAddress,
+          // offlineSigner,
+        );
+        let ico_contract_address = await instantiateIcoContract(
+          currentClient,
+          accounts[0].address,
+          '100',
+          3000,
+          'channelB',
+          'CHB',
+          '100000000000',
+          'ysip1q3gy9kxnt2wvp283w63envhc4pnl0tj57lgspg',
+        );
+        console.log(ico_contract_address);
+        setStargateClient(currentStargateClient);
+        const currentFundingAmount = await totalFundingAmountQuery(
+          currentClient,
+          ico_contract_address,
+        );
+        console.log(currentFundingAmount);
+        setFundingAmount(currentFundingAmount);
+      }
+>>>>>>> 539d7dffbbaebb5093a99c2368b96d91daf5fe6a
     })();
   }, [stargateClient, userAddress]);
   return (
