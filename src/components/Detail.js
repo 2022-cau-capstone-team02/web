@@ -339,7 +339,7 @@ async function fetchMonthlyDataByCustomUrl(customUrl) {
 }
 
 async function fetchRecentVideoData(id) {
-  return await axios.get(`/votes?videoId=${id}`);
+  return await axios.get(`https://returnyoutubedislikeapi.com/votes?videoId=${id}`);
 }
 
 const getTier = (subscriberCount) => {
