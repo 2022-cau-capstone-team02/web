@@ -60,20 +60,19 @@ const Info = styled.div`
   display: grid;
   grid-template-areas:
     'title title . .'
-    'holdingShare dividEnd channelIncome .'
-    'subscribers views videos .';
+    'subscribers views . .'
+    'videos channelIncome  . .';
   @media screen and (max-width: 998px) {
     grid-template-areas:
       'title title'
-      'holdingShare dividEnd'
       'subscribers views'
       'videos channelIncome';
   }
   @media screen and (max-width: 600px) {
     grid-template-areas:
       'title'
-      'holdingShare'
-      'dividEnd'
+      'subscribers'
+      'views'
       'channelIncome';
   }
 `;
@@ -222,8 +221,6 @@ const Assets = ({ apiData, videoData, popularVideoData, detailData2 }) => {
                           .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')}
                       </ChannelIncome>
                       {/* <AffiliateIncome>동영상 1개당 예상 제휴 수익 : {}</AffiliateIncome> */}
-                      <HoldingShare>보유지분 ??</HoldingShare>
-                      <DividEnd>예상 배당금 </DividEnd>
                     </Info>
                   </ChannelInfo>
                 </Asset>

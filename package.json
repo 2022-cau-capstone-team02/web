@@ -96,6 +96,5 @@
   },
   "msw": {
     "workerDirectory": "public"
-  },
-  "proxy": "https://returnyoutubedislikeapi.com"
+  }
 }
