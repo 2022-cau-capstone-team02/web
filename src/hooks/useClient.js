@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { channelTokenBalanceQuery, suggestYsipChain, tokenAddressQuery } from '../queries';
 import { SigningCosmWasmClient } from 'cosmwasm';
 import {
@@ -8,8 +8,8 @@ import {
   UPPERCASE_COIN_MINIMAL_DENOM,
 } from '../constants';
 import { SigningStargateClient } from '@cosmjs/stargate';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { channelListAtom, userAssetAtom } from '../atoms';
+import { useRecoilState } from 'recoil';
+import { userAssetAtom } from '../atoms';
 import forEach from 'lodash/forEach';
 
 const useClient = () => {
@@ -17,7 +17,9 @@ const useClient = () => {
   const [userAddress, setUserAddress] = useState();
   const [stargateClient, setStargateClient] = useState();
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
-  const channelList = useRecoilValue(channelListAtom);
+  const channelList = useMemo(() => {
+    return JSON.parse(localStorage.getItem('channelList'))?.list;
+  }, []);
 
   const refreshAssetHandler = async () => {
     const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
@@ -71,8 +73,13 @@ const useClient = () => {
     if (!client) return;
 
     forEach(channelList, async (icoChannel) => {
-      const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
-      const tokenAddress = result.address;
+      if (!icoChannel.icoContractAddress) return;
+
+      const tokenAddressResult = await tokenAddressQuery(client, icoChannel.icoContractAddress);
+
+      if (!tokenAddressResult.address) return;
+
+      const tokenAddress = tokenAddressResult.address;
       const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
       setUserAsset((props) => {
         return {
@@ -81,7 +88,7 @@ const useClient = () => {
         };
       });
     });
-  }, [client]);
+  }, [client, channelList]);
 
   useEffect(() => {
     if (!stargateClient || !userAddress) return;

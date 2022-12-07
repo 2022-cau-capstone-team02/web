@@ -6,12 +6,9 @@ import Modal from 'react-modal';
 import { HiChevronDown } from 'react-icons/hi';
 import { useRecoilValue } from 'recoil';
 import useClient from './hooks/useClient';
-import { channelListAtom, userAssetAtom } from './atoms';
+import { userAssetAtom } from './atoms';
 import { buySwap, sellSwap, liquidityQuery, increaseAllowance } from './queries';
 import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
-
-// This is your rpc endpoint
-const rpcEndpoint = 'https://rpc.cliffnet.cosmwasm.com:443/';
 
 const customStyles = {
   content: {
@@ -26,7 +23,7 @@ const customStyles = {
 
 const Exchange = () => {
   const { client, stargateClient, userAddress } = useClient();
-  const channelList = useRecoilValue(channelListAtom);
+  const channelList = JSON.parse(localStorage.getItem('channelList'))?.list;
   const userAsset = useRecoilValue(userAssetAtom);
   const [topInput, setTopInput] = useState(0);
   const [liquidities, setLiquidities] = useState(0);
@@ -62,7 +59,7 @@ const Exchange = () => {
           <span>토큰 선택</span>
           <button onClick={handleModal}>X</button>
         </div>
-        {channelList.map((token, index) => {
+        {channelList?.map((token, index) => {
           return (
             <a
               onClick={() => {
@@ -80,7 +77,7 @@ const Exchange = () => {
               }}
             >
               <img
-                alt={`TOKEN_IMG--${token.ticker}`}
+                alt={`TOKEN_IMG--${token?.ticker}`}
                 src={token.src}
                 style={{ width: 64, height: 64, borderRadius: 32, marginRight: 16 }}
               />
@@ -91,8 +88,8 @@ const Exchange = () => {
                   alignItems: 'flex-start',
                 }}
               >
-                <span>{token.name}</span>
-                <span>{token.ticker}</span>
+                <span>{token?.name}</span>
+                <span>{token?.ticker}</span>
               </div>
             </a>
           );
@@ -154,9 +151,9 @@ const Exchange = () => {
                       value={
                         liquidities && Number(topInput) > 0
                           ? (
-                            (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
-                            Number(topInput)
-                          ).toFixed(8)
+                              (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
+                              Number(topInput)
+                            ).toFixed(8)
                           : 0
                       }
                     />
@@ -174,12 +171,12 @@ const Exchange = () => {
                     >
                       {bottomToken && (
                         <img
-                          alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                          alt={`TOKEN_IMG--${bottomToken?.ticker}`}
                           src={bottomToken.src}
                           style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
                         />
                       )}
-                      {bottomToken ? bottomToken.ticker : '토큰 선택'}
+                      {bottomToken ? bottomToken?.ticker : '토큰 선택'}
                       <HiChevronDown />
                     </a>
                   </FlexRowCenter>
@@ -229,15 +226,20 @@ const Exchange = () => {
                     >
                       {bottomToken && (
                         <img
-                          alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                          alt={`TOKEN_IMG--${bottomToken?.ticker}`}
                           src={bottomToken.src}
                           style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
                         />
                       )}
-                      {bottomToken ? bottomToken.ticker : '토큰 선택'}
+                      {bottomToken ? bottomToken?.ticker : '토큰 선택'}
                       <HiChevronDown />
                     </a>
                   </FlexRowCenter>
+                  {userAsset[bottomToken?.ticker] && (
+                    <span>
+                      보유량 : {userAsset[bottomToken?.ticker]} {bottomToken?.ticker}
+                    </span>
+                  )}
                   {liquidities && (
                     <span>
                       가격 :{' '}
@@ -263,9 +265,9 @@ const Exchange = () => {
                       value={
                         liquidities && Number(topInput) > 0
                           ? (
-                            (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
-                            Number(topInput)
-                          ).toFixed(8)
+                              (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
+                              Number(topInput)
+                            ).toFixed(8)
                           : 0
                       }
                     />
@@ -288,6 +290,7 @@ const Exchange = () => {
                   topInput.toString(10),
                 );
                 console.log('bidSwapResult', bidSwapResult);
+                location.reload();
               } else {
                 console.log(bottomToken);
                 const increaseAllowanceResult = await increaseAllowance(
@@ -307,8 +310,8 @@ const Exchange = () => {
                   topInput.toString(10),
                 );
                 console.log('askSwapResult', askSwapResult);
+                location.reload();
               }
-              window.dispatchEvent('refreshAsset');
             }}
           >
             스왑하기

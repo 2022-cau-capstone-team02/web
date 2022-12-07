@@ -1,0 +1,34 @@
+{
+  "list" : [
+    {
+      "id": 0,
+      "name": "곽튜브(KWAKTUBE)",
+      "src": "https://yt3.ggpht.com/IiZfu92VbzJoI3gcw7NwyQTXBSPgk9-GBIwVj8tGEex-9uozEIvfDX2N6DNJVh15Uh1yy42VaA=s176-c-k-c0x00ffffff-no-rj",
+      "ticker": "KWAK",
+      "accountAddress": "ysip1uufnjjxlnatcj45fl3cqnt2jl8jsq45pjtrm39",
+      "icoContractAddress": "",
+      "tokenAddress": "",
+      "poolAddress": ""
+    },
+    {
+      "id": 1,
+      "name": "피지컬갤러리",
+      "src": "https://yt3.ggpht.com/ytc/AMLnZu83-5or1HaIln7R1dxZ3te2xGAoRwhS6cAdsDzCtw=s176-c-k-c0x00ffffff-no-rj",
+      "ticker": "PHY",
+      "accountAddress": "ysip1vwn4af8pna8kng6y9f2dkxft2ske03y86z93j3",
+      "icoContractAddress": "",
+      "tokenAddress": "",
+      "poolAddress": ""
+    },
+    {
+      "id": 2,
+      "name": "BLACKPINK",
+      "src": "https://yt3.ggpht.com/hZDUwjoeQqigphL4A1tkg9c6hVp5yXmbboBR7PYFUSFj5PIJSA483NB5v7b0XVoTN9GCku3tqQ=s176-c-k-c0x00ffffff-no-rj",
+      "ticker": "BLPI",
+      "accountAddress": "ysip15amd2kjwtnyu8y542txsfgpcffp0vmu2y5e2j4",
+      "icoContractAddress": "",
+      "tokenAddress": "",
+      "poolAddress": ""
+    }
+  ]
+}

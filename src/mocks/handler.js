@@ -20,7 +20,7 @@ const getMonthlyDataByCustomUrl = rest.get('/youtube/monthly/:customUrl', (req, 
   console.log(req);
   const { customUrl } = req.params;
   const mockMonthlyData = {
-    '@pewdiepie': {
+    '@BLACKPINK': {
       view: {
         '2022-01': 9845049,
         '2022-02': 14071606,
@@ -50,7 +50,7 @@ const getMonthlyDataByCustomUrl = rest.get('/youtube/monthly/:customUrl', (req, 
         '2022-12': 111000000,
       },
     },
-    '@codingapple': {
+    '@JBKWAK': {
       view: {
         '2022-01': 317265,
         '2022-02': 252021,
