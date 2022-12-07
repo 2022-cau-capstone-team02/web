@@ -8,19 +8,17 @@ const userInfo = [
     stake: [
       'UCOmHUn--16B90oW2L6FRR3A,',
       'UClRNDVO8093rmRTtLe4GEPw,',
-      'UCdtRAcd3L_UpV4tMXCw63NQ',
+      'UCdtRAcd3L_UpV4tMXCw63NQ,',
       // 'UCOmHUn--16B90oW2L6FRR3A,',
       // 'UClRNDVO8093rmRTtLe4GEPw,',
     ],
-    subscriber: [['106234', '107234', '108235', '109142', '109534', '110005', '111000']],
   },
 ];
 
 const getMonthlyDataByCustomUrl = rest.get('/youtube/monthly/:customUrl', (req, res, ctx) => {
-  console.log(req);
   const { customUrl } = req.params;
   const mockMonthlyData = {
-    '@BLACKPINK': {
+    '@blackpink': {
       view: {
         '2022-01': 572209594,
         '2022-02': 491366500,
@@ -50,7 +48,7 @@ const getMonthlyDataByCustomUrl = rest.get('/youtube/monthly/:customUrl', (req, 
         '2022-12': 83300000,
       },
     },
-    '@JBKWAK': {
+    '@jbkwak': {
       view: {
         '2022-01': 10927717,
         '2022-02': 7716693,
