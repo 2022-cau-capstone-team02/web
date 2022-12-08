@@ -8,7 +8,8 @@ import { useRecoilValue } from 'recoil';
 import useClient from './hooks/useClient';
 import { userAssetAtom } from './atoms';
 import { buySwap, sellSwap, liquidityQuery, increaseAllowance } from './queries';
-import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
+import { COIN_MINIMAL_DENOM_DIGIT, UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
+import { digitNumber } from './utils/common';
 
 const customStyles = {
   content: {
@@ -112,13 +113,13 @@ const Exchange = () => {
                     <SwapTokenInput
                       inputMode="decimal"
                       onChange={(e) => {
-                        setTopInput(Number(e.target.value));
+                        setTopInput(parseFloat(e.target.value).toFixed(6));
                       }}
                       autoComplete="off"
                       autoCorrect="off"
-                      type="text"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      placeholder="0"
+                      type="number"
+                      placeholder="0.000000"
+                      step={'0.000001'}
                       minLength="1"
                       maxLength="79"
                       spellCheck="false"
@@ -146,6 +147,7 @@ const Exchange = () => {
                       pattern="^[0-9]*[.,]?[0-9]*$"
                       placeholder="0"
                       minLength="1"
+                      step={'0.000001'}
                       maxLength="79"
                       spellCheck="false"
                       value={
@@ -153,7 +155,7 @@ const Exchange = () => {
                           ? (
                               (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
                               Number(topInput)
-                            ).toFixed(8)
+                            ).toFixed(6)
                           : 0
                       }
                     />
@@ -184,7 +186,7 @@ const Exchange = () => {
                     <span>
                       가격 :{' '}
                       {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(
-                        8,
+                        COIN_MINIMAL_DENOM_DIGIT,
                       )}{' '}
                       {UPPERCASE_COIN_MINIMAL_DENOM}
                     </span>
@@ -244,7 +246,7 @@ const Exchange = () => {
                     <span>
                       가격 :{' '}
                       {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(
-                        8,
+                        COIN_MINIMAL_DENOM_DIGIT,
                       )}{' '}
                       {UPPERCASE_COIN_MINIMAL_DENOM}
                     </span>
@@ -267,7 +269,7 @@ const Exchange = () => {
                           ? (
                               (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
                               Number(topInput)
-                            ).toFixed(8)
+                            ).toFixed(COIN_MINIMAL_DENOM_DIGIT)
                           : 0
                       }
                     />
@@ -281,13 +283,15 @@ const Exchange = () => {
           )}
           <SwapButton
             onClick={async () => {
-              if (!bottomToken && Number(topInput) === 0) return;
+              console.log(topInput);
+              if (!bottomToken && Number(topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)) === 0)
+                return;
               if (isBuy) {
                 const bidSwapResult = await buySwap(
                   client,
                   userAddress,
                   bottomToken.poolAddress,
-                  topInput.toString(10),
+                  (topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)).toString(10),
                 );
                 console.log('bidSwapResult', bidSwapResult);
                 location.reload();

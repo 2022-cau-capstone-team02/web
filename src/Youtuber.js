@@ -4,14 +4,16 @@ import { Container } from 'react-bootstrap';
 
 import { totalFundingAmountQuery } from './queries';
 import useClient from './hooks/useClient';
+import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
+import { digitNumber } from './utils/common';
 
 const Youtuber = () => {
   const { client } = useClient();
   const [fundingAmount, setFundingAmount] = useState();
   const channelList = JSON.parse(localStorage.getItem('channelList'))?.list;
   const youtuber = channelList[0];
+
   useEffect(() => {
-    if (!client || !youtuber) return;
     (async () => {
       const currentFundingAmount = await totalFundingAmountQuery(
         client,
@@ -20,7 +22,8 @@ const Youtuber = () => {
       console.log(currentFundingAmount);
       setFundingAmount(currentFundingAmount);
     })();
-  }, [client, youtuber]);
+  }, []);
+
   return (
     <StyledContainer>
       <Wrapper>
@@ -33,7 +36,11 @@ const Youtuber = () => {
             <FundingInfo>
               <p style={{ fontSize: '1.5rem' }}>펀딩 금액</p>
               <p style={{ fontSize: '2.5rem' }}>
-                <b>{fundingAmount ? fundingAmount.amount : null}</b>
+                <b>
+                  {fundingAmount
+                    ? `${digitNumber(fundingAmount.amount)} ${UPPERCASE_COIN_MINIMAL_DENOM}`
+                    : null}
+                </b>
               </p>
             </FundingInfo>
           </ChannelInfo>

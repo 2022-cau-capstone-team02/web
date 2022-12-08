@@ -1,13 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 import AssetInfo from './components/AssetInfo';
 import Assets from './components/Assets';
-import _Navbar from './components/Navbar';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
-// import Sidebar from './components/Sidebar';
+import { useQuery } from 'react-query';
 
 const apiData = [];
 const apiData2 = [];
@@ -38,6 +36,7 @@ async function fetchUserData() {
 
 function Investor() {
   const [show, setShow] = useState(false);
+
   const { data, isLoading } = useQuery('userInfo', fetchUserData);
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,

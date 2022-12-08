@@ -11,52 +11,29 @@ import { SigningStargateClient } from '@cosmjs/stargate';
 import { useRecoilState } from 'recoil';
 import { userAssetAtom } from '../atoms';
 import forEach from 'lodash/forEach';
+import { digitNumber } from '../utils/common';
 
 const useClient = () => {
   const [client, setClient] = useState();
-  const [userAddress, setUserAddress] = useState();
   const [stargateClient, setStargateClient] = useState();
+  const [userAddress, setUserAddress] = useState();
   const [userAsset, setUserAsset] = useRecoilState(userAssetAtom);
   const channelList = useMemo(() => {
     return JSON.parse(localStorage.getItem('channelList'))?.list;
   }, []);
 
-  const refreshAssetHandler = async () => {
-    const balance = await stargateClient.getBalance(userAddress, COIN_MINIMAL_DENOM);
-    setUserAsset((prev) => {
-      return {
-        ...prev,
-        [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
-      };
-    });
-
-    forEach(channelList, async (icoChannel) => {
-      const result = await tokenAddressQuery(client, icoChannel.icoContractAddress);
-      const tokenAddress = result.address;
-      const newResult = await channelTokenBalanceQuery(client, userAddress, tokenAddress);
-      setUserAsset((props) => {
-        return {
-          ...props,
-          [icoChannel.ticker]: newResult.balance,
-        };
-      });
-    });
-  };
-
   useEffect(() => {
-    window.addEventListener('refreshAsset', refreshAssetHandler, false);
-
     (async () => {
       if (!window.keplr) {
         alert('Please install keplr extension');
       } else {
         await suggestYsipChain();
         window.keplr.enable(CHAIN_ID);
-
+        //
         const offlineSigner = window.keplr.getOfflineSigner(CHAIN_ID);
         const accounts = await offlineSigner.getAccounts();
         setUserAddress(accounts[0].address);
-
+        //
         const currentClient = await SigningCosmWasmClient.connectWithSigner(
           RPC_END_POINT,
           offlineSigner,
@@ -98,7 +75,7 @@ const useClient = () => {
       setUserAsset((prev) => {
         return {
           ...prev,
-          [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
+          [UPPERCASE_COIN_MINIMAL_DENOM]: digitNumber(balance.amount),
         };
       });
     })();

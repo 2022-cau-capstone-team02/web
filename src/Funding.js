@@ -15,6 +15,7 @@ import { COIN_MINIMAL_DENOM, UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { userAssetAtom, userFundingAtom } from './atoms';
 import { commonTheme } from './theme';
+import { digitNumber } from './utils/common';
 
 const Funding = () => {
   const { client, stargateClient, userAddress } = useClient();
@@ -117,6 +118,8 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
     })();
   }, [client]);
 
+  console.log(userAsset);
+
   return (
     <div
       style={{
@@ -146,22 +149,22 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
             {!isFundingFinished ? (
               <React.Fragment>
                 <div style={{ marginTop: '10px' }}>
-                  총 모집 금액 : {icoInfo?.target_funding_amount ?? 0}{' '}
+                  총 모집 금액 : {digitNumber(icoInfo?.target_funding_amount ?? 0)}{' '}
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
                 <div style={{ marginTop: '10px' }}>
-                  현재까지 모집 금액 : {icoChannelTotalFundingAmount?.amount ?? 0}{' '}
+                  현재까지 모집 금액 : {digitNumber(icoChannelTotalFundingAmount?.amount ?? 0)}{' '}
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
                 <div style={{ marginTop: '10px' }}>
-                  내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount ?? 0}{' '}
+                  내가 투자한 금액 : {digitNumber(userFunding[icoChannel.ticker]?.amount ?? 0)}{' '}
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
               </React.Fragment>
             ) : (
               <React.Fragment>
                 <div style={{ marginTop: '10px' }}>
-                  내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount ?? 0}{' '}
+                  내가 투자한 금액 : {digitNumber(userFunding[icoChannel.ticker]?.amount ?? 0)}{' '}
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
                 <div style={{ marginTop: '10px' }}>
@@ -209,7 +212,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
                     setUserAsset((prev) => {
                       return {
                         ...prev,
-                        [UPPERCASE_COIN_MINIMAL_DENOM]: balance.amount,
+                        [UPPERCASE_COIN_MINIMAL_DENOM]: digitNumber(balance.amount),
                       };
                     });
 

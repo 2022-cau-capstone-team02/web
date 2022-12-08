@@ -25,7 +25,7 @@ const FundingAdmin = () => {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      fundingAmount: 1_000_000,
+      fundingAmount: 10_000_000,
       totalTokenAmount: 10_000_000_000,
       tokenName: '',
       tokenSymbol: '',
@@ -41,7 +41,10 @@ const FundingAdmin = () => {
           <div flexDirection={'row'}>
             <div style={{ display: 'flex', flexDirection: 'column' }} mr={4}>
               <p style={{ fontSize: '1.5rem' }}>
-                <b>Step1. ICO 컨트렉트를 생성합니다.</b>
+                <b>
+                  Step1. ICO를 실시하기 위한 작업을 진행합니다. &gt; 투자자가 투자 할 수 있도록
+                  설정하는 작업
+                </b>
               </p>
               <div style={{ padding: '10px' }} />
               <Controller

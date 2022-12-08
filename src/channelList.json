@@ -30,5 +30,19 @@
       "tokenAddress": "",
       "poolAddress": ""
     }
+  ],
+  "investors" : [
+    {
+      "name" : "곽튜브 투자자1",
+      "accountAddress" : "ysip1svnl7reysrle265hdslx9e39a04p7tp7hsqn0n"
+    },
+    {
+      "name" : "곽튜브 투자자2",
+      "accountAddress" : "ysip1rahhfykhuwmkr5eldcy2qswhsp0cfwcf37y023"
+    }
+  ],
+  "youtubeApiKeys" : [
+    "AIzaSyCPN55s8w7AYiYYMvVJg1yjX_hlpDgE30c",
+    "AIzaSyANqY6W9wF5vQzrCVpzTmclViQzJeVCy5s"
   ]
 }
