@@ -92,10 +92,10 @@ const AssetInfo = ({ apiData, userData }) => {
   const channelList = JSON.parse(localStorage.getItem('channelList')).list;
 
   useEffect(() => {
+    if (!client) return;
     (async () => {
       forEach(channelList, async (channel) => {
         const liquidityQueryResult = await liquidityQuery(client, channel.poolAddress);
-        console.log(liquidityQueryResult);
         setLiquidities((prev) => {
           return {
             ...prev,
@@ -104,13 +104,10 @@ const AssetInfo = ({ apiData, userData }) => {
         });
       });
     })();
-  }, []);
-
-  console.log(liquidites);
+  }, [client]);
 
   const labels = () => {
     if (data.labels.length === 0) {
-      console.log(apiData[0]);
       apiData[0].map((apiData) => {
         data.labels.push(apiData.snippet.title);
       });
@@ -128,7 +125,6 @@ const AssetInfo = ({ apiData, userData }) => {
           <Profile>{userData.data.data[0].name}님의 현재 자산</Profile>
           <h3>
             {Object.keys(userAsset).map((key) => {
-              console.log(liquidites?.[key]);
               if (key === 'uKRW') {
                 return (
                   <p key={key}>

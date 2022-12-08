@@ -123,7 +123,7 @@ function Investor() {
   }, [isLoading]);
 
   useEffect(() => {
-    if (params.id != '') {
+    if (params.id !== '') {
       fetchYoutubeData();
     }
   }, [params]);
