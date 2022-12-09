@@ -25,8 +25,8 @@ const FundingAdmin = () => {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      fundingAmount: 10_000_000,
-      totalTokenAmount: 10_000_000_000,
+      fundingAmount: 1_000_000_000,
+      totalTokenAmount: 100_000_000,
       tokenName: '',
       tokenSymbol: '',
       recipient: '',

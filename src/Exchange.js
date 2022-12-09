@@ -155,7 +155,7 @@ const Exchange = () => {
                           ? (
                               (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
                               Number(topInput)
-                            ).toFixed(6)
+                            ).toFixed(COIN_MINIMAL_DENOM_DIGIT)
                           : 0
                       }
                     />
@@ -202,13 +202,13 @@ const Exchange = () => {
                     <SwapTokenInput
                       inputMode="decimal"
                       onChange={(e) => {
-                        setTopInput(Number(e.target.value));
+                        setTopInput(parseFloat(e.target.value).toFixed(6));
                       }}
                       autoComplete="off"
                       autoCorrect="off"
-                      type="text"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      placeholder="0"
+                      type="number"
+                      placeholder="0.000000"
+                      step={'0.000001'}
                       minLength="1"
                       maxLength="79"
                       spellCheck="false"
@@ -302,7 +302,7 @@ const Exchange = () => {
                   userAddress,
                   bottomToken.tokenAddress,
                   bottomToken.poolAddress,
-                  topInput.toString(10),
+                  (topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)).toString(10),
                 );
                 console.log('increaseAllowanceResult', increaseAllowanceResult);
 
@@ -311,7 +311,7 @@ const Exchange = () => {
                   userAddress,
                   bottomToken.tokenAddress,
                   bottomToken.poolAddress,
-                  topInput.toString(10),
+                  (topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)).toString(10),
                 );
                 console.log('askSwapResult', askSwapResult);
                 location.reload();

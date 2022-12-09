@@ -137,7 +137,7 @@ const AssetInfo = ({ apiData, userData }) => {
                     {userAsset[key]} {key}
                     <br />
                     <span style={{ fontSize: 16 }}>
-                      개당 가격 : {digitNumber(liquidites?.[key].toString(10))}{' '}
+                      개당 가격 : {digitNumber(liquidites?.[key]?.toString(10))}{' '}
                       {UPPERCASE_COIN_MINIMAL_DENOM}
                     </span>
                   </p>

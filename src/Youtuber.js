@@ -14,6 +14,7 @@ const Youtuber = () => {
   const youtuber = channelList[0];
 
   useEffect(() => {
+    if (!client) return;
     (async () => {
       const currentFundingAmount = await totalFundingAmountQuery(
         client,
@@ -22,7 +23,7 @@ const Youtuber = () => {
       console.log(currentFundingAmount);
       setFundingAmount(currentFundingAmount);
     })();
-  }, []);
+  }, [client]);
 
   return (
     <StyledContainer>

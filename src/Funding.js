@@ -89,7 +89,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         setUserAsset((props) => {
           return {
             ...props,
-            [icoChannel.ticker]: newResult.balance,
+            [icoChannel.ticker]: digitNumber(newResult.balance),
           };
         });
       }
@@ -110,7 +110,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
         return {
           ...prev,
           [icoChannel.ticker]: {
-            amount: myFundingAmountQueryResult.amount,
+            amount: digitNumber(myFundingAmountQueryResult.amount),
             base: UPPERCASE_COIN_MINIMAL_DENOM,
           },
         };
@@ -157,14 +157,14 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
                 <div style={{ marginTop: '10px' }}>
-                  내가 투자한 금액 : {digitNumber(userFunding[icoChannel.ticker]?.amount ?? 0)}{' '}
+                  내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount ?? 0}{' '}
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
               </React.Fragment>
             ) : (
               <React.Fragment>
                 <div style={{ marginTop: '10px' }}>
-                  내가 투자한 금액 : {digitNumber(userFunding[icoChannel.ticker]?.amount ?? 0)}{' '}
+                  내가 투자한 금액 : {userFunding[icoChannel.ticker]?.amount ?? 0}{' '}
                   {UPPERCASE_COIN_MINIMAL_DENOM}
                 </div>
                 <div style={{ marginTop: '10px' }}>
@@ -232,7 +232,7 @@ const IcoChannel = ({ icoChannel, availableKrw, client, stargateClient, userAddr
                       return {
                         ...prev,
                         [icoChannel.ticker]: {
-                          amount: myFundingAmountQueryResult.amount,
+                          amount: digitNumber(myFundingAmountQueryResult.amount),
                           base: UPPERCASE_COIN_MINIMAL_DENOM,
                         },
                       };

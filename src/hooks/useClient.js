@@ -61,7 +61,7 @@ const useClient = () => {
       setUserAsset((props) => {
         return {
           ...props,
-          [icoChannel.ticker]: newResult.balance,
+          [icoChannel.ticker]: digitNumber(newResult.balance),
         };
       });
     });
