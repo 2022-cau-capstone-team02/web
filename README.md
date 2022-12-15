@@ -1,70 +1,14 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![화면 캡처 2022-12-15 215443.jpg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/890699c0-8e30-4f79-b7e0-e1d4f40b1822/%ED%99%94%EB%A9%B4_%EC%BA%A1%EC%B2%98_2022-12-15_215443.jpg)
+## 서론
+- 블록체인이란 트렌잭션을 투명하게 기록하고 자산을 누구나 추적할 수 있는 프로세스를 용이하게 하는 데이터 분산 처리 기술입니다. 본 개발과제에서는 블록체인을 활용하여 유튜브 채널에 지분투자 플랫폼을 구현하고자 했습니다.
+    - 왜 블록체인을 활용하여 구현하였는가
+        - **배당의 투명성**
+        모든 시장참가자들이 모든 거래를 투명하게 확인할 수 있으므로 감시자의 역할을 하여 투명하게 플랫폼이 운영됨을 확인할 수 있음.
+        - **빠른 현금화**
+        플랫폼에서 사용되는 스테이블코인 자체가 원화에 페깅 (Pegging) 되어 있으므로 회사에 코인을 반환하면 즉시 동일한 가치의 현금을 받을 수 있음.
+            - 페깅 방법 : 스테이블 코인의 가격이 원화보다 낮아지면 코인을 소각하려는 수요가 발생 → 소각을 하면 공급이 줄어드는 효과를 내므로 가격 상승, 반대로 원화보다 높아지면 코인을 발행하려는 수요 발생 → 공급이 증가하므로 가격 하락. 또한 담보기반으로 동작하므로 뱅크런이 발생하기 힘든 구조임. 모든 발행과정은 체인에 기록되므로 감시자들이 항상 존재하여 문제를 예방하거나 빠른 대처가 가능. 물론 이에 해당하는 법제화가 시급.
+        - **유동성이 낮은 환경에서 거래 용이**
+        AMM 기반의 거래 방식을 사용하게 되면 호가 기반으로 주문을 할 때보다 훨씬 낮은 슬리피지로 거래가 가능.
+- 현재 고비용 고퀄리티 컨텐츠가 많은 인기를 끌고 있는 상황에서, 신규 유튜버는 물론이고 구독자수가 많은 유튜버들의 경우도 컨텐츠 개발 비용을 조달하는데 많은 어려움을 겪고 있는 상황입니다.
+- 머니게임 컨텐츠 출시를 통해 유명해진 진용진의 채널이 카카오엔터테인먼트에 5억에 매각, 재테크 관련 컨텐츠로 유명한 신사임당의 채널이 20억에 매각되는 등 유튜브 채널의 가치가 크게 오르고 있습니다. 또한, 기업들이 유튜브에서 활발하게 광고를 개시하며 본질적인 채널의 가치 증대 이외에 광고비 등의 부가적인 수익도 창출되고 있는 상황입니다.
+- 본 개발과제에서는 신규/구 유튜버들에게 컨텐츠 개발에 필요한 제작 비용을 조달해주고, 이를 통해 발생한 부가가치 (e.g. 본질적인 채널의 가치 증대, 채널 가치가 증대됨에 따라 상승한 광고료 등)를 투자자들이 공유받을 수 있는 플랫폼을 개발하고자 합니다.
