@@ -44,7 +44,8 @@
 10. ICO 컨트렉트 생성 시 채널 토큰을 만들기 위해서는 케플러 지갑을 실행하고 계정을 추가한 뒤 그 계정의 주소를 사용해주세요.
 
 
-<img width="363" alt="스크린샷 2022-12-15 오후 9 55 28" src="https://user-images.githubusercontent.com/40621448/207865910-7cb49695-3716-48ad-b26d-64ac7290d45a.png">
+
+<img width="371" alt="스크린샷 2022-12-15 오후 9 53 14" src="https://user-images.githubusercontent.com/40621448/207866079-5c1e8f4d-0ccb-4b67-b925-c0711e3074e9.png">
 <img width="363" alt="스크린샷 2022-12-15 오후 9 55 45" src="https://user-images.githubusercontent.com/40621448/207865921-4f43d565-3130-4da5-868e-e1f7cc2028c4.png">
 
 
