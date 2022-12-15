@@ -43,5 +43,8 @@
 9. `ysip102xnfc6d5j8j7tshq3yrg0t7kr8tsd2y242ku0` 주소를 가지고 있는 계정을 관리자 계정으로 사용하세요.
 10. ICO 컨트렉트 생성 시 채널 토큰을 만들기 위해서는 케플러 지갑을 실행하고 계정을 추가한 뒤 그 계정의 주소를 사용해주세요.
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c1641099-16f8-410e-b6b2-9743adb786ff/Untitled.png)
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b63828e3-821b-45ad-a9c7-e69fe3c0eb5f/Untitled.png)
+
+<img width="363" alt="스크린샷 2022-12-15 오후 9 55 28" src="https://user-images.githubusercontent.com/40621448/207865910-7cb49695-3716-48ad-b26d-64ac7290d45a.png">
+<img width="363" alt="스크린샷 2022-12-15 오후 9 55 45" src="https://user-images.githubusercontent.com/40621448/207865921-4f43d565-3130-4da5-868e-e1f7cc2028c4.png">
+
+
