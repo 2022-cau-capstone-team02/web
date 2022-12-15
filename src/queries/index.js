@@ -19,7 +19,7 @@ const feeMsg = {
     },
   ],
   // gas는 항상 이만큼 사용되는 것이 아니라 상한선임
-  gas: '600000',
+  gas: '1000000',
 };
 
 export const suggestYsipChain = async () => {
@@ -220,7 +220,7 @@ export const createPool = async (client, admin, tokenAddress, protocolFeePercent
   return await client.instantiate(admin, PAIR_CODE_ID, message, 'pair', feeMsg);
 };
 
-export const channelFundingState = async (client, icoContractAddress) => {
+export const isFundingFinishedQuery = async (client, icoContractAddress) => {
   const message = {
     is_funding_finished: {},
   };

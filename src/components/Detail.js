@@ -19,6 +19,7 @@ import 'swiper/components/pagination/pagination.scss';
 import SwiperCore, { Pagination } from 'swiper';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { getChannelName } from '../utils/common';
 SwiperCore.use([Pagination]);
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -440,7 +441,7 @@ const Detail = ({ show, setShow, data, video, popularVideo, detailData2 }) => {
             </ProfileImageContainer>
             <ProfileInfo>
               <Channel>
-                <ChannelName>{data.snippet.title}</ChannelName>
+                <ChannelName>{getChannelName(data.snippet.title)}</ChannelName>
                 <ChannelTier>{getTier(data.statistics.subscriberCount)}</ChannelTier>
               </Channel>
               <DetailInfo>

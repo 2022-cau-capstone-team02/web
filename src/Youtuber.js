@@ -1,33 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Container } from 'react-bootstrap';
-import { coin, coins, SigningCosmWasmClient } from 'cosmwasm';
-import { SigningStargateClient } from '@cosmjs/stargate';
-import { totalFundingAmountQuery, instantiateIcoContract, fundingChannel } from './queries';
+
+import { totalFundingAmountQuery } from './queries';
 import useClient from './hooks/useClient';
-import { useRecoilState } from 'recoil';
-import { channelListAtom, userAssetAtom, userFundingAtom } from './atoms';
-
-const rpcEndpoint = 'http://localhost:26657';
-const chainId = 'ysip';
-
-const icoChannelList = {
-  id: 0,
-  name: '방성원',
-  src: 'https://yt3.ggpht.com/ytc/AMLnZu-aO9vHmg6ClLIweCyo5auE1HhpGz-YZKOa6m7h0Q=s176-c-k-c0x00ffffff-no-rj',
-  ticker: 'KAPU',
-  address: '123123121233',
-  funding: 252310002324,
-};
+import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
+import { digitNumber } from './utils/common';
 
 const Youtuber = () => {
-  const { client, stargateClient, userAddress } = useClient();
+  const { client } = useClient();
   const [fundingAmount, setFundingAmount] = useState();
-  const [channelList, setChannelList] = useRecoilState(channelListAtom);
+  const channelList = JSON.parse(localStorage.getItem('channelList'))?.list;
   const youtuber = channelList[0];
-  console.log(youtuber);
+
   useEffect(() => {
-    if (!client || !youtuber) return;
+    if (!client) return;
     (async () => {
       const currentFundingAmount = await totalFundingAmountQuery(
         client,
@@ -36,7 +23,8 @@ const Youtuber = () => {
       console.log(currentFundingAmount);
       setFundingAmount(currentFundingAmount);
     })();
-  }, [client, youtuber]);
+  }, [client]);
+
   return (
     <StyledContainer>
       <Wrapper>
@@ -49,7 +37,11 @@ const Youtuber = () => {
             <FundingInfo>
               <p style={{ fontSize: '1.5rem' }}>펀딩 금액</p>
               <p style={{ fontSize: '2.5rem' }}>
-                <b>{fundingAmount ? fundingAmount.amount : null}</b>
+                <b>
+                  {fundingAmount
+                    ? `${digitNumber(fundingAmount.amount)} ${UPPERCASE_COIN_MINIMAL_DENOM}`
+                    : null}
+                </b>
               </p>
             </FundingInfo>
           </ChannelInfo>

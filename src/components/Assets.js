@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Detail from './Detail';
+import { getChannelName } from '../utils/common';
 
 const AssetsContainer = styled.div`
   width: 100%;
@@ -130,7 +131,6 @@ const ChannelIncome = styled.p`
 `;
 
 const Assets = ({ apiData, videoData, popularVideoData, detailData2 }) => {
-  console.log(detailData2);
   const [dataIndex, setDataIndex] = useState(-1);
   const [show, setShow] = useState(false);
   const [dataList, setDataList] = useState([]);
@@ -177,7 +177,7 @@ const Assets = ({ apiData, videoData, popularVideoData, detailData2 }) => {
                 onDragStart={(e) => dragStart(e, index)}
                 onDragEnter={(e) => dragEnter(e, index)}
               >
-                {show && dataIndex == index ? (
+                {show && dataIndex === index ? (
                   <Detail
                     show={show}
                     setShow={setShow}
@@ -195,7 +195,7 @@ const Assets = ({ apiData, videoData, popularVideoData, detailData2 }) => {
                   </ThumbNailContainer>
                   <ChannelInfo>
                     <Info>
-                      <Title>{data.snippet.title}</Title>
+                      <Title>{getChannelName(data.snippet.title)}</Title>
                       <Subscribers>
                         구독자수{' '}
                         {data.statistics.subscriberCount

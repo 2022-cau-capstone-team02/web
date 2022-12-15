@@ -11,8 +11,12 @@ import {
   transferFunding,
 } from './queries';
 import useClient from './hooks/useClient';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { channelListAtom } from './atoms';
+import {
+  ADMIN_FUNDING_AMOUNT_DEPOSIT,
+  ADMIN_PROVIDE_TOKEN_LIQUIDITY_AMOUNT,
+  ADMIN_PROVIDE_UKRW_LIQUIDITY_AMOUNT,
+} from './constants';
+import { toast } from 'react-toastify';
 
 const FundingAdmin = () => {
   const { client, userAddress } = useClient();
@@ -21,8 +25,8 @@ const FundingAdmin = () => {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      fundingAmount: 0,
-      totalTokenAmount: 0,
+      fundingAmount: 1_000_000_000,
+      totalTokenAmount: 100_000_000,
       tokenName: '',
       tokenSymbol: '',
       recipient: '',
@@ -37,7 +41,10 @@ const FundingAdmin = () => {
           <div flexDirection={'row'}>
             <div style={{ display: 'flex', flexDirection: 'column' }} mr={4}>
               <p style={{ fontSize: '1.5rem' }}>
-                <b>Step1. ICO 컨트렉트를 생성합니다.</b>
+                <b>
+                  Step1. ICO를 실시하기 위한 작업을 진행합니다. &gt; 투자자가 투자 할 수 있도록
+                  설정하는 작업
+                </b>
               </p>
               <div style={{ padding: '10px' }} />
               <Controller
@@ -109,7 +116,6 @@ const FundingAdmin = () => {
                       data;
                     const deadline = 10000000000;
                     try {
-                      console.log(client, userAddress);
                       const result = await instantiateIcoContract(
                         client,
                         userAddress,
@@ -120,8 +126,21 @@ const FundingAdmin = () => {
                         totalTokenAmount.toString(),
                         recipient,
                       );
-                      console.log(result);
                       setCreatedIcoContractAddress(result);
+
+                      const prevChannelList = localStorage.getItem('channelList');
+                      const newChannelList = JSON.parse(prevChannelList).list.map((channel) => {
+                        if (channel.ticker === tokenSymbol) {
+                          return {
+                            ...channel,
+                            icoContractAddress: result,
+                          };
+                        } else return channel;
+                      });
+                      localStorage.setItem('channelList', JSON.stringify({ list: newChannelList }));
+                      toast('ICO 실행에 성공했어요!', {
+                        position: 'top-right',
+                      });
                     } finally {
                       setIsInstantiateIcoContractLoading(false);
                     }
@@ -151,7 +170,7 @@ const FundingAdmin = () => {
 
 const Allocation = ({ client, userAddress }) => {
   const [channel, setChannel] = useState();
-  const channelList = useRecoilValue(channelListAtom);
+  const channelList = JSON.parse(localStorage.getItem('channelList'))?.list;
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -164,7 +183,23 @@ const Allocation = ({ client, userAddress }) => {
       <p style={{ fontSize: '1.5rem' }}>
         <b>Step3. 배당 합니다</b>
       </p>
-      {channelList.map((currentChannel) => {
+      {channelList?.map((currentChannel, index) => {
+        if (index === 2) {
+          if (!currentChannel.icoContractAddress) return null;
+          return (
+            <a
+              style={{
+                ...(channel?.id === currentChannel.id && {
+                  color: 'red',
+                }),
+              }}
+              key={currentChannel.id}
+              onClick={() => setChannel(currentChannel)}
+            >
+              {currentChannel.name}
+            </a>
+          );
+        }
         return (
           <a
             style={{
@@ -207,6 +242,9 @@ const Allocation = ({ client, userAddress }) => {
               data.amount,
             );
             console.log(allocationResult);
+            toast('배당금 지급에 성공했어요!', {
+              position: 'top-right',
+            });
           })();
         }}
       >
@@ -217,7 +255,7 @@ const Allocation = ({ client, userAddress }) => {
 };
 
 const EndFunding = ({ client, userAddress }) => {
-  const [channelList, setChannelList] = useRecoilState(channelListAtom);
+  const channelList = JSON.parse(localStorage.getItem('channelList'))?.list;
   const [isEndFundingLoading, setIsEndFundingLoading] = useState(false);
   const [isTransferFundingLoading, setIsTransferFundingLoading] = useState(false);
   const { control, handleSubmit } = useForm({
@@ -232,6 +270,27 @@ const EndFunding = ({ client, userAddress }) => {
         <b>Step2. ICO 마무리, 코인 개수를 모집된 금액에 따라 배분합니다</b>
       </p>
       <div style={{ padding: '10px' }} />
+      {channelList?.map((channel, index) => {
+        console.log(channel, index);
+        if (index === 2) {
+          if (!channel.icoContractAddress) return null;
+          return (
+            <div key={channel.id}>
+              <span>
+                {channel.name} : {channel.icoContractAddress}
+              </span>
+            </div>
+          );
+        } else {
+          return (
+            <div key={channel.id}>
+              <span>
+                {channel.name} : {channel.icoContractAddress}
+              </span>
+            </div>
+          );
+        }
+      })}
       <Controller
         name="icoContractAddress"
         control={control}
@@ -270,20 +329,21 @@ const EndFunding = ({ client, userAddress }) => {
               console.log('createPoolResult', createPoolResult);
               const poolAddress = createPoolResult.contractAddress;
 
-              // setChannelList((prev) => {
-              //   let newChannelList = prev;
-              //   const currentChannelIndex = findIndex(
-              //     prev,
-              //     (channel) => channel.icoContractAddress === icoContractAddress,
-              //   );
-              //   newChannelList[currentChannelIndex] = {
-              //     ...newChannelList[currentChannelIndex],
-              //     tokenAddress,
-              //     poolAddress,
-              //   };
-              //   return newChannelList;
-              // });
-              const tokenAmount = '1000';
+              const prevChannelList = localStorage.getItem('channelList');
+              const newChannelList = JSON.parse(prevChannelList).list.map((channel) => {
+                if (channel.icoContractAddress === icoContractAddress) {
+                  return {
+                    ...channel,
+                    tokenAddress,
+                    poolAddress,
+                  };
+                } else {
+                  return channel;
+                }
+              });
+              localStorage.setItem('channelList', JSON.stringify({ list: newChannelList }));
+
+              const tokenAmount = ADMIN_PROVIDE_TOKEN_LIQUIDITY_AMOUNT.toString(10);
               const increaseAllowanceResult = await increaseAllowance(
                 client,
                 userAddress,
@@ -298,10 +358,13 @@ const EndFunding = ({ client, userAddress }) => {
                 userAddress,
                 tokenAddress,
                 poolAddress,
-                '100000',
+                ADMIN_PROVIDE_UKRW_LIQUIDITY_AMOUNT.toString(10),
                 tokenAmount,
               );
               console.log('provideLiquidityResult', provideLiquidityResult);
+              toast('ICO 종료에 성공했어요!', {
+                position: 'top-right',
+              });
             } finally {
               setIsEndFundingLoading(false);
             }
@@ -327,9 +390,12 @@ const EndFunding = ({ client, userAddress }) => {
                 client,
                 userAddress,
                 icoContractAddress,
-                (25000000).toString(10),
+                ADMIN_FUNDING_AMOUNT_DEPOSIT.toString(10),
               );
               console.log(result);
+              toast('펀딩 금액 송금에 성공했어요!', {
+                position: 'top-right',
+              });
             } finally {
               setIsTransferFundingLoading(false);
             }

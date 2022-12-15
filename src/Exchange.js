@@ -6,12 +6,10 @@ import Modal from 'react-modal';
 import { HiChevronDown } from 'react-icons/hi';
 import { useRecoilValue } from 'recoil';
 import useClient from './hooks/useClient';
-import { channelListAtom, userAssetAtom } from './atoms';
+import { userAssetAtom } from './atoms';
 import { buySwap, sellSwap, liquidityQuery, increaseAllowance } from './queries';
-import { UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
-
-// This is your rpc endpoint
-const rpcEndpoint = 'https://rpc.cliffnet.cosmwasm.com:443/';
+import { COIN_MINIMAL_DENOM_DIGIT, UPPERCASE_COIN_MINIMAL_DENOM } from './constants';
+import { digitNumber } from './utils/common';
 
 const customStyles = {
   content: {
@@ -26,7 +24,7 @@ const customStyles = {
 
 const Exchange = () => {
   const { client, stargateClient, userAddress } = useClient();
-  const channelList = useRecoilValue(channelListAtom);
+  const channelList = JSON.parse(localStorage.getItem('channelList'))?.list;
   const userAsset = useRecoilValue(userAssetAtom);
   const [topInput, setTopInput] = useState(0);
   const [liquidities, setLiquidities] = useState(0);
@@ -62,7 +60,7 @@ const Exchange = () => {
           <span>토큰 선택</span>
           <button onClick={handleModal}>X</button>
         </div>
-        {channelList.map((token, index) => {
+        {channelList?.map((token, index) => {
           return (
             <a
               onClick={() => {
@@ -80,7 +78,7 @@ const Exchange = () => {
               }}
             >
               <img
-                alt={`TOKEN_IMG--${token.ticker}`}
+                alt={`TOKEN_IMG--${token?.ticker}`}
                 src={token.src}
                 style={{ width: 64, height: 64, borderRadius: 32, marginRight: 16 }}
               />
@@ -91,8 +89,8 @@ const Exchange = () => {
                   alignItems: 'flex-start',
                 }}
               >
-                <span>{token.name}</span>
-                <span>{token.ticker}</span>
+                <span>{token?.name}</span>
+                <span>{token?.ticker}</span>
               </div>
             </a>
           );
@@ -115,13 +113,13 @@ const Exchange = () => {
                     <SwapTokenInput
                       inputMode="decimal"
                       onChange={(e) => {
-                        setTopInput(Number(e.target.value));
+                        setTopInput(parseFloat(e.target.value).toFixed(6));
                       }}
                       autoComplete="off"
                       autoCorrect="off"
-                      type="text"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      placeholder="0"
+                      type="number"
+                      placeholder="0.000000"
+                      step={'0.000001'}
                       minLength="1"
                       maxLength="79"
                       spellCheck="false"
@@ -149,14 +147,15 @@ const Exchange = () => {
                       pattern="^[0-9]*[.,]?[0-9]*$"
                       placeholder="0"
                       minLength="1"
+                      step={'0.000001'}
                       maxLength="79"
                       spellCheck="false"
                       value={
                         liquidities && Number(topInput) > 0
                           ? (
-                            (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
-                            Number(topInput)
-                          ).toFixed(8)
+                              (Number(liquidities?.[0].amount) / Number(liquidities?.[1].amount)) *
+                              Number(topInput)
+                            ).toFixed(COIN_MINIMAL_DENOM_DIGIT)
                           : 0
                       }
                     />
@@ -174,12 +173,12 @@ const Exchange = () => {
                     >
                       {bottomToken && (
                         <img
-                          alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                          alt={`TOKEN_IMG--${bottomToken?.ticker}`}
                           src={bottomToken.src}
                           style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
                         />
                       )}
-                      {bottomToken ? bottomToken.ticker : '토큰 선택'}
+                      {bottomToken ? bottomToken?.ticker : '토큰 선택'}
                       <HiChevronDown />
                     </a>
                   </FlexRowCenter>
@@ -187,7 +186,7 @@ const Exchange = () => {
                     <span>
                       가격 :{' '}
                       {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(
-                        8,
+                        COIN_MINIMAL_DENOM_DIGIT,
                       )}{' '}
                       {UPPERCASE_COIN_MINIMAL_DENOM}
                     </span>
@@ -203,13 +202,13 @@ const Exchange = () => {
                     <SwapTokenInput
                       inputMode="decimal"
                       onChange={(e) => {
-                        setTopInput(Number(e.target.value));
+                        setTopInput(parseFloat(e.target.value).toFixed(6));
                       }}
                       autoComplete="off"
                       autoCorrect="off"
-                      type="text"
-                      pattern="^[0-9]*[.,]?[0-9]*$"
-                      placeholder="0"
+                      type="number"
+                      placeholder="0.000000"
+                      step={'0.000001'}
                       minLength="1"
                       maxLength="79"
                       spellCheck="false"
@@ -229,20 +228,25 @@ const Exchange = () => {
                     >
                       {bottomToken && (
                         <img
-                          alt={`TOKEN_IMG--${bottomToken.ticker}`}
+                          alt={`TOKEN_IMG--${bottomToken?.ticker}`}
                           src={bottomToken.src}
                           style={{ width: 32, height: 32, borderRadius: 16, marginRight: 8 }}
                         />
                       )}
-                      {bottomToken ? bottomToken.ticker : '토큰 선택'}
+                      {bottomToken ? bottomToken?.ticker : '토큰 선택'}
                       <HiChevronDown />
                     </a>
                   </FlexRowCenter>
+                  {userAsset[bottomToken?.ticker] && (
+                    <span>
+                      보유량 : {userAsset[bottomToken?.ticker]} {bottomToken?.ticker}
+                    </span>
+                  )}
                   {liquidities && (
                     <span>
                       가격 :{' '}
                       {(Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)).toFixed(
-                        8,
+                        COIN_MINIMAL_DENOM_DIGIT,
                       )}{' '}
                       {UPPERCASE_COIN_MINIMAL_DENOM}
                     </span>
@@ -263,9 +267,9 @@ const Exchange = () => {
                       value={
                         liquidities && Number(topInput) > 0
                           ? (
-                            (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
-                            Number(topInput)
-                          ).toFixed(8)
+                              (Number(liquidities?.[1].amount) / Number(liquidities?.[0].amount)) *
+                              Number(topInput)
+                            ).toFixed(COIN_MINIMAL_DENOM_DIGIT)
                           : 0
                       }
                     />
@@ -279,15 +283,18 @@ const Exchange = () => {
           )}
           <SwapButton
             onClick={async () => {
-              if (!bottomToken && Number(topInput) === 0) return;
+              console.log(topInput);
+              if (!bottomToken && Number(topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)) === 0)
+                return;
               if (isBuy) {
                 const bidSwapResult = await buySwap(
                   client,
                   userAddress,
                   bottomToken.poolAddress,
-                  topInput.toString(10),
+                  (topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)).toString(10),
                 );
                 console.log('bidSwapResult', bidSwapResult);
+                location.reload();
               } else {
                 console.log(bottomToken);
                 const increaseAllowanceResult = await increaseAllowance(
@@ -295,7 +302,7 @@ const Exchange = () => {
                   userAddress,
                   bottomToken.tokenAddress,
                   bottomToken.poolAddress,
-                  topInput.toString(10),
+                  (topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)).toString(10),
                 );
                 console.log('increaseAllowanceResult', increaseAllowanceResult);
 
@@ -304,11 +311,11 @@ const Exchange = () => {
                   userAddress,
                   bottomToken.tokenAddress,
                   bottomToken.poolAddress,
-                  topInput.toString(10),
+                  (topInput * Math.pow(10, COIN_MINIMAL_DENOM_DIGIT)).toString(10),
                 );
                 console.log('askSwapResult', askSwapResult);
+                location.reload();
               }
-              window.dispatchEvent('refreshAsset');
             }}
           >
             스왑하기

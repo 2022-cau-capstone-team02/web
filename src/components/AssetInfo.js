@@ -3,6 +3,13 @@ import { Line, Doughnut } from 'react-chartjs-2';
 import styled from 'styled-components';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
+import { useRecoilValue } from 'recoil';
+import { userAssetAtom } from '../atoms';
+import { COIN_MINIMAL_DENOM_DIGIT, UPPERCASE_COIN_MINIMAL_DENOM } from '../constants';
+import forEach from 'lodash/forEach';
+import { liquidityQuery } from '../queries';
+import useClient from '../hooks/useClient';
+import { digitNumber } from '../utils/common';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -46,15 +53,10 @@ const ChartContainer = styled.div`
   }
 `;
 
-const ChartWrapper = styled.div`
-  width: 350px;
-`;
-
 const InfoContainer = styled.div`
   padding: 30px;
   width: 100%;
-  height: 350px;
-  margin-right: 50px;
+  height: 400px;
   background-color: white;
   border-radius: 10px;
   box-shadow: 3px 3px 10px grey;
@@ -82,10 +84,30 @@ const Profile = styled.h1`
 `;
 
 const AssetInfo = ({ apiData, userData }) => {
+  const { client } = useClient();
   const [show, setShow] = useState(false);
+  const userAsset = useRecoilValue(userAssetAtom);
+
+  const [liquidites, setLiquidities] = useState();
+  const channelList = JSON.parse(localStorage.getItem('channelList')).list;
+
+  useEffect(() => {
+    if (!client) return;
+    (async () => {
+      forEach(channelList, async (channel) => {
+        const liquidityQueryResult = await liquidityQuery(client, channel.poolAddress);
+        setLiquidities((prev) => {
+          return {
+            ...prev,
+            [channel.ticker]: Number(liquidityQueryResult.liquidity[0].amount),
+          };
+        });
+      });
+    })();
+  }, [client]);
+
   const labels = () => {
-    if (data.labels.length == 0) {
-      console.log(apiData[0]);
+    if (data.labels.length === 0) {
       apiData[0].map((apiData) => {
         data.labels.push(apiData.snippet.title);
       });
@@ -95,20 +117,35 @@ const AssetInfo = ({ apiData, userData }) => {
   useEffect(() => {
     labels();
   }, []);
+
   return (
     <Container>
       {show ? (
-        <>
-          <InfoContainer>
-            <Profile>{userData.data.data[0].name}님의 현재 자산</Profile>
-            <h3>{userData.data.data[0].totalAsset}원</h3>
-          </InfoContainer>
-          <ChartContainer>
-            <ChartWrapper>
-              <Doughnut data={data} options={options} style={{ width: '100%', height: '100%' }} />
-            </ChartWrapper>
-          </ChartContainer>
-        </>
+        <InfoContainer>
+          <Profile>{userData.data.data[0].name}님의 현재 자산</Profile>
+          <h3>
+            {Object.keys(userAsset).map((key) => {
+              if (key === 'uKRW') {
+                return (
+                  <p key={key}>
+                    {userAsset[key]} {key}
+                  </p>
+                );
+              } else {
+                return (
+                  <p key={key}>
+                    {userAsset[key]} {key}
+                    <br />
+                    <span style={{ fontSize: 16 }}>
+                      개당 가격 : {digitNumber(liquidites?.[key]?.toString(10))}{' '}
+                      {UPPERCASE_COIN_MINIMAL_DENOM}
+                    </span>
+                  </p>
+                );
+              }
+            })}
+          </h3>
+        </InfoContainer>
       ) : null}
     </Container>
   );
